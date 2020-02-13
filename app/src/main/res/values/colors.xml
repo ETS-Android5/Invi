@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="link_buttons">#0000ff</color>
+    <color name="white_text">#ffffff</color>
+    <color name="facebook_blue">#3b5998</color>
+    <color name="google_red">#de5246</color>
+    <color name="background_color">#55acee</color>
+    <color name="login_button">#ff0000</color>
+    <color name="password_verify">#1DB954</color>
+    <color name="mid_strong_password">#ffce44</color>
+    <color name="week_password">#ff0000</color>
+</resources>

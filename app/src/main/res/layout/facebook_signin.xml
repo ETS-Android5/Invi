@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/facebook_login_button"
+    >
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/facebook_loging_fragment"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:layout_margin="10dp"
+        android:paddingStart="40dp"
+        android:paddingEnd="40dp"
+        android:layout_gravity="center"
+        android:background="@color/facebook_blue"
+        android:text="@string/login_facebook"
+        android:textColor="@color/white_text"
+        />
+
+</LinearLayout>

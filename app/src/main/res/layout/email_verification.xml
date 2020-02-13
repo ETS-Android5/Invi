@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/email_verification_fragment"
+    android:layout_margin="20dp"
+    >
+
+    <TextView
+        android:id="@+id/email_verify_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        />
+
+    <LinearLayout
+        android:id="@+id/email_verification_fragment_inner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:id="@+id/email_verify_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reg_email"
+            android:textSize="20sp"
+            android:layout_margin="5dp"
+            />
+
+
+        <EditText
+            android:id="@+id/email_verify_text_field"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:layout_marginTop="5dp"
+            android:hint="@string/reg_hint_email"
+            android:textAlignment="center"
+            android:inputType="textEmailAddress"
+            />
+
+        <Button
+            android:id="@+id/email_verify_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-5dp"
+            android:text="@string/verify_button"
+            />
+
+
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

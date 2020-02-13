@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".MainActivity">
+
+
+
+
+    <TextView
+        android:id="@+id/id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:text="@string/app_name"
+        android:textAlignment="center"
+        android:textSize="50sp"
+        android:textColor="@color/white_text"
+        />
+
+    <fragment
+        class="com.aluminati.inventory.login.authentication.emailpassword.EmailPasswordLogIn"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/email_password_fragment"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:gravity="center"
+        >
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="125dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_gravity="center"
+            android:background="?android:attr/listDivider"
+        />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/register_text"
+            android:textColor="@color/white_text"
+        />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="125dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_gravity="center"
+            android:background="?android:attr/listDivider"
+            android:visibility="visible"
+        />
+
+    </LinearLayout>
+
+
+    <GridLayout
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="30dp"
+        android:paddingEnd="10dp"
+        >
+
+
+        <fragment
+            class="com.aluminati.inventory.login.authentication.google.GoogleSignIn"
+            android:layout_width="350dp"
+            android:layout_height="50dp"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:layout_gravity="center"
+            android:id="@+id/login_fragment_activity"
+            />
+
+        <fragment
+            class="com.aluminati.inventory.login.authentication.facebook.FaceBookSignIn"
+            android:id="@+id/facebook_loging_fragment"
+            android:layout_width="350dp"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:layout_gravity="center"
+            />
+
+
+
+        <GridLayout
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_row="2"
+            android:layout_column="0"
+            android:gravity="center"
+            >
+
+
+            <TextView
+                    android:id="@+id/register_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_row="0"
+                    android:layout_column="0"
+                    android:text="@string/register"
+                    android:layout_gravity="start"
+                    android:textColor="@color/link_buttons"
+                    android:paddingStart="10dp"
+                    />
+
+            <TextView
+                android:id="@+id/forgot_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_row="0"
+                android:layout_column="1"
+                android:layout_gravity="end"
+                android:text="@string/reset_password"
+                android:paddingEnd="10dp"
+                android:textColor="@color/link_buttons"
+             />
+
+
+        </GridLayout>
+
+    </GridLayout>
+
+
+
+
+
+</LinearLayout>
