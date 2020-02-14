@@ -42,6 +42,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_profile);
 
+        displayNameChange = findViewById(R.id.display_name_change);
         emailChange = findViewById(R.id.phone_number_change);
         phoneChange = findViewById(R.id.email_field);
         userPhoto = findViewById(R.id.userImage);
