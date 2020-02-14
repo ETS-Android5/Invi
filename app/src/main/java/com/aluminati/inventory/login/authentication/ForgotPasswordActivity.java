@@ -3,13 +3,14 @@ package com.aluminati.inventory.login.authentication;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.aluminati.inventory.R;
+import com.aluminati.inventory.firestore.UserFetch;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.regex.Pattern;
 
 public class ForgotPasswordActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -25,10 +26,8 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
         emailField = findViewById(R.id.email_field);
         emailSent = findViewById(R.id.email_sent);
 
-    }
+        findViewById(R.id.send_email).setOnClickListener(this);
 
-    private boolean validateEmailInput(String email){
-        return Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$").matcher(email).matches();
     }
 
     @Override
@@ -36,20 +35,31 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
         if(view.getId() == R.id.send_email){
             if(!emailField.getText().toString().isEmpty()){
                 if(validateEmailInput(emailField.getText().toString())){
-                    FirebaseAuth.getInstance().sendPasswordResetEmail(emailField.getText().toString()).addOnCompleteListener(task -> {
-                       if(task.isSuccessful()){
-                           Log.i(TAG, "Password reset send");
-                           emailSent.setText("Email Sent");
-                       } else {
-                           Log.i(TAG, "Failed to send email");
+                    UserFetch.getUser(emailField.getText().toString()).addOnCompleteListener(result -> {
+                       if(result.isSuccessful() && result.getResult() != null){
+                               if(result.getResult().exists()){
+                                   FirebaseAuth.getInstance().sendPasswordResetEmail(emailField.getText().toString()).addOnCompleteListener(task -> {
+                                       if(task.isSuccessful()){
+                                           Log.i(TAG, "Password reset send");
+                                       } else {
+                                           Log.i(TAG, "Failed to send email");
+                                       }
+                                   });
+                               }
                        }
                     });
+                    emailSent.setText(getResources().getString(R.string.email_sent_info));
                 }else{
-                    emailSent.setText("Incorrect email format");
+                    emailSent.setText(getResources().getString(R.string.invalid_email));
                 }
+            }else{
+                emailSent.setText(getResources().getString(R.string.empty_email));
             }
-        }else{
-            emailSent.setText("Fill in email");
         }
+    }
+
+
+    private boolean validateEmailInput(String email){
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 }

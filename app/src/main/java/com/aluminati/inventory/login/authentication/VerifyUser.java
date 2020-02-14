@@ -6,8 +6,10 @@ import android.util.Log;
 import com.aluminati.inventory.InfoPageActivity;
 import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.register.RegisterActivity;
+import com.aluminati.inventory.userprofile.UserProfile;
 import com.aluminati.inventory.users.User;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class VerifyUser {
 
@@ -23,12 +25,12 @@ public class VerifyUser {
                         if (task.getResult().exists()) {
                             isUserVerified(new User(task.getResult()), activity, false);
                         } else {
-                            updateLayoutToRegisterActivity(new User(firebaseUser), activity);
+                            updateLayoutToRegisterActivity(activity);
                         }
                     }
                 });
             }else {
-                updateLayoutToRegisterActivity(new User(firebaseUser),activity);
+                updateLayoutToRegisterActivity(activity);
             }
 
     }
@@ -36,12 +38,14 @@ public class VerifyUser {
     public static void userExists(User user){
         if(user != null){
             UserFetch.getUser(user.getEmail()).addOnCompleteListener(task -> {
-                if(task.getResult() != null){
-                    Log.i(TAG, "Upadting User");
-                    UserFetch.update(user);
-                } else {
-                    Log.i(TAG, "Adding New User");
-                    UserFetch.addNewUser(user);
+                if(task.getResult() != null) {
+                    if (task.getResult().exists()) {
+                        Log.i(TAG, "Upadting User");
+                        UserFetch.update(user);
+                    } else {
+                        Log.i(TAG, "Adding New User");
+                        UserFetch.addNewUser(user);
+                    }
                 }
             });
         }
@@ -53,7 +57,7 @@ public class VerifyUser {
         if (user != null) {
             if (user.isPhoneVerified() && user.isEmailVerified()){
                 Log.i(TAG, "User verified -> InfoPage Activity Intent");
-                activity.startActivity(new Intent(activity, InfoPageActivity.class));
+                activity.startActivity(new Intent(activity, UserProfile.class));
                 activity.finish();
             }else {
                 Log.i(TAG, "User not veirifed -> Authentication Activity Intent");
@@ -66,10 +70,13 @@ public class VerifyUser {
     }
 
 
-    private static void updateLayoutToRegisterActivity(User fireBaseUser, Activity activity){
+    public static void updateFireBaseUser(FirebaseUser firebaseUser, String name){
+            firebaseUser.updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(name).build());
+    }
+
+    private static void updateLayoutToRegisterActivity(Activity activity){
         Log.i(TAG, "Method " + loginMethod);
         Intent intent = new Intent(activity, RegisterActivity.class);
-               intent.putExtra("user_info", fireBaseUser);
                intent.putExtra("login_method", loginMethod);
         activity.startActivity(intent);
         activity.finish();

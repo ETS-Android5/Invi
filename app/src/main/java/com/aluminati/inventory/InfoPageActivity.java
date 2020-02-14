@@ -71,32 +71,6 @@ public class InfoPageActivity extends AppCompatActivity implements NavigationVie
 
 
 
-    private class RemoteImage extends AsyncTask<String, Void, Bitmap> {
 
-        ImageView profileImageViwe;
-
-        public RemoteImage(ImageView profileImageViwe){
-            this.profileImageViwe = profileImageViwe;
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... urls) {
-            String urlDisplay = urls[0];
-            Bitmap userIcon = null;
-            try{
-                InputStream inputStream = new java.net.URL(urlDisplay).openStream();
-                userIcon = BitmapFactory.decodeStream(inputStream);
-            }catch (Exception e){
-                Log.w("Error Converting", e);
-            }
-            return userIcon;
-        }
-
-        protected void onPostExecute(Bitmap result){
-            profileImageViwe.setImageBitmap(result);
-        }
-
-
-    }
 
 }

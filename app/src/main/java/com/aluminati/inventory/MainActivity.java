@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent(this, RegisterActivity.class);
                        intent.putExtra("login_method", VerificationStatus.EMAIL);
                 startActivity(intent);
+                finish();
                 break;
             }
             case R.id.forgot_password: {

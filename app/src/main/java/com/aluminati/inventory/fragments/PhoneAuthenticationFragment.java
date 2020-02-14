@@ -6,12 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.fragments.fragmentListeners.phone.PhoneVerificationSender;
 import com.aluminati.inventory.login.authentication.phoneauthentication.PhoneAuthentication;
 import com.hbb20.CountryCodePicker;
 
-public class PhoneAuthenticationFragment extends BaseFragment {
+public class PhoneAuthenticationFragment extends Fragment {
 
     private static final String TAG = "PhoneAuthFrag";
     private EditText phoneNumber;

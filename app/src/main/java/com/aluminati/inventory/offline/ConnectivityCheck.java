@@ -8,8 +8,6 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
-
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -38,12 +36,14 @@ public class ConnectivityCheck extends BroadcastReceiver {
 
                     }else{
                         snackbar.setText("Online : No Internet Access");
+                        snackbar.setDuration(BaseTransientBottomBar.LENGTH_INDEFINITE);
                         snackbar.show();
                         Log.i("ConnectionActivity", "Disconnected");
                     }
                 });
             }else {
                 snackbar.setText("Offline");
+                snackbar.setDuration(BaseTransientBottomBar.LENGTH_INDEFINITE);
                 snackbar.show();
                 Log.i("ConnectionActivity", "Network disconnected");
             }
@@ -54,9 +54,8 @@ public class ConnectivityCheck extends BroadcastReceiver {
             ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
             NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-            boolean isConnected = activeNetwork != null &&
-                    activeNetwork.isConnected();
-            return isConnected;
+
+            return activeNetwork != null && activeNetwork.isConnected();
         }
 
     private static class InternetCheck extends AsyncTask<Void,Void,Boolean> {
@@ -73,22 +72,6 @@ public class ConnectivityCheck extends BroadcastReceiver {
         }
 
 
-        /*
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            Runtime runtime = Runtime.getRuntime();
-            try {
-                Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8 https://www.google.com/");
-                return ipProcess.waitFor() == 0;
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            return false;
-        }
-
-
-        */
         @Override protected Boolean doInBackground(Void... voids) { try {
             Socket sock = new Socket();
             sock.connect(new InetSocketAddress("8.8.8.8", 53), 1500);

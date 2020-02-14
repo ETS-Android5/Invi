@@ -6,32 +6,39 @@
     android:gravity="center"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
+    android:padding="20dp"
     tools:context=".login.authentication.phoneauthentication.PhoneAuthentication"
     >
 
 
-    <TextView
-        android:id="@+id/verification_count_down"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_margin="20dp"
-        android:clickable="true"
-        android:focusable="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white_text"
-        android:text="Verify Phone Number"
-        />
 
     <LinearLayout
         android:id="@+id/frag_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="150dp"
         >
+
+
+        <TextView
+            android:id="@+id/verification_count_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:textColor="@color/text_color"
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color"
+            android:text="@string/verify_phone_number"
+            android:layout_gravity="center"
+            />
 
         <fragment
             class="com.aluminati.inventory.fragments.PhoneAuthenticationFragment"
@@ -41,29 +48,51 @@
             android:layout_marginTop="50dp"
             />
 
+
+        <CheckBox
+            android:id="@+id/enable_phone_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="30dp"
+            android:visibility="invisible"
+            android:textColor="@color/text_color"
+            android:text="@string/enable_phone_login"
+            />
+
     </LinearLayout>
 
 
 
-
-
-
-
-    <CheckBox
-        android:id="@+id/enable_phone_login"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="30dp"
-        android:visibility="invisible"
-        android:text="Enable Phone Login"
-        />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        >
 
-    <Button
-        android:id="@+id/verify_phone_number_button"
-        android:layout_width="350dp"
-        android:layout_height="50dp"
-        android:text="@string/send_code"
-    />
+        <Button
+            android:id="@+id/verify_phone_number_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/buttonpositive"
+            android:text="@string/send_code"
+            android:textColor="@color/white_text"
+            android:textSize="20sp"
+            />
+
+        <Button
+            android:id="@+id/phone_verification_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/buttonegative"
+            android:text="@string/cancel"
+            android:textColor="@color/white_text"
+            android:textSize="20sp"
+            />
+
+    </LinearLayout>
 
 
 

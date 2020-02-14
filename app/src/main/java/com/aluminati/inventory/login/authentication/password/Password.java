@@ -9,8 +9,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.text.method.PasswordTransformationMethod;
-import android.text.method.TransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +17,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,7 +24,6 @@ import androidx.fragment.app.Fragment;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.fragments.fragmentListeners.password.PassWordListenerSender;
 import com.aluminati.inventory.register.RegisterActivity;
-
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -47,7 +43,6 @@ public class Password extends Fragment implements View.OnClickListener{
     private ProgressBar confirmPassWordStrength;
     private AtomicInteger strenght;
     private ArrayList<AtomicBoolean> locks;
-    private boolean meetsRequirements = false;
 
     @Nullable
     @Override
@@ -81,29 +76,29 @@ public class Password extends Fragment implements View.OnClickListener{
     }
 
 
-    public void bindActivity(RegisterActivity registerActivity){
-        registerActivity.setPassWordListenerReciever((code) -> onCodeReceived(code));
+    private void bindActivity(RegisterActivity registerActivity){
+        registerActivity.setPassWordListenerReciever(this::onCodeReceived);
     }
 
-    public void onCodeReceived(int code){
-        switch (code){
-            case 3001:{
-                if (!passWord.getText().toString().isEmpty() && !confrimPassWord.getText().toString().isEmpty()){
-                        passWordListenerReciever.onPassWordMatchSend(passWord.getText().toString(), confrimPassWord.getText().toString());
-                }
-                Log.i(TAG, "Code " + code);
-
+    private void onCodeReceived(int code){
+        if (code == 3001) {
+            if (!passWord.getText().toString().isEmpty() && !confrimPassWord.getText().toString().isEmpty()) {
+                passWordListenerReciever.onPassWordMatchSend(passWord.getText().toString(), confrimPassWord.getText().toString(), meetsRequirments());
             }
+            Log.i(TAG, "Code " + code);
         }
     }
 
 
 
     private void showPassword(EditText editText, Button button){
-        if(editText.getInputType() == InputType.TYPE_TEXT_VARIATION_PASSWORD){
-            editText.setInputType(InputType.TYPE_CLASS_TEXT);
-            button.setCompoundDrawables(getResources().getDrawable(R.drawable.hide_password, null), null, null, null);
-            //button.setTooltipText(getResources().getString(R.string.hide_password)); Min SDK 26
+        if((editText.getInputType()-1) == InputType.TYPE_TEXT_VARIATION_PASSWORD ){
+            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            button.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.hide_password,null), null, null ,null);
+            ///// From SDK 26 buttonPositive.setTooltipText(getResources().getString(R.string.hide_password));
+        }else if((editText.getInputType()-1) == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD){
+            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            button.setCompoundDrawablesRelativeWithIntrinsicBounds(getResources().getDrawable(R.drawable.show_password,null), null, null ,null);
         }
     }
 
@@ -140,7 +135,22 @@ public class Password extends Fragment implements View.OnClickListener{
     }
 
     private void clearLocks(){
-        locks.forEach(x -> x.set(true));
+
+        for(AtomicBoolean atomicBoolean : locks){
+            atomicBoolean.set(true);
+        }
+        /// From SDK 24 locks.forEach(x -> x.set(true));
+    }
+
+    private boolean meetsRequirments(){
+        /// Min SDK 24 return locks.stream().filter(x -> !x.get()).count() == locks.size();
+        int count = 0;
+        for(AtomicBoolean atomicBoolean : locks){
+            if(!atomicBoolean.get()){
+                count++;
+            }
+        }
+        return count == locks.size();
     }
 
     private void passWordValidator(String passWord){
@@ -168,15 +178,15 @@ public class Password extends Fragment implements View.OnClickListener{
             }
         }
 
-        /*
-        if(passWord.chars().forEach(Character::isUpperCase)){
+
+        if(Pattern.compile("[A-Z]{2,}").matcher(passWord).find()){
             if(locks.get(3).get()) {
                 passWordPopUp.setContainsUpperCase();
                 strenght.getAndAdd(20);
                 locks.get(3).set(false);
             }
         }
-        */
+
 
         if(Pattern.compile("\\d+").matcher(passWord).find()){
             if(locks.get(4).get()) {
@@ -195,26 +205,41 @@ public class Password extends Fragment implements View.OnClickListener{
     private void setProgressListener(ProgressBar progressBar) {
         int progress = progressBar.getProgress();
         if(progress > 25 && progress < 50){
-            progressBar.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.week_password, null)));
+            progressBar.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.week_password)));
         }else if(progress > 50 && progress < 75){
-            progressBar.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.mid_strong_password, null)));
+            progressBar.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.mid_strong_password)));
         }else{
-            progressBar.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.password_verify, null)));
+            progressBar.setProgressTintList(ColorStateList.valueOf(getResources().getColor(R.color.password_verify)));
         }
     }
 
     private void generatePassword(){
-        int leftLimit = 48,rightLimit = 122, targetStringLength = 15;
+        int leftLimit = 33,rightLimit = 122, targetStringLength = 30;
         strenght.set(0);
 
-        String generatedString = new Random().ints(leftLimit, rightLimit + 1)
-                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
-                .limit(targetStringLength)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
+        Random random = new Random();
+        StringBuilder stringBuilder = new StringBuilder();
 
-        passWord.setText(generatedString);
-        confrimPassWord.setText(generatedString);
+
+
+        for(int i = 0; i < random.nextInt(targetStringLength); i++ ){
+            stringBuilder.append((char)random.nextInt(rightLimit)+leftLimit);
+        }
+
+        /*
+
+            ############# Min SDK = 24 ################
+
+            String generatedString = new Random().ints(leftLimit, rightLimit + 1)
+                    .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                    .limit(targetStringLength)
+                    .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                    .toString();
+
+         */
+
+        passWord.setText(stringBuilder.toString());
+        confrimPassWord.setText(stringBuilder.toString());
     }
 
     @Override
@@ -230,6 +255,7 @@ public class Password extends Fragment implements View.OnClickListener{
             }
             case R.id.generate_password:{
                 clearLocks();
+                passWordPopUp.clear();
                 generatePassword();
                 break;
             }case R.id.password_option:{
@@ -241,7 +267,7 @@ public class Password extends Fragment implements View.OnClickListener{
         }
     }
 
-    public <T extends AppCompatActivity> void setPassWordListenerSender(PassWordListenerSender passWordListenerSender){
+    public void setPassWordListenerSender(PassWordListenerSender passWordListenerSender){
         this.passWordListenerReciever = passWordListenerSender;
     }
 
@@ -253,44 +279,42 @@ public class Password extends Fragment implements View.OnClickListener{
         private TextView containsUpperCase;
         private TextView containsLowerCase;
         private TextView containsSpecialChar;
-        private Button okButton;
         private ColorStateList color;
 
         PassWordPopUp(Activity activity){
             passWordDialog = new Dialog(activity, android.R.style.Theme_Black_NoTitleBar);
             passWordDialog.setContentView(R.layout.password_prompt);
-            passWordDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
             passWordLength = passWordDialog.findViewById(R.id.password_length);
             containsDigit = passWordDialog.findViewById(R.id.password_digit);
             containsUpperCase = passWordDialog.findViewById(R.id.password_upper_case);
             containsLowerCase = passWordDialog.findViewById(R.id.password_lower_case);
             containsSpecialChar = passWordDialog.findViewById(R.id.password_special_char);
             color = containsSpecialChar.getTextColors();
-            okButton = passWordDialog.findViewById(R.id.password_check_button);
-            okButton.setOnClickListener(click -> {
+            passWordDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            passWordDialog.findViewById(R.id.password_check_button).setOnClickListener(click -> {
                 passWordDialog.cancel();
             });
         }
 
 
         void setContainsDigit(){
-            containsDigit.setTextColor(getResources().getColor(R.color.password_verify, null));
+            containsDigit.setTextColor(getResources().getColor(R.color.password_verify));
         }
 
         void setPassWordLength(){
-            passWordLength.setTextColor(getResources().getColor(R.color.password_verify, null));
+            passWordLength.setTextColor(getResources().getColor(R.color.password_verify));
         }
 
         void setContainsUpperCase(){
-            containsUpperCase.setTextColor(getResources().getColor(R.color.password_verify, null));
+            containsUpperCase.setTextColor(getResources().getColor(R.color.password_verify));
         }
 
         void setContainsLowerCase(){
-            containsLowerCase.setTextColor(getResources().getColor(R.color.password_verify, null));
+            containsLowerCase.setTextColor(getResources().getColor(R.color.password_verify));
         }
 
         void setContainsSpecialChar(){
-            containsSpecialChar.setTextColor(getResources().getColor(R.color.password_verify, null));
+            containsSpecialChar.setTextColor(getResources().getColor(R.color.password_verify));
         }
 
         void clear(){

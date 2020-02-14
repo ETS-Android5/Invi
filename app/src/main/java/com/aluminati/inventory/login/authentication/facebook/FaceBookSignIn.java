@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.login.authentication.LinkAccounts;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
@@ -21,10 +20,13 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -58,6 +60,8 @@ public class FaceBookSignIn extends Fragment{
                     Log.i(TAG, "Login Successful :" + loginResult.getAccessToken());
                     handleFacebookAccessToken(loginResult.getAccessToken());
                 }else {
+                    FirebaseAuth.getInstance().signOut();
+                    LoginManager.getInstance().logOut();
                     Log.i(TAG, "Unable To Login");
                 }
             }
@@ -104,17 +108,24 @@ public class FaceBookSignIn extends Fragment{
 
                     if(task.getException() instanceof FirebaseAuthUserCollisionException){
                         FirebaseAuth.getInstance().signOut();
+                        LoginManager.getInstance().logOut();
                         Log.w(TAG, "FacebookSignIn:failed because", task.getException());
                         LinkAccounts.linkAccountsInfo(getContext(), "Email is already registered, login and link account" +
                                 " or recover password");
+                        makeSnackBar(getResources().getString(R.string.facebook_sign_infailed));
                     }
 
-                    Toast.makeText(getActivity(), "Authentication Failed", Toast.LENGTH_LONG).show();
                 }
             }
         });
     }
 
-
+    private void makeSnackBar(String message){
+        Snackbar snackbar = Snackbar.make(facebookLogin, message, BaseTransientBottomBar.LENGTH_INDEFINITE);
+        snackbar.setAction(getResources().getString(R.string.ok), view -> {
+            snackbar.dismiss();
+        });
+        snackbar.show();
+    }
 
 }

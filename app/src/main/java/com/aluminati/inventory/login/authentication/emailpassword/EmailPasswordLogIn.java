@@ -2,12 +2,16 @@ package com.aluminati.inventory.login.authentication.emailpassword;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,8 +24,12 @@ import com.aluminati.inventory.login.authentication.VerifyUser;
 import com.aluminati.inventory.login.authentication.phoneauthentication.PhoneAuthentication;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.regex.Pattern;
 
 public class EmailPasswordLogIn extends Fragment {
 
@@ -29,6 +37,7 @@ public class EmailPasswordLogIn extends Fragment {
     private static final String TAG = "EmailPasswordLogIn";
     private EditText userNameField;
     private EditText passWordField;
+    private TextView verifyInput;
     private Button loginButton;
     private String email;
     private FirebaseAuth firebaseAuth;
@@ -43,11 +52,36 @@ public class EmailPasswordLogIn extends Fragment {
 
         loginButton = view.findViewById(R.id.login_button);
 
+
+        addTextWatcher(userNameField);
+
+        verifyInput = view.findViewById(R.id.verify_input);
+
         firebaseAuth = FirebaseAuth.getInstance();
 
         buttonLogIn();
 
         return view;
+    }
+
+
+    private void addTextWatcher(EditText editText){
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                verifyInput.setText("");
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 
     private void buttonLogIn(){
@@ -62,7 +96,7 @@ public class EmailPasswordLogIn extends Fragment {
 
     private void checkInput(){
         String input = userNameField.getText().toString();
-        if(!input.isEmpty()){
+        if(verifyInput(input)){
             if(input.startsWith("+")){
                 Intent intent = new Intent(getActivity(), PhoneAuthentication.class);
                        intent.putExtra("phone_number", input);
@@ -70,24 +104,36 @@ public class EmailPasswordLogIn extends Fragment {
                 getActivity().finish();
             }else if(input.contains("@")){
                 email = input;
-                replace(userNameField);
+                getPassWordField();
+                replace(userNameField, passWordField);
             }
+        }else{
+            verifyInput.setText(getResources().getString(R.string.verify_login_input));
         }
     }
 
-    private void replace(View view){
-        ViewGroup viewGroup = (ViewGroup)view.getParent();
-        final int index = viewGroup.indexOfChild(view);
+    private boolean verifyInput(String input){
+        return Patterns.EMAIL_ADDRESS.matcher(input).matches() || Pattern.compile("\\+[0-9]{4,15}").matcher(input).matches();
+    }
+
+    private void getPassWordField(){
 
         passWordField = new EditText(getContext());
-        passWordField.setText(R.string.reg_hint_password);
         passWordField.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
         passWordField.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        passWordField.setTextColor(getResources().getColor(R.color.white_text));
-
+        passWordField.setHint(getResources().getString(R.string.reg_hint_password));
+        passWordField.setHintTextColor(getResources().getColor(R.color.text_color));
+        passWordField.setTextColor(getResources().getColor(R.color.text_color));
+        userNameField.setText("");
         loginButton.setText(getString(R.string.confirm_password));
+
+    }
+
+    private void replace(View view, View replacingView){
+        ViewGroup viewGroup = (ViewGroup)view.getParent();
+        final int index = viewGroup.indexOfChild(view);
                  viewGroup.removeView(view);
-                 viewGroup.addView(passWordField,index);
+                 viewGroup.addView(replacingView,index);
 
     }
 
@@ -100,7 +146,9 @@ public class EmailPasswordLogIn extends Fragment {
                     if (task.isSuccessful()) {
                         VerifyUser.checkUser(firebaseAuth.getCurrentUser(), getActivity(), VerificationStatus.FIREBASE);
                     } else {
-                        Toast.makeText(getActivity(), "Failed to LogiIn", Toast.LENGTH_LONG).show();
+                        replace(passWordField, userNameField);
+                        loginButton.setText(getResources().getString(R.string.login_button));
+                        Snackbar.make(loginButton, "Login Failed", BaseTransientBottomBar.LENGTH_LONG).show();
                     }
                 }
             });

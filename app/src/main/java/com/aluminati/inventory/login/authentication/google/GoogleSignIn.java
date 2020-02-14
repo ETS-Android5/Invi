@@ -34,10 +34,9 @@ public class GoogleSignIn extends Fragment {
     private static final String TAG = "GoogleSignIn";
     private static final int RC_SIGN_IN = 9001;
 
-    public static GoogleSignInClient googleSignInClient;
+    private GoogleSignInClient googleSignInClient;
     private CallbackManager callbackManager;
     private FirebaseAuth firebaseAuth;
-
 
     @Nullable
     @Override
@@ -80,7 +79,11 @@ public class GoogleSignIn extends Fragment {
             Task<GoogleSignInAccount> task = com.google.android.gms.auth.api.signin.GoogleSignIn.getSignedInAccountFromIntent(data);
             try{
                 GoogleSignInAccount googleSignInAccount = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(googleSignInAccount);
+                if(googleSignInAccount != null) {
+                    firebaseAuthWithGoogle(googleSignInAccount);
+                }else {
+                    Log.d(TAG, "GoogleSignInClient:returned => null");
+                }
             }catch (ApiException e){
                 Log.w(TAG, "Google Sign In Failed", e);
             }
@@ -90,22 +93,19 @@ public class GoogleSignIn extends Fragment {
     private void firebaseAuthWithGoogle(GoogleSignInAccount googleSignInAccount){
         Log.d(TAG, "FireBaseAuthWithGoogle:" + googleSignInAccount.getId());
         final AuthCredential credential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(), null);
-        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(!task.isSuccessful()){
-                    Log.w(TAG, "SignInWithGoogle:failed", task.getException());
-                    if(task.getException() instanceof FirebaseAuthUserCollisionException){
-                        LoginManager.getInstance().logOut();
-                        Log.w(TAG, "GoogleSignIn:failed because", task.getException());
-                        LinkAccounts.linkAccountsInfo(getContext(), "Email is already registered, login and link account" +
-                                " or recover password");
 
-                    }
-                }else{
-                    Log.d(TAG, "SignInWithGoogle:success");
-                    VerifyUser.checkUser(firebaseAuth.getCurrentUser(), getActivity(), VerificationStatus.GOOGLE);
+        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(getActivity(), task -> {
+            if(!task.isSuccessful()){
+                Log.w(TAG, "SignInWithGoogle:failed", task.getException());
+                if(task.getException() instanceof FirebaseAuthUserCollisionException){
+                    LoginManager.getInstance().logOut();
+                    Log.w(TAG, "GoogleSignIn:failed because", task.getException());
+                    LinkAccounts.linkAccountsInfo(getContext(), "Email is already registered, Login and link account or Recover Password");
+
                 }
+            }else{
+                Log.d(TAG, "SignInWithGoogle:success");
+                VerifyUser.checkUser(firebaseAuth.getCurrentUser(), getActivity(), VerificationStatus.GOOGLE);
             }
         });
     }

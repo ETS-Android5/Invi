@@ -3,12 +3,8 @@ package com.aluminati.inventory.users;
 import android.net.Uri;
 import android.util.Log;
 
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.auth.UserProfileChangeRequest.Builder;
-
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -85,16 +81,14 @@ public class User implements Serializable {
             this.isGoogleLinked = (Boolean) documentSnapshot.get("is_google_linked");
             this.isFacebookLinked = (Boolean) documentSnapshot.get("is_facebook_linked");
         }catch (NullPointerException e){
-            Log.w(TAG, "Failed To Read All Fields From Document Snapshot", e);
+            Log.w(TAG, "Failed To Read Fields From Document Snapshot", e);
         }
     }
 
     private String uriToString(Uri photoUri){
         String photoUriString = "";
-        try{
+        if(photoUri != null){
             photoUriString = photoUri.toString();
-        }catch (NullPointerException e){
-            e.printStackTrace();
         }
         return photoUriString;
     }

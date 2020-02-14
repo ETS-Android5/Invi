@@ -1,43 +1,37 @@
 package com.aluminati.inventory.login.authentication;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.aluminati.inventory.InfoPageActivity;
 import com.aluminati.inventory.MainActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.login.authentication.phoneauthentication.PhoneAuthentication;
+import com.aluminati.inventory.userprofile.UserProfile;
 import com.aluminati.inventory.users.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.ActionCodeSettings;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 
 public class AuthenticationActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final String TAG = "AuthenticationConfirm";
     private static final int REQUEST_CODE = 1;
-    private ActionCodeSettings actionCodeSettings;
     private TextView phoneVerified;
     private TextView emailVerified;
     private Button verifyPhone;
     private Button verifyEmail;
     private Button contineButton;
-    private boolean verified = false;
 
 
 
@@ -48,6 +42,7 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_authentication_confirmation);
 
         findViewById(R.id.cancel_verify_button).setOnClickListener(this);
+        findViewById(R.id.info_icon_button).setOnClickListener(this);
 
 
         contineButton = findViewById(R.id.continue_verify_button);
@@ -80,18 +75,24 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
 
     }
 
+    private void makeSnackBar(String message){
+        Snackbar snackbar = Snackbar.make(emailVerified, message, BaseTransientBottomBar.LENGTH_INDEFINITE);
+        snackbar.setAction(getResources().getString(R.string.ok), view -> {
+            snackbar.dismiss();
+        });
+        snackbar.show();
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
             if(resultCode == Activity.RESULT_OK){
-                this.verified = true;
                 verifyPhone.setVisibility(View.INVISIBLE);
-                verifyPhone.setText(getResources().getString(R.string.veirified));
-            }else if(resultCode == Activity.RESULT_CANCELED){
-
+                phoneVerified.setText(getResources().getString(R.string.veirified));
+                UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(), "is_phone_verified", true);
+                makeSnackBar(getResources().getString(R.string.phone_successfully_linked));
             }
-
     }
 
     private void verifyEmail(){
@@ -145,12 +146,15 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
         switch (view.getId()){
             case R.id.continue_verify_button:{
                 UserFetch.getUser(FirebaseAuth.getInstance().getCurrentUser().getEmail()).addOnCompleteListener(task -> {
-                    User user = new User(task.getResult());
-                    if(user.isPhoneVerified() || verified){
-                        startActivity(new Intent(AuthenticationActivity.this, InfoPageActivity.class));
-                        finish();
+                    if(task.isSuccessful() && task.getResult() != null) {
+                        User user = new User(task.getResult());
+                        if (user.isPhoneVerified() && user.isEmailVerified()) {
+                            startActivity(new Intent(AuthenticationActivity.this, UserProfile.class));
+                            finish();
+                        }
                     }
                 });
+
                 break;
             }
             case R.id.cancel_verify_button:{
@@ -165,6 +169,16 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
             }
             case R.id.email_verify:{
                 verifyEmail();
+                break;
+            }
+            case R.id.info_icon_button:{
+                new AlertDialog.Builder(this)
+                        .setTitle("Verification")
+                        .setMessage("Email and Phone needs to be verified")
+                        .setPositiveButton(getResources().getText(R.string.ok), (dialog,id) -> {
+                            dialog.cancel();
+                        }).show();
+
                 break;
             }
 

@@ -1,28 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/phone_verification_fragment"
-    >
+    android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/select_country"
+            android:textColor="@color/text_color"
+            android:layout_row="0"
+            android:layout_column="0"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="7.5dp"
+            android:text="@string/select_country"
+            android:textColor="@color/text_color"
+            android:layout_row="0"
+            android:layout_column="1"
+            />
 
         <com.hbb20.CountryCodePicker
             android:id="@+id/verify_phone_number_country_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:layout_row="1"
+            android:layout_column="0"
+            app:ccpDialog_textColor="@color/text_color"
+            app:ccp_contentColor="@color/text_color"
+            android:paddingStart="-5dp"
+            android:paddingEnd="0dp"
             />
 
         <EditText
             android:id="@+id/verify_phone_number"
-            android:layout_width="match_parent"
+            android:layout_width="237dp"
             android:layout_height="wrap_content"
+            android:layout_row="1"
+            android:layout_column="1"
             android:layout_margin="5dp"
-            android:backgroundTint="@color/white_text"
+            android:paddingBottom="20dp"
             android:hint="@string/reg_hint_phone"
             android:inputType="phone"
             android:singleLine="true"
-            android:textColor="@color/white_text"
-            android:textColorHint="@color/white_text" />
+            android:textColor="@color/text_color"
+            android:textColorHint="@color/text_color" />
 
-</LinearLayout>
+</GridLayout>

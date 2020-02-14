@@ -1,69 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/background_color"
+    android:padding="20dp"
     tools:context=".register.RegisterActivity">
 
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/reg_name"
-        android:textAlignment="center"
-        android:textColor="@color/white_text"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="20dp"
-     />
-
-    <EditText
-        android:id="@+id/name_view"
+    <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:ems="10"
-        android:hint="@string/reg_hint_name"
-        android:textColorHint="@color/white_text"
-        android:inputType="textPersonName"
-        android:textAlignment="center"
-        android:textColor="@color/white_text"
-        android:backgroundTint="@color/white_text"
-        />
+        android:layout_marginTop="50dp"
+        >
 
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="20dp"
-        android:text="@string/reg_surname"
-        android:textAlignment="center"
-        android:textColor="@color/white_text"
-     />
+        <TextView
+            android:id="@+id/textView4"
+            style="@style/registrationFields"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:text="@string/reg_name"
+            />
 
-    <EditText
-        android:id="@+id/surname_view"
+        <TextView
+            android:id="@+id/name_required_view"
+            android:layout_row="0"
+            android:layout_column="1"
+            android:text="@string/required"
+            style="@style/registrationRequiredText"
+            />
+
+        <EditText
+            android:id="@+id/name_view"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:hint="@string/reg_hint_name"
+            android:inputType="textPersonName"
+            style="@style/registrationEditFields"
+            />
+
+    </GridLayout>
+
+
+
+    <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:ems="10"
-        android:hint="@string/reg_hint_surname"
-        android:inputType="textPersonName"
-        android:textAlignment="center"
-        android:textColor="@color/white_text"
-        android:textColorHint="@color/white_text"
-        android:backgroundTint="@color/white_text"
-        android:enabled="false"
-     />
+    >
+        <TextView
+            android:id="@+id/textView5"
+            style="@style/registrationFields"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:text="@string/reg_surname"
+            />
+
+        <TextView
+            android:id="@+id/surname_required_view"
+            android:layout_row="0"
+            android:layout_column="1"
+            android:text="@string/required"
+            style="@style/registrationRequiredText"
+            />
+
+        <EditText
+            android:id="@+id/surname_view"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:hint="@string/reg_hint_surname"
+            android:inputType="textPersonName"
+            style="@style/registrationEditFields"
+            android:enabled="false"
+            />
+
+    </GridLayout>
+
 
     <GridLayout
         android:layout_width="match_parent"
@@ -72,83 +83,40 @@
 
         <TextView
             android:id="@+id/textView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="20dp"
+            style="@style/registrationFields"
             android:layout_column="0"
             android:layout_row="0"
             android:text="@string/reg_email"
-            android:textAlignment="center"
-            android:textColor="@color/white_text"
             />
 
         <TextView
-            android:id="@+id/email_correct"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="30dp"
-            android:layout_column="1"
+            android:id="@+id/email_required_view"
             android:layout_row="0"
-            android:textAlignment="center"
-            android:layout_gravity="end"
-            android:textColor="@color/white_text"
+            android:layout_column="1"
+            android:text="@string/required"
+            style="@style/registrationRequiredText"
             />
-
 
         <EditText
             android:id="@+id/email_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
             android:layout_column="0"
             android:layout_row="1"
-            android:layout_columnSpan="2"
-            android:ems="10"
             android:hint="@string/reg_hint_email"
             android:inputType="textEmailAddress"
-            android:textAlignment="center"
-            android:textColor="@color/white_text"
-            android:textColorHint="@color/white_text"
-            android:backgroundTint="@color/white_text"
             android:enabled="false"
+            style="@style/registrationEditFields"
             />
 
     </GridLayout>
 
 
 
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        >
-
-        <TextView
-            android:id="@+id/skip_phone_verification"
-            android:clickable="true"
-            android:focusable="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="20dp"
-            android:text="@string/skip"
-            android:textAlignment="center"
-            android:visibility="invisible"
-            android:textColor="@color/link_buttons"
-            />
-
-    </LinearLayout>
-
     <fragment
         class="com.aluminati.inventory.login.authentication.password.Password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="20dp"
         android:id="@+id/password_fragment"
         />
 
@@ -157,13 +125,12 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_height="0dp"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_marginTop="10dp"
-
         android:layout_marginBottom="20dp"
         android:orientation="vertical"
         android:layout_weight="1"
-        android:layout_gravity="center_vertical|center_horizontal"
+        android:gravity="center_horizontal|bottom"
         >
 
         <Button
@@ -171,20 +138,22 @@
             android:layout_width="318dp"
             android:layout_height="57dp"
             android:layout_marginBottom="20dp"
-            android:background="@color/white_text"
+            android:background="@drawable/buttonpositive"
             android:text="@string/register"
-            android:textColor="@color/login_button"
+            android:textColor="@color/white_text"
             android:textAllCaps="false"
+            android:textSize="20sp"
             />
 
         <Button
             android:id="@+id/cancel_registration"
             android:layout_width="318dp"
             android:layout_height="57dp"
-            android:background="@color/white_text"
+            android:background="@drawable/buttonegative"
             android:text="@string/cancel"
-            android:textColor="@color/login_button"
+            android:textColor="@color/white_text"
             android:textAllCaps="false"
+            android:textSize="20sp"
             />
 
     </LinearLayout>

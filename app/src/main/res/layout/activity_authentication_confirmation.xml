@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="@color/background_color"
     tools:context=".login.authentication.AuthenticationActivity">
 
     <LinearLayout
@@ -28,15 +27,29 @@
         android:layout_margin="20dp"
         >
 
+
+        <ImageButton
+            android:id="@+id/info_icon_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_row="0"
+            android:layout_column="4"
+            android:layout_gravity="end"
+            android:background="@drawable/infoicon"
+            android:clickable="true"
+            android:focusable="true"
+            />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_row="1"
+            android:layout_row="2"
             android:layout_column="0"
             android:layout_margin="20dp"
             android:layout_gravity="center"
+            android:textColor="@color/text_color"
             android:text="@string/reg_email"
-            android:textSize="15sp" />
+            android:textSize="20sp" />
 
 
         <TextView
@@ -46,7 +59,9 @@
             android:layout_row="0"
             android:layout_gravity="center"
             android:layout_margin="20dp"
+            android:textColor="@color/text_color"
             android:text="@string/reg_phone"
+            android:textSize="20sp"
             />
 
 
@@ -54,41 +69,54 @@
             android:id="@+id/phone_verified"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_row="0"
-            android:layout_column="1"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:layout_columnSpan="3"
             android:layout_gravity="center"
-            android:layout_margin="20dp" />
+            android:layout_margin="20dp"
+            android:textColor="@color/text_color"
+            android:textSize="20sp"
+            />
 
 
         <TextView
             android:id="@+id/email_verified"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:layout_margin="20dp"
-            android:layout_column="1"
-            android:layout_row="1"
+            android:layout_height="wrap_content"
+            android:layout_row="3"
+            android:layout_column="0"
+            android:layout_columnSpan="2"
             android:layout_gravity="center"
+            android:layout_margin="20dp"
+            android:textColor="@color/text_color"
+            android:textSize="20sp"
             />
 
         <Button
             android:id="@+id/verify_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_column="2"
-            android:layout_row="0"
+            android:layout_column="4"
+            android:layout_row="1"
             android:layout_margin="20dp"
             android:layout_gravity="center_horizontal|center_vertical"
             android:text="@string/verify_button"
+            android:textSize="15sp"
+            android:textColor="@color/white_text"
+            android:background="@drawable/buttonpositive"
             />
 
         <Button
             android:id="@+id/email_verify"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_column="2"
-            android:layout_row="1"
+            android:layout_column="4"
+            android:layout_row="3"
             android:text="@string/verify_button"
+            android:textSize="15sp"
             android:layout_gravity="center"
+            android:textColor="@color/white_text"
+            android:background="@drawable/buttonpositive"
             />
 
 
@@ -96,35 +124,46 @@
     </GridLayout>
 
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_color"
+        android:textSize="15sp"
+        />
+
+
+
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:gravity="center|top"
+        android:gravity="bottom"
         android:layout_margin="20dp"
         >
 
         <Button
             android:id="@+id/continue_verify_button"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:enabled="false"
             android:text="@string/continue_button"
             android:textAllCaps="false"
+            android:textSize="20sp"
             android:textColor="@color/white_text"
+            android:background="@drawable/buttonpositive"
             />
 
 
         <Button
             android:id="@+id/cancel_verify_button"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/cancel"
             android:textAllCaps="false"
+            android:textSize="20sp"
             android:textColor="@color/white_text"
-            android:background="@color/google_red"
+            android:background="@drawable/buttonegative"
             />
 
     </LinearLayout>
