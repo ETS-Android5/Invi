@@ -44,13 +44,17 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
         displayNameChange = findViewById(R.id.display_name_change);
         emailChange = findViewById(R.id.phone_number_change);
-        phoneChange = findViewById(R.id.email_field);
+        userEmail = findViewById(R.id.email_field);
+        userName = findViewById(R.id.display_name_field);
+        phoneNumber = findViewById(R.id.phone_number_field);
         userPhoto = findViewById(R.id.userImage);
         surNameField = findViewById(R.id.surname_field);
         nameField = findViewById(R.id.name_field);
+
+
         displayNameChange.setOnClickListener(this);
         emailChange.setOnClickListener(this);
-        phoneChange.setOnClickListener(this);
+        //phoneChange.setOnClickListener(this);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     }
@@ -87,6 +91,10 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     protected void onStart() {
         super.onStart();
         if(firebaseUser != null){
+            String name[] = firebaseUser.getDisplayName().split(" ");
+
+            nameField.setText(name[0]);
+            surNameField.setText(name[1]);
             userName.setText(firebaseUser.getDisplayName());
             userEmail.setText(firebaseUser.getEmail());
             phoneNumber.setText(firebaseUser.getPhoneNumber());
