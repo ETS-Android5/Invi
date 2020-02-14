@@ -23,6 +23,7 @@
         <activity android:name=".fragments.PhoneAuthenticationFragment" />
         <activity android:name=".InfoPageActivity" />
         <activity android:name=".login.authentication.ForgotPasswordActivity" />
+        <activity android:name=".userprofile.UserProfile"/>
         <activity
             android:name=".register.RegisterActivity"
             android:theme="@style/AppTheme.NoActionBar" />
