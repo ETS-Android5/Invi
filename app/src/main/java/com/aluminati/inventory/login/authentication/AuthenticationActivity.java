@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.aluminati.inventory.InfoPageActivity;
 import com.aluminati.inventory.MainActivity;
 import com.aluminati.inventory.R;
+import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.login.authentication.phoneauthentication.PhoneAuthentication;
 import com.aluminati.inventory.userprofile.UserProfile;
@@ -56,33 +57,23 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
         contineButton.setOnClickListener(this);
 
         UserFetch.getUser(FirebaseAuth.getInstance().getCurrentUser().getEmail()).addOnCompleteListener(task -> {
-            if(task.getResult() != null){
+            if (task.getResult() != null) {
                 User user = new User(task.getResult());
-                     phoneVerified.setText(user.isPhoneVerified() ? getResources().getString(R.string.veirified) : getResources().getString(R.string.not_verified));
-                     emailVerified.setText(user.isEmailVerified() ? getResources().getString(R.string.veirified) : getResources().getString(R.string.not_verified));
+                phoneVerified.setText(user.isPhoneVerified() ? getResources().getString(R.string.veirified) : getResources().getString(R.string.not_verified));
+                emailVerified.setText(user.isEmailVerified() ? getResources().getString(R.string.veirified) : getResources().getString(R.string.not_verified));
 
-                     if(user.isPhoneVerified()){
-                         verifyPhone.setVisibility(View.INVISIBLE);
-                     }
+                if (user.isPhoneVerified()) {
+                    verifyPhone.setVisibility(View.INVISIBLE);
+                }
 
-                     if(user.isEmailVerified()){
-                         verifyEmail.setVisibility(View.INVISIBLE);
-                     }
+                if (user.isEmailVerified()) {
+                    verifyEmail.setVisibility(View.INVISIBLE);
+                }
             }
         });
 
 
-
     }
-
-    private void makeSnackBar(String message){
-        Snackbar snackbar = Snackbar.make(emailVerified, message, BaseTransientBottomBar.LENGTH_INDEFINITE);
-        snackbar.setAction(getResources().getString(R.string.ok), view -> {
-            snackbar.dismiss();
-        });
-        snackbar.show();
-    }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -91,7 +82,7 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
                 verifyPhone.setVisibility(View.INVISIBLE);
                 phoneVerified.setText(getResources().getString(R.string.veirified));
                 UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(), "is_phone_verified", true);
-                makeSnackBar(getResources().getString(R.string.phone_successfully_linked));
+                Utils.makeSnackBar(getResources().getString(R.string.phone_successfully_linked), verifyPhone, this);
             }
     }
 

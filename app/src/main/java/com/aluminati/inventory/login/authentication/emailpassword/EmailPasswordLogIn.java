@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.aluminati.inventory.MainActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
@@ -100,6 +101,7 @@ public class EmailPasswordLogIn extends Fragment {
             if(input.startsWith("+")){
                 Intent intent = new Intent(getActivity(), PhoneAuthentication.class);
                        intent.putExtra("phone_number", input);
+                       intent.putExtra("calling_activity", MainActivity.class.getSimpleName());
                 startActivity(intent);
                 getActivity().finish();
             }else if(input.contains("@")){

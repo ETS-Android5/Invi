@@ -19,13 +19,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.fragments.fragmentListeners.password.PassWordListenerSender;
 import com.aluminati.inventory.register.RegisterActivity;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
@@ -160,46 +164,56 @@ public class Password extends Fragment implements View.OnClickListener{
                 strenght.getAndAdd(20);
                 locks.get(0).set(false);
             }
+        }else{
+            if(!locks.get(0).get()){
+                strenght.getAndSet(strenght.get() - 20);
+            }
         }
 
-        if(Pattern.compile("[@#$%!]{2,}").matcher(passWord).find()){
-            if(locks.get(1).get()) {
+
+        patternMatcher(passWord, locks.get(1), "[@#$%!<>`']{1,}", () -> {
                 passWordPopUp.setContainsSpecialChar();
-                strenght.getAndAdd(20);
-                locks.get(1).set(false);
-            }
-        }
+                return null;
+        });
 
-        if(Pattern.compile("[a-z]{2,}").matcher(passWord).find()){
-            if(locks.get(2).get()) {
+        patternMatcher(passWord, locks.get(2), "[a-z]{1,}", () -> {
                 passWordPopUp.setContainsLowerCase();
-                strenght.getAndAdd(20);
-                locks.get(2).set(false);
-            }
-        }
+                return null;
+        });
 
-
-        if(Pattern.compile("[A-Z]{2,}").matcher(passWord).find()){
-            if(locks.get(3).get()) {
+        patternMatcher(passWord, locks.get(3), "[A-Z]{1,}", () -> {
                 passWordPopUp.setContainsUpperCase();
-                strenght.getAndAdd(20);
-                locks.get(3).set(false);
-            }
-        }
-
-
-        if(Pattern.compile("\\d+").matcher(passWord).find()){
-            if(locks.get(4).get()) {
+                return null;
+        });
+        patternMatcher(passWord, locks.get(4), "\\d+", () -> {
                 passWordPopUp.setContainsDigit();
-                strenght.getAndAdd(20);
-                locks.get(4).set(false);
-            }
-        }
+                return null;
+        });
+
         Log.i(TAG, "Password strenght "  + strenght.get());
         confirmPassWordStrength.setProgress(strenght.get());
         passWordStrenght.setProgress(strenght.get());
         setProgressListener(passWordStrenght);
         setProgressListener(confirmPassWordStrength);
+    }
+
+    private void patternMatcher(String password, AtomicBoolean atomicBoolean, String regex, Callable<Void> regexVer){
+        if(Pattern.compile(regex).matcher(password).find()){
+            if(atomicBoolean.get()){
+                try {
+                    regexVer.call();
+                    strenght.getAndAdd(20);
+                    atomicBoolean.set(false);
+                }catch (Exception e){
+                    Log.w(TAG, "Error calling function", e);
+                }
+            }
+        }else{
+            if(!atomicBoolean.get()){
+                strenght.getAndSet(strenght.get() - 20);
+                atomicBoolean.set(true);
+            }
+        }
     }
 
     private void setProgressListener(ProgressBar progressBar) {
@@ -214,16 +228,17 @@ public class Password extends Fragment implements View.OnClickListener{
     }
 
     private void generatePassword(){
-        int leftLimit = 33,rightLimit = 122, targetStringLength = 30;
+        int leftLimit = '#',rightLimit = 'z', targetStringLength = 30;
         strenght.set(0);
 
         Random random = new Random();
         StringBuilder stringBuilder = new StringBuilder();
 
+        int passWordLength = (random.nextInt(targetStringLength))+10;
 
-
-        for(int i = 0; i < random.nextInt(targetStringLength); i++ ){
-            stringBuilder.append((char)random.nextInt(rightLimit)+leftLimit);
+        for(int i = 0; i < passWordLength; i++ ){
+            int res = ThreadLocalRandom.current().nextInt(leftLimit, rightLimit);
+            stringBuilder.append((char)res);
         }
 
         /*
@@ -238,8 +253,9 @@ public class Password extends Fragment implements View.OnClickListener{
 
          */
 
-        passWord.setText(stringBuilder.toString());
-        confrimPassWord.setText(stringBuilder.toString());
+        String password = new String(stringBuilder.toString().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
+        passWord.setText(password);
+        confrimPassWord.setText(password);
     }
 
     @Override

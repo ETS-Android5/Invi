@@ -22,8 +22,10 @@
     <string name="verify_button">Verify</string>
     <string name="reg_phone">Phone</string>
     <string name="reg_hint_phone">Enter Phone Number</string>
+    <!-- Facebook api-->
     <string name="facebook_app_id">853409325101910</string>
     <string name="fb_login_protocol_scheme">fb853409325101910</string>
+    <!-- Facebook api-->
     <string name="title_activity_info_page">activity_info_page</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -65,11 +67,11 @@
     <string name="change">Change</string>
     <string name="display_name">Display Name</string>
     <string name="ok">Ok</string>
-    <string name="unlink_facebook">Unlink Facebook</string>
     <string name="unlink_google">Unlink Google</string>
     <string name="facebook">Facebook</string>
     <string name="google">Google</string>
     <string name="save">Save</string>
+    <string name="password_conatins_name">Password cannot have your name</string>
     <string name="facebook_sign_infailed">Facebook Sign In Failed</string>
     <string name="phone_successfully_linked">Phone Successfully Linked</string>
     <string name="phone_already_registered">Phone Number Already Registerd</string>
@@ -84,4 +86,5 @@
     <string name="password_lower_case">Password contains at least 2 Lower Case</string>
     <string name="password_upper_case">Password contains at least 2 Upper Case</string>
     <string name="password_special_char">Password contains at least 1 Special Char</string>
+    <string name="com_facebook_loginview_log_out_button">Unlink Facebook</string>
 </resources>

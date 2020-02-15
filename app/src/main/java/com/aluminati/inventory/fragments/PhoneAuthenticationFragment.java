@@ -45,7 +45,7 @@ public class PhoneAuthenticationFragment extends Fragment {
 
 
     public void bindActivity(PhoneAuthentication phoneAuthentication){
-        phoneAuthentication.setPhoneVerificationReciever((code) -> onCodeReceived(code));
+        phoneAuthentication.setPhoneVerificationReciever(this::onCodeReceived);
     }
 
 

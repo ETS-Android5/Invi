@@ -6,15 +6,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.aluminati.inventory.MainActivity;
 import com.aluminati.inventory.R;
+import com.aluminati.inventory.firestore.UserFetch;
+import com.aluminati.inventory.fragments.fragmentListeners.phone.PhoneVerificationReciever;
+import com.aluminati.inventory.fragments.fragmentListeners.phone.PhoneVerificationSender;
 import com.aluminati.inventory.login.authentication.LinkAccounts;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
+import com.aluminati.inventory.userprofile.UserProfile;
+import com.aluminati.inventory.users.User;
 import com.facebook.CallbackManager;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -28,8 +36,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserInfo;
 
-public class GoogleSignIn extends Fragment {
+import java.util.List;
+
+public class GoogleSignIn extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "GoogleSignIn";
     private static final int RC_SIGN_IN = 9001;
@@ -37,6 +48,7 @@ public class GoogleSignIn extends Fragment {
     private GoogleSignInClient googleSignInClient;
     private CallbackManager callbackManager;
     private FirebaseAuth firebaseAuth;
+    private Button googleButton;
 
     @Nullable
     @Override
@@ -52,62 +64,108 @@ public class GoogleSignIn extends Fragment {
 
         View view = inflater.inflate(R.layout.google_signin, container, false);
 
-        view.findViewById(R.id.google_signin_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signIn();
-            }
-        });
+        googleButton = view.findViewById(R.id.google_signin_button);
+        googleButton.setOnClickListener(this);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (firebaseAuth.getCurrentUser() != null) {
+            UserFetch.getUser(firebaseAuth.getCurrentUser().getEmail()).addOnCompleteListener(rusult -> {
+                if (rusult.isSuccessful() && rusult.getResult() != null) {
+                    Log.i(TAG, "User => " + firebaseAuth.getCurrentUser().getEmail());
+                    User user = new User(rusult.getResult());
+                    if (user.isGoogleLinked()) {
+                        Log.i(TAG, "User => " + user.isGoogleLinked());
+                        googleButton.setText(getResources().getString(R.string.unlink_google));
+                    }
+                }
+            });
+        }
 
+    }
 
-    private void signIn(){
+    private void signIn() {
         Intent googleSignInIntent = googleSignInClient.getSignInIntent();
         startActivityForResult(googleSignInIntent, RC_SIGN_IN);
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == RC_SIGN_IN){
+        if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = com.google.android.gms.auth.api.signin.GoogleSignIn.getSignedInAccountFromIntent(data);
-            try{
+            try {
                 GoogleSignInAccount googleSignInAccount = task.getResult(ApiException.class);
-                if(googleSignInAccount != null) {
+                if (googleSignInAccount != null) {
                     firebaseAuthWithGoogle(googleSignInAccount);
-                }else {
+                } else {
                     Log.d(TAG, "GoogleSignInClient:returned => null");
                 }
-            }catch (ApiException e){
+            } catch (ApiException e) {
                 Log.w(TAG, "Google Sign In Failed", e);
             }
         }
     }
 
-    private void firebaseAuthWithGoogle(GoogleSignInAccount googleSignInAccount){
+    private void firebaseAuthWithGoogle(GoogleSignInAccount googleSignInAccount) {
         Log.d(TAG, "FireBaseAuthWithGoogle:" + googleSignInAccount.getId());
         final AuthCredential credential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(), null);
 
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener(getActivity(), task -> {
-            if(!task.isSuccessful()){
+            if (!task.isSuccessful()) {
                 Log.w(TAG, "SignInWithGoogle:failed", task.getException());
-                if(task.getException() instanceof FirebaseAuthUserCollisionException){
+                if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                     LoginManager.getInstance().logOut();
                     Log.w(TAG, "GoogleSignIn:failed because", task.getException());
                     LinkAccounts.linkAccountsInfo(getContext(), "Email is already registered, Login and link account or Recover Password");
-
                 }
-            }else{
+            } else {
                 Log.d(TAG, "SignInWithGoogle:success");
+                UserFetch.update(firebaseAuth.getCurrentUser().getEmail(), "is_google_linked", true);
+                LinkAccounts.linkAccounts(credential,getActivity(), TAG);
                 VerifyUser.checkUser(firebaseAuth.getCurrentUser(), getActivity(), VerificationStatus.GOOGLE);
             }
         });
     }
+
+    private void unlinkGoogle(String providerId) {
+        firebaseAuth.getCurrentUser().unlink(providerId).addOnCompleteListener(getActivity(), result -> {
+            if (result.isSuccessful()) {
+                googleButton.setText(getResources().getString(R.string.login_google));
+            }
+        });
+    }
+
+    private void getProviderId() {
+        List<? extends UserInfo> providerData = firebaseAuth.getCurrentUser().getProviderData();
+        for (UserInfo userInfo : providerData) {
+            Log.i(TAG, "Provider id => " + userInfo.getProviderId());
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.google_signin_button) {
+            if (googleButton.getText().toString().equals(getResources().getString(R.string.login_google))) {
+                signIn();
+            } else if (googleButton.getText().toString().equals(getResources().getString(R.string.unlink_google))) {
+
+                List<? extends UserInfo> providerData = firebaseAuth.getCurrentUser().getProviderData();
+                for (UserInfo userInfo : providerData) {
+                    Log.i(TAG, "Provider id => " + userInfo.getProviderId());
+                }
+
+
+            }
+        }
+    }
+
 
 }

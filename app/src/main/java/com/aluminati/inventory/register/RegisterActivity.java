@@ -7,6 +7,7 @@ import android.os.Bundle;
 import com.aluminati.inventory.InfoPageActivity;
 import com.aluminati.inventory.MainActivity;
 import com.aluminati.inventory.R;
+import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.fragments.fragmentListeners.password.PassWordListenerReciever;
 import com.aluminati.inventory.login.authentication.LinkAccounts;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
@@ -82,23 +83,29 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
-    public void askForPassWord(String passWord, String passWordConfirm, boolean meetsReqs){
+    public void askForPassWord(String passWord, String passWordConfirm, boolean meetsReqs) {
 
-        if(passWord.isEmpty()){
-            makeSnackBar(getResources().getString(R.string.reg_hint_password));
-        }else if(passWordConfirm.isEmpty()){
-            makeSnackBar(getResources().getString(R.string.confirm_password));
-        }else if(passWord.isEmpty() && passWordConfirm.isEmpty()){
-            makeSnackBar(getResources().getString(R.string.reg_hint_password));
-        }else if (passWord.equals(passWordConfirm)) {
-                if (meetsReqs) {
-                    createAccount(email.getText().toString().trim(), passWord);
-                } else {
-                    makeSnackBar(getResources().getString(R.string.password_dont_meet_requirements));
+        if(!(passWord.isEmpty() && passWordConfirm.isEmpty())) {
+            if (passWord.isEmpty()) {
+                Utils.makeSnackBar(getResources().getString(R.string.reg_hint_password), name, this);
+            } else if (passWordConfirm.isEmpty()) {
+                Utils.makeSnackBar(getResources().getString(R.string.confirm_password), name, this);
+            } else if (passWord.equals(passWordConfirm)) {
+                if (!checkIfPassWordContains(passWord)) {
+
+                    if (meetsReqs) {
+                        createAccount(email.getText().toString().trim(), passWord);
+                    } else {
+                        Utils.makeSnackBar(getResources().getString(R.string.password_dont_meet_requirements), name, this);
+                    }
                 }
             } else {
-                makeSnackBar(getResources().getString(R.string.password_dont_match));
+                Utils.makeSnackBar(getResources().getString(R.string.password_dont_match), name, this);
+            }
+        }else {
+            Utils.makeSnackBar(getResources().getString(R.string.reg_hint_password), name, this);
         }
+
 
     }
 
@@ -110,10 +117,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     if(emailValid(email.getText().toString())){
                         passWordListenerReciever.askForPassWord(3001);
                     }else{
-                        makeSnackBar(getResources().getString(R.string.invalid_email));
+                        Utils.makeSnackBar(getResources().getString(R.string.invalid_email), name, this);
                     }
                 }else{
-                    makeSnackBar(getResources().getString(R.string.fill_in_requried_fields));
+                    Utils.makeSnackBar(getResources().getString(R.string.fill_in_requried_fields), name, this);
                 }
                 break;
             }
@@ -126,6 +133,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
 
 
+    }
+
+    private boolean checkIfPassWordContains(String password){
+        if(password.contains(name.getText().toString()) || password.contains(surName.getText().toString())){
+            Utils.makeSnackBar(getResources().getString(R.string.password_conatins_name), name, this);
+            return false;
+        }
+        return true;
     }
 
 
@@ -145,6 +160,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
 
     private void addTextChangeListenet(final EditText editTextViewOne, final EditText editTextViewTwo, final TextView view){
+
+
         editTextViewOne.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -153,7 +170,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.length() > 0){
+                if(charSequence.length() > 3){
                     if(!editTextViewTwo.isEnabled()) {
                         editTextViewTwo.setEnabled(true);
                     }
@@ -217,7 +234,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             finish();
                         } else {
                             Log.w(TAG, "linkWithCredential:failure", task.getException());
-                            makeSnackBar(getResources().getString(R.string.authentication_failed));
+                            Utils.makeSnackBar(getResources().getString(R.string.authentication_failed), name, this);
                         }
                     });
 
@@ -236,19 +253,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                 LinkAccounts.linkAccountsInfo(RegisterActivity.this, "Email is already registered, login " +
                                         " or recover password");
                             }
-                            makeSnackBar(getResources().getString(R.string.authentication_failed));
+                            Utils.makeSnackBar(getResources().getString(R.string.authentication_failed), name, this);
                         }
                     });
         }
     }
 
-    private void makeSnackBar(String message){
-        Snackbar snackbar = Snackbar.make(name, message, BaseTransientBottomBar.LENGTH_INDEFINITE);
-                 snackbar.setAction(getResources().getString(R.string.ok), view -> {
-                     snackbar.dismiss();
-                 });
-                 snackbar.show();
-    }
+
 
     private User addUser(String email){
         User user = null;

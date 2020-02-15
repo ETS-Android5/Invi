@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="20dp"
+    tools:context=".userprofile.UserProfile"
     >
 
     <GridLayout
@@ -36,6 +37,15 @@
             android:text="@string/reg_name"
             android:textSize="20sp" />
 
+        <ImageButton
+            android:id="@+id/profile_settings_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/settings"
+            android:background="@android:color/transparent"
+            android:layout_row="0"
+            android:layout_column="4"
+            />
 
         <TextView
             android:id="@+id/name_field"
@@ -198,36 +208,31 @@
         android:layout_marginTop="20dp"
         >
 
-
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:textSize="20sp"
+        <fragment
+            class="com.aluminati.inventory.login.authentication.facebook.FaceBookSignIn"
+            android:id="@+id/facebook_unlink"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
             android:layout_row="0"
             android:layout_column="0"
             android:layout_columnSpan="2"
-            android:background="@color/facebook_blue"
-            android:text="@string/unlink_facebook"
-            android:textColor="@color/white_text" />
+            android:layout_gravity="center"
+            />
 
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="20dp"
-            android:background="@color/google_red"
-            android:text="@string/unlink_google"
-            android:textColor="@color/white_text"
-            android:textSize="20sp"
+        <fragment
+            class="com.aluminati.inventory.login.authentication.google.GoogleSignIn"
+            android:id="@+id/google_unlink"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
             android:layout_row="1"
             android:layout_column="0"
             android:layout_columnSpan="2"
+            android:layout_gravity="center"
             />
+
+
+
 
     </GridLayout>
 
