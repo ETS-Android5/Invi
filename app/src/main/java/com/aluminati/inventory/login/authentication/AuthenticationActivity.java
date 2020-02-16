@@ -86,14 +86,7 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
             }
     }
 
-    private void verifyEmail(){
-        FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification().addOnCompleteListener(task -> {
-                if(task.isSuccessful()){
-                    emailVerified.setText("Email Sent");
-                    infoPopUp("Verify Email");
-                }
-        });
-    }
+
 
     @Override
     protected void onStart() {
@@ -115,22 +108,9 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
     @Override
     protected void onStop() {
         super.onStop();
-
     }
 
-    public void infoPopUp(String message){
 
-        new AlertDialog.Builder(this).
-                setTitle("Email Sent")
-                .setMessage(message)
-                .setCancelable(false)
-                .setPositiveButton("Ok", (dialog, id) -> {
-
-                    dialog.cancel();
-                })
-                .create()
-                .show();
-    }
 
     @Override
     public void onClick(View view) {
@@ -159,7 +139,14 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
                 break;
             }
             case R.id.email_verify:{
-                verifyEmail();
+                VerifyUser.verifyEmail().addOnCompleteListener(result -> {
+                    if(result.isSuccessful()){
+                        Utils.makeSnackBar("Email Sent", emailVerified, this);
+                        emailVerified.setText(getResources().getString(R.string.veirified));
+                    }else{
+                        Utils.makeSnackBar("Failed to Send Email", emailVerified, this);
+                    }
+                });
                 break;
             }
             case R.id.info_icon_button:{

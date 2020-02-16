@@ -87,4 +87,6 @@
     <string name="password_upper_case">Password contains at least 2 Upper Case</string>
     <string name="password_special_char">Password contains at least 1 Special Char</string>
     <string name="com_facebook_loginview_log_out_button">Unlink Facebook</string>
+    <string name="photo_update">Click To Change Image</string>
+    <string name="profile_image">Profile Image</string>
 </resources>

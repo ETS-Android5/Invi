@@ -1,6 +1,7 @@
 package com.aluminati.inventory.login.authentication.google;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,11 +11,13 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.aluminati.inventory.MainActivity;
 import com.aluminati.inventory.R;
+import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.fragments.fragmentListeners.phone.PhoneVerificationReciever;
 import com.aluminati.inventory.fragments.fragmentListeners.phone.PhoneVerificationSender;
@@ -43,6 +46,7 @@ import java.util.List;
 public class GoogleSignIn extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "GoogleSignIn";
+    private static final String GoogleProviderId = "Google";
     private static final int RC_SIGN_IN = 9001;
 
     private GoogleSignInClient googleSignInClient;
@@ -135,19 +139,24 @@ public class GoogleSignIn extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void unlinkGoogle(String providerId) {
-        firebaseAuth.getCurrentUser().unlink(providerId).addOnCompleteListener(getActivity(), result -> {
+    private void unlinkGoogle() {
+        firebaseAuth.getCurrentUser().unlink(GoogleProviderId).addOnCompleteListener(getActivity(), result -> {
             if (result.isSuccessful()) {
                 googleButton.setText(getResources().getString(R.string.login_google));
+                Utils.makeSnackBar("Unlinked Google", googleButton, getActivity());
+                Log.d(TAG, "Unlinked Google");
+            }else{
+                Utils.makeSnackBar("Failed to Unlink Google", googleButton, getActivity());
+                Log.d(TAG, "Failed to Unlink Facebook");
             }
         });
     }
 
-    private void getProviderId() {
-        List<? extends UserInfo> providerData = firebaseAuth.getCurrentUser().getProviderData();
-        for (UserInfo userInfo : providerData) {
-            Log.i(TAG, "Provider id => " + userInfo.getProviderId());
-        }
+    private void alertUnlinkDialog(){
+        new AlertDialog.Builder(getContext())
+                .setTitle("Unlink Google")
+                .setMessage("Are you sure ?")
+                .show();
     }
 
     @Override
@@ -156,16 +165,11 @@ public class GoogleSignIn extends Fragment implements View.OnClickListener {
             if (googleButton.getText().toString().equals(getResources().getString(R.string.login_google))) {
                 signIn();
             } else if (googleButton.getText().toString().equals(getResources().getString(R.string.unlink_google))) {
-
-                List<? extends UserInfo> providerData = firebaseAuth.getCurrentUser().getProviderData();
-                for (UserInfo userInfo : providerData) {
-                    Log.i(TAG, "Provider id => " + userInfo.getProviderId());
-                }
-
-
+                unlinkGoogle();
             }
         }
     }
+
 
 
 }

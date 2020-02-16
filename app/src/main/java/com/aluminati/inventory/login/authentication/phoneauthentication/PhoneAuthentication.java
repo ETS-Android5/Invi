@@ -27,7 +27,9 @@ import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.fragments.PhoneAuthenticationFragment;
 import com.aluminati.inventory.fragments.fragmentListeners.phone.PhoneVerificationReciever;
 import com.aluminati.inventory.login.authentication.LinkAccounts;
+import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.encryption.PhoneAESEncryption;
+import com.aluminati.inventory.userprofile.UserProfile;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseException;
@@ -37,6 +39,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class PhoneAuthentication extends AppCompatActivity implements View.OnClickListener{
@@ -82,14 +85,14 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
             callbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
                 @Override
-                public void onVerificationCompleted(PhoneAuthCredential credential) {
+                public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {
                     Log.d(TAG, "onVerificationCompleted: Instant verification" + credential);
                     verifyPhoneNumber.setText(credential.getSmsCode());
                     new Thread(() -> {
                         SystemClock.sleep(3000);
                         runOnUiThread(() -> {
                             if (phoneNumber != null) {
-                                startActivity(new Intent(PhoneAuthentication.this, InfoPageActivity.class));
+                                startActivity(new Intent(PhoneAuthentication.this, UserProfile.class));
                                 finish();
                             } else {
                                 if (enablePhoneLogin.isChecked()) {
@@ -265,6 +268,25 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
                     }
                 }
             });
+        }
+
+
+        private void updatePhoneNumber(){
+
+            String codeSent = this.verifyPhoneNumber.getText().toString().trim();
+
+            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(this.phoneAuthVerificationId, codeSent);
+
+            Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).updatePhoneNumber(credential).addOnCompleteListener(task -> {
+                if(task.isSuccessful()){
+                    Log.i(TAG, "Phone Number Updated Sucessfuly");
+                    setResult(VerificationStatus.SUCCESSFULL_UPDATE);
+                }else{
+                    Log.i(TAG, "Failed to updated number");
+                    setResult(VerificationStatus.FAILED_UPDATE);
+                }
+            });
+
         }
 
         private void cancel(){

@@ -8,6 +8,8 @@ import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.register.RegisterActivity;
 import com.aluminati.inventory.userprofile.UserProfile;
 import com.aluminati.inventory.users.User;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
@@ -67,6 +69,10 @@ public class VerifyUser {
                 activity.finish();
             }
         }
+    }
+
+    public static Task<Void> verifyEmail(){
+        return FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
     }
 
 

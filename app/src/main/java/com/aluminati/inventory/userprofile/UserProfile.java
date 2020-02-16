@@ -1,8 +1,11 @@
 package com.aluminati.inventory.userprofile;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -22,9 +25,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.aluminati.inventory.InfoPageActivity;
+import com.aluminati.inventory.LogInActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
@@ -32,6 +37,8 @@ import com.aluminati.inventory.fragments.fragmentListeners.phone.PhoneVerificati
 import com.aluminati.inventory.login.authentication.LinkAccounts;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
+import com.aluminati.inventory.login.authentication.facebook.FaceBookSignIn;
+import com.aluminati.inventory.login.authentication.phoneauthentication.PhoneAuthentication;
 import com.aluminati.inventory.offline.ConnectivityCheck;
 import com.aluminati.inventory.users.User;
 import com.facebook.AccessToken;
@@ -58,6 +65,12 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
 
     private static final String TAG = UserProfile.class.getName();
+    private static final int PHONE_VERIFICATION = 3000;
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
     private EditText userName;
     private EditText userEmail;
     private EditText phoneNumber;
@@ -129,9 +142,15 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         } catch (Exception e) {
             Log.d("ERROR", e.toString());
         }
+
+        if(requestCode == PHONE_VERIFICATION){
+            if(resultCode == VerificationStatus.SUCCESSFULL_UPDATE){
+                Utils.makeSnackBar("Updated Phone Number", phoneNumber, this);
+            }else if(resultCode == VerificationStatus.FAILED_UPDATE){
+                Utils.makeSnackBar("Failed to Update Phone Number", phoneNumber, this);
+            }
+        }
     }
-
-
 
     private void changeView(EditText editText, TextView textView){
         if(editText.isEnabled()){
@@ -183,6 +202,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             case R.id.phone_number_change:{
                 changeAttribute(phoneNumber, phoneChange, () -> {
                     if(!phoneNumber.getText().toString().isEmpty()){
+                        UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(), "is_phone_verified", false);
+                        startActivityForResult(new Intent(UserProfile.this, PhoneAuthentication.class), PHONE_VERIFICATION);
                     }
                     return null;
                 });
@@ -195,6 +216,14 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                             if(result.isSuccessful()){
                                 Utils.makeSnackBar("Email Updated", displayNameChange, this);
                                 reloadUser();
+                                VerifyUser.verifyEmail().addOnCompleteListener(verificationSent -> {
+                                    if(verificationSent.isSuccessful()){
+                                        Utils.makeSnackBar("Verification Email Sent", userEmail, this);
+                                        UserFetch.update(firebaseUser.getEmail(), "is_email_verified", false);
+                                    }else{
+                                        Utils.makeSnackBar("Failed to Send Verification", userEmail, this);
+                                    }
+                                });
                             }else{
                                 Utils.makeSnackBar("Failed to Update Emailed", displayNameChange, this);
                             }
@@ -209,10 +238,37 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         }
     }
 
+    private void deleteUser(String... providers){
+       new FaceBookSignIn.UnlinkFacebook(providers[0], (result) -> {
+           if(result){
+               Log.d(TAG, "Facebook unlinked successfully");
+               firebaseUser.unlink(providers[1]).addOnCompleteListener(unlinkGoogle -> {
+                   if(unlinkGoogle.isSuccessful()){
+                       Log.d(TAG, "Google unlinked Successfully");
+                       firebaseUser.delete().addOnCompleteListener(deleteUser -> {
+                           if(deleteUser.isSuccessful()){
+                               Log.d(TAG, "User Deleted Successfully");
+                               startActivity(new Intent(UserProfile.this, LogInActivity.class));
+                               finish();
+                           }else{
+                               Log.d(TAG, "Failed to Delete User");
+                           }
+                       });
+                   }else {
+                       Log.d(TAG, "Failed to Unlink Google");
+                   }
+               });
+           }else {
+               Log.d(TAG, "Failed to unlink Facebook");
+           }
+       });
+    }
+
+
     private void reloadUser(){
         firebaseAuth.getCurrentUser().reload().addOnCompleteListener(result -> {
             if(result.isSuccessful()){
-                String name[] = firebaseUser.getDisplayName().split(" ");
+                String[] name = firebaseUser.getDisplayName().split(" ");
 
                 nameField.setText(name[0]);
                 surNameField.setText(name[1]);
@@ -247,13 +303,30 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         super.onStateNotSaved();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
+    }
 
-    private class RemoteImage extends AsyncTask<String, Void, Bitmap> {
+    public static void verifyStoragePermissions(Activity activity) {
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+    }
+
+    private static class RemoteImage extends AsyncTask<String, Void, Bitmap> {
+
+        @SuppressLint("StaticFieldLeak")
         ImageView profileImageViwe;
 
-        public RemoteImage(ImageView profileImageViwe){
+        RemoteImage(ImageView profileImageViwe){
             this.profileImageViwe = profileImageViwe;
         }
 

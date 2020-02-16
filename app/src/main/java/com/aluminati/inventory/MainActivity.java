@@ -1,8 +1,10 @@
 package com.aluminati.inventory;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
@@ -29,58 +31,28 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends Activity {
 
-
-    private static final String TAG = "MainActivity";
-    private ConnectivityCheck connection;
-    private TextView registerButton;
+    private static final String TAG = MainActivity.class.getName();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-            setContentView(R.layout.activity_login);
-            registerButton = findViewById(R.id.register_button);
-            registerButton.setOnClickListener(this);
-            findViewById(R.id.forgot_password).setOnClickListener(this);
-
-
-    }
-
-    @Override
-    public void onClick(View view){
-        switch (view.getId()){
-            case R.id.register_button: {
-                Intent intent = new Intent(this, RegisterActivity.class);
-                       intent.putExtra("login_method", VerificationStatus.EMAIL);
-                startActivity(intent);
-                finish();
-                break;
-            }
-            case R.id.forgot_password: {
-                startActivity(new Intent(this, ForgotPasswordActivity.class));
-                break;
-            }
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
-            fragment.onActivityResult(requestCode, resultCode, data);
+        if(FirebaseAuth.getInstance().getCurrentUser() != null){
+            Log.i(TAG, "User detected");
+            VerifyUser.checkUser(FirebaseAuth.getInstance().getCurrentUser(), this, VerificationStatus.FIREBASE);
+        }else{
+            Log.i(TAG, "No User detected");
+            startActivity(new Intent(MainActivity.this, LogInActivity.class));
+            finish();
         }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        registerReceiver(connection, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
-        if(FirebaseAuth.getInstance().getCurrentUser() != null){
-           VerifyUser.checkUser(FirebaseAuth.getInstance().getCurrentUser(), this, VerificationStatus.FIREBASE);
-        }
+
     }
 
     @Override
