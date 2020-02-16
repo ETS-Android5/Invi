@@ -1,7 +1,6 @@
 package com.aluminati.inventory.login.authentication.google;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,19 +11,14 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.aluminati.inventory.MainActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
-import com.aluminati.inventory.fragments.fragmentListeners.phone.PhoneVerificationReciever;
-import com.aluminati.inventory.fragments.fragmentListeners.phone.PhoneVerificationSender;
 import com.aluminati.inventory.login.authentication.LinkAccounts;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
-import com.aluminati.inventory.userprofile.UserProfile;
 import com.aluminati.inventory.users.User;
 import com.facebook.CallbackManager;
 import com.facebook.login.LoginManager;
@@ -32,21 +26,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.UserInfo;
-
-import java.util.List;
 
 public class GoogleSignIn extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "GoogleSignIn";
-    private static final String GoogleProviderId = "Google";
+    private static final String GoogleProviderId = "google.com";
     private static final int RC_SIGN_IN = 9001;
 
     private GoogleSignInClient googleSignInClient;
@@ -143,10 +132,11 @@ public class GoogleSignIn extends Fragment implements View.OnClickListener {
         firebaseAuth.getCurrentUser().unlink(GoogleProviderId).addOnCompleteListener(getActivity(), result -> {
             if (result.isSuccessful()) {
                 googleButton.setText(getResources().getString(R.string.login_google));
-                Utils.makeSnackBar("Unlinked Google", googleButton, getActivity());
+                UserFetch.update(firebaseAuth.getCurrentUser().getEmail(), "is_google_linked", false);
+                Utils.makeSnackBarWithButtons("Unlinked Google", googleButton, getActivity());
                 Log.d(TAG, "Unlinked Google");
             }else{
-                Utils.makeSnackBar("Failed to Unlink Google", googleButton, getActivity());
+                Utils.makeSnackBarWithButtons("Failed to Unlink Google", googleButton, getActivity());
                 Log.d(TAG, "Failed to Unlink Facebook");
             }
         });

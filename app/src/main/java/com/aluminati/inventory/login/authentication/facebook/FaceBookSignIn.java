@@ -7,21 +7,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import com.aluminati.inventory.MainActivity;
+
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
-import com.aluminati.inventory.fragments.fragmentListeners.phone.PhoneVerificationSender;
 import com.aluminati.inventory.login.authentication.LinkAccounts;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
-import com.aluminati.inventory.userprofile.UserProfile;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -32,21 +28,16 @@ import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-
-import java.time.Year;
 
 
 public class FaceBookSignIn extends Fragment implements View.OnClickListener{
 
     private static final String TAG = "FaceBookSignIn";
-    private static final String FaceBookProviderId = "Facebook";
+    private static final String FaceBookProviderId = "facebook.com";
     private FirebaseAuth firebaseAuth;
     private LoginButton facebookLogin;
     private CallbackManager callbackManager;
@@ -135,7 +126,7 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener{
                                 LoginManager.getInstance().logOut();
                                 Log.w(TAG, "FacebookSignIn:failed because", signInResult.getException());
                                 LinkAccounts.linkAccountsInfo(getContext(), "Email is already registered, login and link account or recover password");
-                                Utils.makeSnackBar(getResources().getString(R.string.facebook_sign_infailed), facebookLogin, getActivity());
+                                Utils.makeSnackBarWithButtons(getResources().getString(R.string.facebook_sign_infailed), facebookLogin, getActivity());
                             }
                         }
                     });
@@ -153,10 +144,10 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener{
             if(facebookLogin.getText().equals(getResources().getString(R.string.com_facebook_loginview_log_out_button))){
                 new UnlinkFacebook(FaceBookProviderId, (result) ->  {
                     if(result){
-                        Utils.makeSnackBar("FaceBook Unlinked", facebookLogin, getActivity());
+                        Utils.makeSnackBarWithButtons("FaceBook Unlinked", facebookLogin, getActivity());
                         Log.d(TAG, "Facebook Unlinked");
                     }else{
-                        Utils.makeSnackBar("Failed to Unlink FaceBook", facebookLogin, getActivity());
+                        Utils.makeSnackBarWithButtons("Failed to Unlink FaceBook", facebookLogin, getActivity());
                         Log.d(TAG, "Failed To Unlink Facebook");
                     }
                 });

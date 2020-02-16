@@ -38,6 +38,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.main_activity);
         if(FirebaseAuth.getInstance().getCurrentUser() != null){
             Log.i(TAG, "User detected");
             VerifyUser.checkUser(FirebaseAuth.getInstance().getCurrentUser(), this, VerificationStatus.FIREBASE);

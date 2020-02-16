@@ -64,4 +64,16 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         super.onStart();
         registerReceiver(connection, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(connection);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(connection);
+    }
 }

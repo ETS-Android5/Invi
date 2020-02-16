@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.aluminati.inventory.InfoPageActivity;
 import com.aluminati.inventory.MainActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
@@ -14,8 +13,6 @@ import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
 import com.aluminati.inventory.login.authentication.password.Password;
 import com.aluminati.inventory.users.User;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.api.Authentication;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -23,14 +20,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -87,23 +82,23 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         if(!(passWord.isEmpty() && passWordConfirm.isEmpty())) {
             if (passWord.isEmpty()) {
-                Utils.makeSnackBar(getResources().getString(R.string.reg_hint_password), name, this);
+                Utils.makeSnackBarWithButtons(getResources().getString(R.string.reg_hint_password), name, this);
             } else if (passWordConfirm.isEmpty()) {
-                Utils.makeSnackBar(getResources().getString(R.string.confirm_password), name, this);
+                Utils.makeSnackBarWithButtons(getResources().getString(R.string.confirm_password), name, this);
             } else if (passWord.equals(passWordConfirm)) {
                 if (!checkIfPassWordContains(passWord)) {
 
                     if (meetsReqs) {
                         createAccount(email.getText().toString().trim(), passWord);
                     } else {
-                        Utils.makeSnackBar(getResources().getString(R.string.password_dont_meet_requirements), name, this);
+                        Utils.makeSnackBarWithButtons(getResources().getString(R.string.password_dont_meet_requirements), name, this);
                     }
                 }
             } else {
-                Utils.makeSnackBar(getResources().getString(R.string.password_dont_match), name, this);
+                Utils.makeSnackBarWithButtons(getResources().getString(R.string.password_dont_match), name, this);
             }
         }else {
-            Utils.makeSnackBar(getResources().getString(R.string.reg_hint_password), name, this);
+            Utils.makeSnackBarWithButtons(getResources().getString(R.string.reg_hint_password), name, this);
         }
 
 
@@ -117,10 +112,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     if(emailValid(email.getText().toString())){
                         passWordListenerReciever.askForPassWord(3001);
                     }else{
-                        Utils.makeSnackBar(getResources().getString(R.string.invalid_email), name, this);
+                        Utils.makeSnackBarWithButtons(getResources().getString(R.string.invalid_email), name, this);
                     }
                 }else{
-                    Utils.makeSnackBar(getResources().getString(R.string.fill_in_requried_fields), name, this);
+                    Utils.makeSnackBarWithButtons(getResources().getString(R.string.fill_in_requried_fields), name, this);
                 }
                 break;
             }
@@ -137,7 +132,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     private boolean checkIfPassWordContains(String password){
         if(password.contains(name.getText().toString()) || password.contains(surName.getText().toString())){
-            Utils.makeSnackBar(getResources().getString(R.string.password_conatins_name), name, this);
+            Utils.makeSnackBarWithButtons(getResources().getString(R.string.password_conatins_name), name, this);
             return false;
         }
         return true;
@@ -234,7 +229,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             finish();
                         } else {
                             Log.w(TAG, "linkWithCredential:failure", task.getException());
-                            Utils.makeSnackBar(getResources().getString(R.string.authentication_failed), name, this);
+                            Utils.makeSnackBarWithButtons(getResources().getString(R.string.authentication_failed), name, this);
                         }
                     });
 
@@ -253,7 +248,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                 LinkAccounts.linkAccountsInfo(RegisterActivity.this, "Email is already registered, login " +
                                         " or recover password");
                             }
-                            Utils.makeSnackBar(getResources().getString(R.string.authentication_failed), name, this);
+                            Utils.makeSnackBarWithButtons(getResources().getString(R.string.authentication_failed), name, this);
                         }
                     });
         }

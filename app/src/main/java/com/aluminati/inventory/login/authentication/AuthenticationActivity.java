@@ -10,7 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import com.aluminati.inventory.InfoPageActivity;
+
 import com.aluminati.inventory.MainActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
@@ -18,8 +18,6 @@ import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.login.authentication.phoneauthentication.PhoneAuthentication;
 import com.aluminati.inventory.userprofile.UserProfile;
 import com.aluminati.inventory.users.User;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -82,7 +80,7 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
                 verifyPhone.setVisibility(View.INVISIBLE);
                 phoneVerified.setText(getResources().getString(R.string.veirified));
                 UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(), "is_phone_verified", true);
-                Utils.makeSnackBar(getResources().getString(R.string.phone_successfully_linked), verifyPhone, this);
+                Utils.makeSnackBarWithButtons(getResources().getString(R.string.phone_successfully_linked), verifyPhone, this);
             }
     }
 
@@ -141,10 +139,10 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
             case R.id.email_verify:{
                 VerifyUser.verifyEmail().addOnCompleteListener(result -> {
                     if(result.isSuccessful()){
-                        Utils.makeSnackBar("Email Sent", emailVerified, this);
+                        Utils.makeSnackBarWithButtons("Email Sent", emailVerified, this);
                         emailVerified.setText(getResources().getString(R.string.veirified));
                     }else{
-                        Utils.makeSnackBar("Failed to Send Email", emailVerified, this);
+                        Utils.makeSnackBarWithButtons("Failed to Send Email", emailVerified, this);
                     }
                 });
                 break;

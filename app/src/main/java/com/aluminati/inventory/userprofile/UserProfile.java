@@ -3,6 +3,7 @@ package com.aluminati.inventory.userprofile;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -12,49 +13,32 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-
-import com.aluminati.inventory.InfoPageActivity;
 import com.aluminati.inventory.LogInActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.fragments.fragmentListeners.phone.PhoneVerificationReciever;
-import com.aluminati.inventory.login.authentication.LinkAccounts;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
 import com.aluminati.inventory.login.authentication.facebook.FaceBookSignIn;
 import com.aluminati.inventory.login.authentication.phoneauthentication.PhoneAuthentication;
 import com.aluminati.inventory.offline.ConnectivityCheck;
 import com.aluminati.inventory.users.User;
-import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
@@ -86,6 +70,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private LoginButton facebookLogin;
     private CallbackManager callbackManager;
     private FirebaseAuth firebaseAuth;
+    private String tmp;
     private ConnectivityCheck connection;
 
 
@@ -145,9 +130,9 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
         if(requestCode == PHONE_VERIFICATION){
             if(resultCode == VerificationStatus.SUCCESSFULL_UPDATE){
-                Utils.makeSnackBar("Updated Phone Number", phoneNumber, this);
+                Utils.makeSnackBarWithButtons("Updated Phone Number", phoneNumber, this);
             }else if(resultCode == VerificationStatus.FAILED_UPDATE){
-                Utils.makeSnackBar("Failed to Update Phone Number", phoneNumber, this);
+                Utils.makeSnackBarWithButtons("Failed to Update Phone Number", phoneNumber, this);
             }
         }
     }
@@ -162,10 +147,37 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         }
     }
 
+    private void emailCheck(){
+       new AlertDialog.Builder(this)
+                .setTitle("Change Email")
+                .setMessage("Unlink Facebook And Google To Change Email")
+                .setPositiveButton(android.R.string.yes, (dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
     private void changeAttribute(EditText editText, TextView textView, Callable<Void> change){
         if(textView.getText().equals(getResources().getString(R.string.change))){
-            editText.setEnabled(true);
-            textView.setText(getResources().getString(R.string.save));
+            if(editText.getId() == R.id.email_field){
+                UserFetch.getUser(firebaseUser.getEmail()).addOnCompleteListener(result -> {
+                    if(result.isSuccessful() && result.getResult() != null){
+                        User user = new User(result.getResult());
+                        if(user.isGoogleLinked() || user.isFacebookLinked()){
+                            emailCheck();
+                        }else{
+                            tmp = editText.getText().toString();
+                            editText.setEnabled(true);
+                            textView.setText(getResources().getString(R.string.save));
+                        }
+                    }
+                });
+            }else {
+                tmp = editText.getText().toString();
+                editText.setEnabled(true);
+                textView.setText(getResources().getString(R.string.save));
+            }
         }else if(textView.getText().equals(getResources().getString(R.string.save))){
             editText.setEnabled(false);
             textView.setText(getResources().getString(R.string.change));
@@ -182,16 +194,16 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         switch (view.getId()){
             case R.id.display_name_change:{
                 changeAttribute(userName, displayNameChange, () -> {
-                    if(!userName.getText().toString().isEmpty()){
+                    if(!userName.getText().toString().isEmpty() && !tmp.equals(userName.getText().toString())){
                         firebaseUser
                                 .updateProfile(new UserProfileChangeRequest.Builder()
                                 .setDisplayName(userName.getText().toString()).build())
                                 .addOnCompleteListener(result -> {
                                    if(result.isSuccessful()){
-                                       Utils.makeSnackBar("Name Updated", displayNameChange, this);
+                                       Utils.makeSnackBarWithButtons("Name Updated", displayNameChange, this);
                                        reloadUser();
                                    } else {
-                                       Utils.makeSnackBar("Failed to Update Name", displayNameChange, this);
+                                       Utils.makeSnackBarWithButtons("Failed to Update Name", displayNameChange, this);
                                    }
                                 });
                     }
@@ -201,7 +213,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             }
             case R.id.phone_number_change:{
                 changeAttribute(phoneNumber, phoneChange, () -> {
-                    if(!phoneNumber.getText().toString().isEmpty()){
+                    if(!phoneNumber.getText().toString().isEmpty() && !tmp.equals(phoneNumber.getText().toString())){
                         UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(), "is_phone_verified", false);
                         startActivityForResult(new Intent(UserProfile.this, PhoneAuthentication.class), PHONE_VERIFICATION);
                     }
@@ -211,21 +223,21 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             }
             case R.id.change_email:{
                 changeAttribute(userEmail, emailChange, () -> {
-                    if(!emailChange.getText().toString().isEmpty()){
+                    if(!userEmail.getText().toString().isEmpty() && !tmp.equals(userEmail.getText().toString())){
                         firebaseUser.updateEmail(emailChange.toString()).addOnCompleteListener(result -> {
                             if(result.isSuccessful()){
-                                Utils.makeSnackBar("Email Updated", displayNameChange, this);
+                                Utils.makeSnackBarWithButtons("Email Updated", displayNameChange, this);
                                 reloadUser();
                                 VerifyUser.verifyEmail().addOnCompleteListener(verificationSent -> {
                                     if(verificationSent.isSuccessful()){
-                                        Utils.makeSnackBar("Verification Email Sent", userEmail, this);
+                                        Utils.makeSnackBarWithButtons("Verification Email Sent", userEmail, this);
                                         UserFetch.update(firebaseUser.getEmail(), "is_email_verified", false);
                                     }else{
-                                        Utils.makeSnackBar("Failed to Send Verification", userEmail, this);
+                                        Utils.makeSnackBarWithButtons("Failed to Send Verification", userEmail, this);
                                     }
                                 });
                             }else{
-                                Utils.makeSnackBar("Failed to Update Emailed", displayNameChange, this);
+                                Utils.makeSnackBarWithButtons("Failed to Update Emailed", displayNameChange, this);
                             }
                         });
                     }
@@ -277,7 +289,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 phoneNumber.setText(firebaseUser.getPhoneNumber());
                 new RemoteImage(userPhoto).execute(firebaseUser.getPhotoUrl().toString());
             }else{
-                Utils.makeSnackBar("Failed to reload user", displayNameChange, this);
+                Utils.makeSnackBarWithButtons("Failed to reload user", displayNameChange, this);
             }
         });
     }
@@ -286,11 +298,15 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     protected void onStart() {
         super.onStart();
         reloadUser();
+        registerReceiver(connection, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        Utils.makeSnackBar("Welcome back " + firebaseUser.getDisplayName(), displayNameChange, this);
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        unregisterReceiver(connection);
     }
 
     @Override
