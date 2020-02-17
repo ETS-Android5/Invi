@@ -31,6 +31,8 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         registerButton.setOnClickListener(this);
         findViewById(R.id.forgot_password).setOnClickListener(this);
 
+        connection = new ConnectivityCheck(registerButton);
+
 
     }
 

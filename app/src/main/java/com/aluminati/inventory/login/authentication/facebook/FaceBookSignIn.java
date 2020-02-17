@@ -98,6 +98,10 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener{
                 Log.w(TAG, "Login Error", error);
             }
         });
+
+        if(firebaseAuth.getCurrentUser() == null){
+            LoginManager.getInstance().logOut();
+        }
     }
 
     @Override

@@ -79,6 +79,8 @@ public class GoogleSignIn extends Fragment implements View.OnClickListener {
                     }
                 }
             });
+        }else{
+            googleButton.setText(getResources().getString(R.string.login_google));
         }
 
     }

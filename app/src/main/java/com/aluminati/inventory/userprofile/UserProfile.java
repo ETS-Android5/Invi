@@ -127,6 +127,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         menu.setHeaderTitle(getResources().getString(R.string.extras));
         menu.add(0, v.getId(), 0, getResources().getString(R.string.reload));
         menu.add(0, v.getId(), 0, getResources().getString(R.string.reset_password));
+        menu.add(0, v.getId(), 0, getResources().getString(R.string.logout_button));
     }
 
     @Override
@@ -136,6 +137,10 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         }
         else if(item.getTitle().equals(getResources().getString(R.string.reset_password))){
             startActivityForResult(new Intent(UserProfile.this, PassWordReset.class), PASSWORD_RESET);
+        }else if(item.getTitle().equals(getResources().getString(R.string.logout_button))){
+            firebaseAuth.signOut();
+            startActivity(new Intent(UserProfile.this, LogInActivity.class));
+            finish();
         }
         return true;
     }
