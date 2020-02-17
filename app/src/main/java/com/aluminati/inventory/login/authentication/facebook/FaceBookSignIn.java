@@ -114,6 +114,7 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener{
             if (result.isSuccessful() && result.getResult() != null) {
                 if (result.getResult().exists()) {
                     LinkAccounts.linkAccounts(authCredential, getActivity(), TAG);
+                    UserFetch.update(firebaseAuth.getCurrentUser().getEmail(), "is_facebook_linked", true);
                 } else {
                     firebaseAuth.signInWithCredential(authCredential).addOnCompleteListener(signInResult -> {
                         if (signInResult.isSuccessful()) {

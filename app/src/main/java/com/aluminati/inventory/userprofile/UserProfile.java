@@ -12,8 +12,11 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.PersistableBundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -33,6 +36,7 @@ import com.aluminati.inventory.fragments.fragmentListeners.phone.PhoneVerificati
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
 import com.aluminati.inventory.login.authentication.facebook.FaceBookSignIn;
+import com.aluminati.inventory.login.authentication.password.PassWordReset;
 import com.aluminati.inventory.login.authentication.phoneauthentication.PhoneAuthentication;
 import com.aluminati.inventory.offline.ConnectivityCheck;
 import com.aluminati.inventory.users.User;
@@ -50,6 +54,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     private static final String TAG = UserProfile.class.getName();
     private static final int PHONE_VERIFICATION = 3000;
+    private static final int PASSWORD_RESET = 2999;
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -64,6 +69,9 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private TextView phoneChange;
     private TextView nameField;
     private TextView surNameField;
+    private TextView phoneVerified;
+    private TextView emailVerified;
+    private TextView userImageChange;
     private ImageButton settingButton;
     private FirebaseUser firebaseUser;
     private PhoneVerificationReciever phoneVerificationReciever;
@@ -79,6 +87,11 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_profile);
 
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+
         displayNameChange = findViewById(R.id.display_name_change);
         emailChange = findViewById(R.id.change_email);
         userEmail = findViewById(R.id.email_field);
@@ -89,17 +102,42 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         nameField = findViewById(R.id.name_field);
         phoneChange = findViewById(R.id.phone_number_change);
         settingButton = findViewById(R.id.profile_settings_button);
-        settingButton.setOnClickListener(this);
+        phoneVerified = findViewById(R.id.phone_number_verified);
+        emailVerified = findViewById(R.id.email_verified);
+        userImageChange = findViewById(R.id.user_image_change);
+
         displayNameChange.setOnClickListener(this);
         emailChange.setOnClickListener(this);
         phoneChange.setOnClickListener(this);
+        userPhoto.setOnClickListener(this);
 
+        registerForContextMenu(settingButton);
 
         connection = new ConnectivityCheck(displayNameChange);
 
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        setVerificationLabels();
+
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.setHeaderTitle(getResources().getString(R.string.extras));
+        menu.add(0, v.getId(), 0, getResources().getString(R.string.reload));
+        menu.add(0, v.getId(), 0, getResources().getString(R.string.reset_password));
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if (item.getTitle().equals(getResources().getString(R.string.reload))) {
+            reloadUser();
+        }
+        else if(item.getTitle().equals(getResources().getString(R.string.reset_password))){
+            startActivityForResult(new Intent(UserProfile.this, PassWordReset.class), PASSWORD_RESET);
+        }
+        return true;
     }
 
 
@@ -114,6 +152,20 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         }
 
         return true;
+    }
+
+    private void countDown(){
+        new CountDownTimer(5*1000,1000) {
+            @Override
+            public void onTick(long l) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                userImageChange.setVisibility(View.INVISIBLE);
+            }
+        };
     }
 
     @Override
@@ -133,6 +185,12 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 Utils.makeSnackBarWithButtons("Updated Phone Number", phoneNumber, this);
             }else if(resultCode == VerificationStatus.FAILED_UPDATE){
                 Utils.makeSnackBarWithButtons("Failed to Update Phone Number", phoneNumber, this);
+            }
+        }else if(requestCode == PASSWORD_RESET){
+            if(resultCode == Activity.RESULT_OK){
+                Utils.makeSnackBar("Password Updated", settingButton, this);
+            }else if(resultCode == Activity.RESULT_CANCELED){
+                Utils.makeSnackBar("Failed to Update Password", settingButton, this);
             }
         }
     }
@@ -245,8 +303,15 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 });
                 break;
             }
+            case R.id.userImage:{
+                userImageChange.setVisibility(View.VISIBLE);
+                countDown();
+                break;
+            }
+            case R.id.user_image_change:{
 
-
+                break;
+            }
         }
     }
 
@@ -276,9 +341,24 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
        });
     }
 
+    private void setVerificationLabels(){
+
+        User user = new User(firebaseUser);
+
+        if(user.isEmailVerified()){
+            emailVerified.setText(getResources().getString(R.string.veirified));
+            emailVerified.setTextColor(getResources().getColor(R.color.password_verify));
+        }
+
+        if(user.isPhoneVerified()){
+            phoneVerified.setText(getResources().getString(R.string.veirified));
+            phoneVerified.setTextColor(getResources().getColor(R.color.password_verify));
+        }
+    }
+
 
     private void reloadUser(){
-        firebaseAuth.getCurrentUser().reload().addOnCompleteListener(result -> {
+        firebaseUser.reload().addOnCompleteListener(result -> {
             if(result.isSuccessful()){
                 String[] name = firebaseUser.getDisplayName().split(" ");
 
@@ -288,6 +368,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 userEmail.setText(firebaseUser.getEmail());
                 phoneNumber.setText(firebaseUser.getPhoneNumber());
                 new RemoteImage(userPhoto).execute(firebaseUser.getPhotoUrl().toString());
+
+                setVerificationLabels();
             }else{
                 Utils.makeSnackBarWithButtons("Failed to reload user", displayNameChange, this);
             }

@@ -57,6 +57,7 @@
 
 
         <activity android:name=".login.authentication.phoneauthentication.PhoneAuthentication" />
+        <activity android:name=".login.authentication.password.PassWordReset" />
     </application>
 
 </manifest>

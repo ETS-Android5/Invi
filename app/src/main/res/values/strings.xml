@@ -89,4 +89,7 @@
     <string name="com_facebook_loginview_log_out_button">Unlink Facebook</string>
     <string name="photo_update">Click To Change Image</string>
     <string name="profile_image">Profile Image</string>
+    <string name="social_platforms">Social Platforms</string>
+    <string name="reload">Reload</string>
+    <string name="extras">Extras</string>
 </resources>

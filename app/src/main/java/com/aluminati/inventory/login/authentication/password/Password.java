@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.fragments.fragmentListeners.password.PassWordListenerSender;
@@ -74,14 +75,25 @@ public class Password extends Fragment implements View.OnClickListener{
 
         initLocks();
 
-        bindActivity((RegisterActivity)getContext());
+        if(getContext() instanceof PassWordReset){
+            bindActivity((PassWordReset)getContext());
+        }else if(getContext() instanceof RegisterActivity){
+            bindActivity((RegisterActivity)getContext());
+        }
+
+
+
 
         return view;
     }
 
 
-    private void bindActivity(RegisterActivity registerActivity){
-        registerActivity.setPassWordListenerReciever(this::onCodeReceived);
+    private void bindActivity(AppCompatActivity appCompatActivity){
+        if(appCompatActivity instanceof PassWordReset){
+            ((PassWordReset)appCompatActivity).setPassWordListenerReciever(this::onCodeReceived);
+        }else if(appCompatActivity instanceof RegisterActivity){
+            ((RegisterActivity)appCompatActivity).setPassWordListenerReciever(this::onCodeReceived);
+        }
     }
 
     private void onCodeReceived(int code){

@@ -9,6 +9,7 @@ import com.aluminati.inventory.register.RegisterActivity;
 import com.aluminati.inventory.userprofile.UserProfile;
 import com.aluminati.inventory.users.User;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -17,6 +18,24 @@ public class VerifyUser {
 
     private static final String TAG = "VerifyUser";
     private static int loginMethod;
+
+
+    public static ActionCodeSettings setActionCodeSettings(){
+        return ActionCodeSettings.newBuilder()
+                        // URL you want to redirect back to. The domain (www.example.com) for this
+                        // URL must be whitelisted in the Firebase Console.
+                        .setUrl("https://aluminati.page.link/authentication")
+                        // This must be true
+                        .setHandleCodeInApp(true)
+                        .setIOSBundleId("com.aluminati.inventory")
+                        .setAndroidPackageName(
+                                "com.aluminati.inventory",
+                                true, /* installIfNotAvailable */
+                                "1.0"    /* minimumVersion */)
+                        .build();
+
+    }
+
 
     public static void checkUser(FirebaseUser firebaseUser, Activity activity, int login_method){
         loginMethod = login_method;
@@ -72,7 +91,7 @@ public class VerifyUser {
     }
 
     public static Task<Void> verifyEmail(){
-        return FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
+        return FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification(setActionCodeSettings());
     }
 
 

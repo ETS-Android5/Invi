@@ -7,6 +7,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -205,7 +206,9 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
         }
 
         private EditText createVerifyPhoneNumber(){
-            return new EditText(this);
+            EditText editText = new EditText(this);
+                     editText.setGravity(Gravity.CENTER);
+            return editText;
         }
 
         private void startPhoneVerifiation(String phoneNumber){

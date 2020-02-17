@@ -38,7 +38,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
                     UserFetch.getUser(emailField.getText().toString()).addOnCompleteListener(result -> {
                        if(result.isSuccessful() && result.getResult() != null){
                                if(result.getResult().exists()){
-                                   FirebaseAuth.getInstance().sendPasswordResetEmail(emailField.getText().toString()).addOnCompleteListener(task -> {
+                                   FirebaseAuth.getInstance().sendPasswordResetEmail(emailField.getText().toString(), VerifyUser.setActionCodeSettings()).addOnCompleteListener(task -> {
                                        if(task.isSuccessful()){
                                            Log.i(TAG, "Password reset send");
                                        } else {
