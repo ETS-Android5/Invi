@@ -51,7 +51,7 @@ public class ScannerFragment extends Fragment {
             mCodeScanner = new CodeScanner(getContext(), scannerView);
 
             mCodeScanner.setDecodeCallback(result -> getActivity().runOnUiThread(() -> {
-                //TODO: remove after debug
+                //TODO: remove after debug -
                 toaster.toastShort(result.getText());
                 MediaPlayer.create(getActivity(), R.raw.scan).start();
             /*
