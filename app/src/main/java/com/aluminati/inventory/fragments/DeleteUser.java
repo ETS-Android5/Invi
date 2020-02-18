@@ -53,7 +53,7 @@ public class DeleteUser extends DialogFragment {
 
         deleteUserReasons = view.findViewById(R.id.delete_user_reasons);
 
-        deleteUser = view.findViewById(R.id.delete);
+        deleteUser = view.findViewById(R.id.delete_user);
         otherReason = view.findViewById(R.id.other_reason);
         deleteUser.setOnClickListener(click -> deleteUser());
 

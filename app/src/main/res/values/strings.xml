@@ -1,4 +1,6 @@
 <resources>
+
+    <!-- Bart add your string in here START -->
     <string name="app_name">Invi</string>
     <string name="register_text">Login With</string>
     <string name="login_button">Login</string>
@@ -35,12 +37,6 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="continue_button">Continue</string>
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
-    <string name="menu_tools">Tools</string>
-    <string name="menu_share">Share</string>
-    <string name="menu_send">Send</string>
     <string name="title_activity_info_page_activity">info_page_activity</string>
     <string name="skip">Skip</string>
     <string name="country_code">Select Country Code</string>
@@ -109,4 +105,17 @@
     <string name="twitter">Twitter</string>
     <string name="login_twitter">Continue With Twitter</string>
     <string name="unlink_twitter">Unlink Twitter</string>
+    <!-- Bart add your string in here START -->
+
+    <!-- Add by paul start-->
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Purchases</string>
+    <string name="menu_slideshow">Rentals</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+    <string name="menu_scanner">Scanner</string>
+    <string name="camera_permission_failed">Camera Permission Failed</string>
+    <string name="try_again">Please Try Again</string>
+    <!-- Add by paul end-->
 </resources>

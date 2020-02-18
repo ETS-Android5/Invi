@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
         android:allowBackup="true"
@@ -20,16 +21,19 @@
             android:name=".info_page"
             android:label="@string/title_activity_info_page"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".login.authentication.AuthenticationActivity" />
-        <activity android:name=".fragments.PhoneAuthenticationFragment" />
-        <activity android:name=".InfoPageActivity" />
-        <activity android:name=".login.authentication.ForgotPasswordActivity" />
-        <activity android:name=".userprofile.UserProfile"/>
-        <activity android:name=".LogInActivity"/>
+        <activity android:name=".login.authentication.AuthenticationActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".fragments.PhoneAuthenticationFragment" android:screenOrientation="portrait"/>
+        <activity android:name=".InfoPageActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".login.authentication.ForgotPasswordActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".userprofile.UserProfile" android:screenOrientation="portrait"/>
+        <activity android:name=".LogInActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".HomeActivity" android:screenOrientation="portrait"/>
         <activity
             android:name=".register.RegisterActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,13 +43,18 @@
 
         <meta-data android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"/>
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
         <activity android:name="com.facebook.FacebookActivity"
             android:configChanges=
                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name" />
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.facebook.CustomTabActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -56,8 +65,8 @@
         </activity>
 
 
-        <activity android:name=".login.authentication.phoneauthentication.PhoneAuthentication" />
-        <activity android:name=".login.authentication.password.PassWordReset" />
+        <activity android:name=".login.authentication.phoneauthentication.PhoneAuthentication" android:screenOrientation="portrait"/>
+        <activity android:name=".login.authentication.password.PassWordReset" android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

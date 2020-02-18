@@ -16,6 +16,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.aluminati.inventory.HomeActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.login.authentication.BaseFragment;
@@ -80,7 +82,8 @@ public class EmailPasswordLogIn extends BaseFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQUEST_CODE){
             if(resultCode == Activity.RESULT_OK){
-                startActivity(new Intent(getActivity(), UserProfile.class));
+               //TODO: put in frag startActivity(new Intent(getActivity(), UserProfile.class));
+               startActivity(new Intent(getActivity(), HomeActivity.class));
                 getActivity().finish();
             }else if(resultCode == Activity.RESULT_CANCELED){
                 verifyInput.setText("Failed to Log In");
