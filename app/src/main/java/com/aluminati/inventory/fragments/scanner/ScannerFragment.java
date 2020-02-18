@@ -2,6 +2,7 @@ package com.aluminati.inventory.fragments.scanner;
 
 import android.app.AlertDialog;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -52,6 +53,7 @@ public class ScannerFragment extends Fragment {
             mCodeScanner.setDecodeCallback(result -> getActivity().runOnUiThread(() -> {
                 //TODO: remove after debug
                 toaster.toastShort(result.getText());
+                MediaPlayer.create(getActivity(), R.raw.scan).start();
             /*
             //TODO: remove after debug
              Test barcode QR code
@@ -92,6 +94,7 @@ public class ScannerFragment extends Fragment {
         dbHelper.getItem(Constants.FirestoreCollections.RENTALS,docId)
                 .addOnSuccessListener( res -> {
                    // String msg = res.exists() ? "Sorry this item is already rented" :"You can rent this item";
+
 
                     final String uid = res.getString("uid");
 
