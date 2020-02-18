@@ -19,6 +19,7 @@ import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -32,15 +33,16 @@ import com.aluminati.inventory.LogInActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
+import com.aluminati.inventory.fragments.DeleteUser;
 import com.aluminati.inventory.fragments.fragmentListeners.phone.PhoneVerificationReciever;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
-import com.aluminati.inventory.login.authentication.facebook.FaceBookSignIn;
 import com.aluminati.inventory.login.authentication.password.PassWordReset;
 import com.aluminati.inventory.login.authentication.phoneauthentication.PhoneAuthentication;
 import com.aluminati.inventory.offline.ConnectivityCheck;
 import com.aluminati.inventory.users.User;
 import com.facebook.CallbackManager;
+import com.facebook.login.LoginManager;
 import com.facebook.login.widget.LoginButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -74,9 +76,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private TextView userImageChange;
     private ImageButton settingButton;
     private FirebaseUser firebaseUser;
-    private PhoneVerificationReciever phoneVerificationReciever;
-    private LoginButton facebookLogin;
-    private CallbackManager callbackManager;
     private FirebaseAuth firebaseAuth;
     private String tmp;
     private ConnectivityCheck connection;
@@ -111,13 +110,14 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         phoneChange.setOnClickListener(this);
         userPhoto.setOnClickListener(this);
 
+        findViewById(R.id.delete_user).setOnClickListener(this);
         registerForContextMenu(settingButton);
 
         connection = new ConnectivityCheck(displayNameChange);
 
 
 
-        setVerificationLabels();
+        //setVerificationLabels();
 
     }
 
@@ -138,6 +138,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         else if(item.getTitle().equals(getResources().getString(R.string.reset_password))){
             startActivityForResult(new Intent(UserProfile.this, PassWordReset.class), PASSWORD_RESET);
         }else if(item.getTitle().equals(getResources().getString(R.string.logout_button))){
+            LoginManager.getInstance().logOut();
             firebaseAuth.signOut();
             startActivity(new Intent(UserProfile.this, LogInActivity.class));
             finish();
@@ -317,48 +318,37 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
                 break;
             }
+            case R.id.delete_user: {
+                deleteUser();
+                break;
+            }
         }
     }
 
-    private void deleteUser(String... providers){
-       new FaceBookSignIn.UnlinkFacebook(providers[0], (result) -> {
-           if(result){
-               Log.d(TAG, "Facebook unlinked successfully");
-               firebaseUser.unlink(providers[1]).addOnCompleteListener(unlinkGoogle -> {
-                   if(unlinkGoogle.isSuccessful()){
-                       Log.d(TAG, "Google unlinked Successfully");
-                       firebaseUser.delete().addOnCompleteListener(deleteUser -> {
-                           if(deleteUser.isSuccessful()){
-                               Log.d(TAG, "User Deleted Successfully");
-                               startActivity(new Intent(UserProfile.this, LogInActivity.class));
-                               finish();
-                           }else{
-                               Log.d(TAG, "Failed to Delete User");
-                           }
-                       });
-                   }else {
-                       Log.d(TAG, "Failed to Unlink Google");
-                   }
-               });
-           }else {
-               Log.d(TAG, "Failed to unlink Facebook");
-           }
-       });
+    private void deleteUser(){
+        DeleteUser deleteUser = DeleteUser.newInstance("Hello");
+        deleteUser.show(getSupportFragmentManager(), "delete_user_frag");
     }
 
     private void setVerificationLabels(){
 
-        User user = new User(firebaseUser);
+        UserFetch.getUser(firebaseUser.getEmail()).addOnSuccessListener(result -> {
+            if(result.exists()){
+                User user = new User(result);
+                if(user.isEmailVerified()){
+                    emailVerified.setText(getResources().getString(R.string.veirified));
+                    emailVerified.setTextColor(getResources().getColor(R.color.password_verify, null));
+                }
 
-        if(user.isEmailVerified()){
-            emailVerified.setText(getResources().getString(R.string.veirified));
-            emailVerified.setTextColor(getResources().getColor(R.color.password_verify));
-        }
+                if(user.isPhoneVerified()){
+                    phoneVerified.setText(getResources().getString(R.string.veirified));
+                    phoneVerified.setTextColor(getResources().getColor(R.color.password_verify, null));
+                }
+            }
+        }).addOnFailureListener(result -> {
+            Log.w(TAG, "Failed to fetch user", result);
+        });
 
-        if(user.isPhoneVerified()){
-            phoneVerified.setText(getResources().getString(R.string.veirified));
-            phoneVerified.setTextColor(getResources().getColor(R.color.password_verify));
-        }
     }
 
 
@@ -372,8 +362,11 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 userName.setText(firebaseUser.getDisplayName());
                 userEmail.setText(firebaseUser.getEmail());
                 phoneNumber.setText(firebaseUser.getPhoneNumber());
-                new RemoteImage(userPhoto).execute(firebaseUser.getPhotoUrl().toString());
-
+                try {
+                    new RemoteImage(userPhoto).execute(firebaseUser.getPhotoUrl().toString());
+                }catch (NullPointerException e){
+                    Log.w(TAG, "User photo null",e);
+                }
                 setVerificationLabels();
             }else{
                 Utils.makeSnackBarWithButtons("Failed to reload user", displayNameChange, this);
@@ -386,8 +379,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         super.onStart();
         reloadUser();
         registerReceiver(connection, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        Utils.makeSnackBar("Welcome back " + firebaseUser.getDisplayName(), displayNameChange, this);
-
     }
 
     @Override

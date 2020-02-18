@@ -1,10 +1,12 @@
 package com.aluminati.inventory.login.authentication.emailpassword;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,36 +14,29 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import com.aluminati.inventory.MainActivity;
 import com.aluminati.inventory.R;
+import com.aluminati.inventory.Utils;
+import com.aluminati.inventory.login.authentication.BaseFragment;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
 import com.aluminati.inventory.login.authentication.phoneauthentication.PhoneAuthentication;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.AuthResult;
+import com.aluminati.inventory.userprofile.UserProfile;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.regex.Pattern;
 
-public class EmailPasswordLogIn extends Fragment {
+public class EmailPasswordLogIn extends BaseFragment {
 
 
-    private static final String TAG = "EmailPasswordLogIn";
+    private static final String TAG = EmailPasswordLogIn.class.getName();
+    private int REQUEST_CODE = 3001;
     private EditText userNameField;
     private EditText passWordField;
     private TextView verifyInput;
     private Button loginButton;
     private String email;
-    private FirebaseAuth firebaseAuth;
 
     @Nullable
     @Override
@@ -50,16 +45,11 @@ public class EmailPasswordLogIn extends Fragment {
         View view = inflater.inflate(R.layout.email_password_login, container, false);
 
         userNameField = view.findViewById(R.id.user_name_field);
-
         loginButton = view.findViewById(R.id.login_button);
+        verifyInput = view.findViewById(R.id.verify_input);
 
 
         addTextWatcher(userNameField);
-
-        verifyInput = view.findViewById(R.id.verify_input);
-
-        firebaseAuth = FirebaseAuth.getInstance();
-
         buttonLogIn();
 
         return view;
@@ -85,6 +75,19 @@ public class EmailPasswordLogIn extends Fragment {
         });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_CODE){
+            if(resultCode == Activity.RESULT_OK){
+                startActivity(new Intent(getActivity(), UserProfile.class));
+                getActivity().finish();
+            }else if(resultCode == Activity.RESULT_CANCELED){
+                verifyInput.setText("Failed to Log In");
+            }
+        }
+    }
+
     private void buttonLogIn(){
         loginButton.setOnClickListener(view -> {
             if(loginButton.getText().toString().equals(getString(R.string.login_button))){
@@ -101,9 +104,7 @@ public class EmailPasswordLogIn extends Fragment {
             if(input.startsWith("+")){
                 Intent intent = new Intent(getActivity(), PhoneAuthentication.class);
                        intent.putExtra("phone_number", input);
-                       intent.putExtra("calling_activity", MainActivity.class.getSimpleName());
-                startActivity(intent);
-                getActivity().finish();
+                getActivity().startActivityForResult(intent, REQUEST_CODE);
             }else if(input.contains("@")){
                 email = input;
                 getPassWordField();
@@ -142,20 +143,16 @@ public class EmailPasswordLogIn extends Fragment {
 
     private void signWithEmailAndPassword(String name, String password){
         if(!name.isEmpty() && !password.isEmpty()) {
-            firebaseAuth.signInWithEmailAndPassword(name, password).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        VerifyUser.checkUser(firebaseAuth.getCurrentUser(), getActivity(), VerificationStatus.FIREBASE);
-                    } else {
-                        replace(passWordField, userNameField);
-                        loginButton.setText(getResources().getString(R.string.login_button));
-                        Snackbar.make(loginButton, "Login Failed", BaseTransientBottomBar.LENGTH_LONG).show();
-                    }
-                }
+            firebaseAuth.signInWithEmailAndPassword(name, password).addOnSuccessListener(result -> {
+                Log.d(TAG, "Logied In Successfull");
+                VerifyUser.checkUser(FirebaseAuth.getInstance().getCurrentUser(), getActivity(), VerificationStatus.FIREBASE);
+            }).addOnFailureListener(result -> {
+                Log.w(TAG, "Failed to LogIn", result);
+                replace(passWordField, userNameField);
+                loginButton.setText(getResources().getString(R.string.login_button));
+                Utils.makeSnackBar(getResources().getString(R.string.login_failed), loginButton, getActivity());
             });
         }
-
     }
 
 

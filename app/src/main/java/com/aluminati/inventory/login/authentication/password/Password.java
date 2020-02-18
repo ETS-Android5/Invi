@@ -3,7 +3,6 @@ package com.aluminati.inventory.login.authentication.password;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
@@ -24,8 +23,6 @@ import androidx.fragment.app.Fragment;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.fragments.fragmentListeners.password.PassWordListenerSender;
 import com.aluminati.inventory.register.RegisterActivity;
-
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Random;
@@ -37,7 +34,7 @@ import java.util.regex.Pattern;
 
 public class Password extends Fragment implements View.OnClickListener{
 
-    private static final String TAG = "Password";
+    private static final String TAG = Password.class.getName();
     private PassWordListenerSender passWordListenerReciever;
     private EditText passWord;
     private EditText confrimPassWord;

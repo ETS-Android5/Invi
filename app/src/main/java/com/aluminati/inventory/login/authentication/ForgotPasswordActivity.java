@@ -14,7 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class ForgotPasswordActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "ForgotPassWord";
+    private static final String TAG = ForgotPasswordActivity.class.getName();
     private EditText emailField;
     private TextView emailSent;
 
@@ -42,7 +42,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
                                        if(task.isSuccessful()){
                                            Log.i(TAG, "Password reset send");
                                        } else {
-                                           Log.i(TAG, "Failed to send email");
+                                           Log.w(TAG, "Failed to send email", task.getException());
                                        }
                                    });
                                }

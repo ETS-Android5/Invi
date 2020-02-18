@@ -17,61 +17,49 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 public class VerifyUser {
 
     private static final String TAG = "VerifyUser";
-    private static int loginMethod;
 
 
     public static ActionCodeSettings setActionCodeSettings(){
         return ActionCodeSettings.newBuilder()
-                        // URL you want to redirect back to. The domain (www.example.com) for this
-                        // URL must be whitelisted in the Firebase Console.
                         .setUrl("https://aluminati.page.link/authentication")
-                        // This must be true
                         .setHandleCodeInApp(true)
                         .setIOSBundleId("com.aluminati.inventory")
-                        .setAndroidPackageName(
+                        .setAndroidPackageName
+                                (
                                 "com.aluminati.inventory",
                                 true, /* installIfNotAvailable */
-                                "1.0"    /* minimumVersion */)
+                                "1.0"    /* minimumVersion */
+                                )
                         .build();
 
     }
 
 
     public static void checkUser(FirebaseUser firebaseUser, Activity activity, int login_method){
-        loginMethod = login_method;
 
             if(firebaseUser.getEmail() != null) {
-                UserFetch.getUser(firebaseUser.getEmail()).addOnCompleteListener(task -> {
-                    if (task.getResult() != null) {
-                        if (task.getResult().exists()) {
-                            isUserVerified(new User(task.getResult()), activity, false);
-                        } else {
-                            updateLayoutToRegisterActivity(activity);
-                        }
+                UserFetch.getUser(firebaseUser.getEmail()).addOnSuccessListener(task -> {
+                    if (task.exists()) {
+                        isUserVerified(new User(task), activity, false);
+                    } else {
+                        updateLayoutToRegisterActivity(activity, login_method);
                     }
+                }).addOnFailureListener(result -> {
+                    Log.w(TAG, "Failed to check is user verified");
                 });
-            }else {
-                updateLayoutToRegisterActivity(activity);
             }
 
     }
 
-    public static void userExists(User user){
+    public static void verifyUser(User user){
         if(user != null){
-            UserFetch.getUser(user.getEmail()).addOnCompleteListener(task -> {
-                if(task.getResult() != null) {
-                    if (task.getResult().exists()) {
-                        Log.i(TAG, "Upadting User");
-                        UserFetch.update(user);
-                    } else {
-                        Log.i(TAG, "Adding New User");
-                        UserFetch.addNewUser(user);
-                    }
-                }
-            });
+            if(UserFetch.userExists(user.getEmail())){
+                UserFetch.update(user);
+            }else {
+                UserFetch.addNewUser(user);
+            }
         }
     }
-
 
     public static void isUserVerified(User user, Activity activity, boolean register_activity){
         Log.i(TAG, "Is User Verified");
@@ -91,7 +79,7 @@ public class VerifyUser {
     }
 
     public static Task<Void> verifyEmail(){
-        return FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification(setActionCodeSettings());
+        return FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
     }
 
 
@@ -99,7 +87,7 @@ public class VerifyUser {
             firebaseUser.updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(name).build());
     }
 
-    private static void updateLayoutToRegisterActivity(Activity activity){
+    private static void updateLayoutToRegisterActivity(Activity activity, int loginMethod){
         Log.i(TAG, "Method " + loginMethod);
         Intent intent = new Intent(activity, RegisterActivity.class);
                intent.putExtra("login_method", loginMethod);

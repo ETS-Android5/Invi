@@ -78,6 +78,7 @@ public class PassWordReset extends AppCompatActivity implements View.OnClickList
             if(update.isSuccessful()){
                 Log.i(TAG, "Password updated successfully");
                 setResult(Activity.RESULT_OK);
+                finish();
             }else{
                 Log.w(TAG, "Password Update Failed", update.getException());
             }

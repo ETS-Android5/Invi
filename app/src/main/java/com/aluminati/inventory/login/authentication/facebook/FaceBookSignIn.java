@@ -1,24 +1,31 @@
 package com.aluminati.inventory.login.authentication.facebook;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.airbnb.paris.Paris;
+import com.aluminati.inventory.LogInActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
-import com.aluminati.inventory.login.authentication.LinkAccounts;
+import com.aluminati.inventory.login.authentication.ForgotPasswordActivity;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
+import com.aluminati.inventory.userprofile.UserProfile;
+import com.aluminati.inventory.users.User;
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -27,67 +34,100 @@ import com.facebook.GraphRequest;
 import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.UserInfo;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class FaceBookSignIn extends Fragment implements View.OnClickListener{
 
-    private static final String TAG = "FaceBookSignIn";
+    private static final String TAG = FaceBookSignIn.class.getName();
     private static final String FaceBookProviderId = "facebook.com";
-    private FirebaseAuth firebaseAuth;
-    private LoginButton facebookLogin;
+    private AccessTokenTracker accessTokenTracker;
+    private Button facebookLogin;
     private CallbackManager callbackManager;
+    private LoginManager loginManager;
+    private FirebaseAuth firebaseAuth;
+    private Collection<String> permissions;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-
-        View view = inflater.inflate(R.layout.facebook_signin, container, true);
-
-
-        FacebookSdk.sdkInitialize(getActivity());
-
+        FacebookSdk.sdkInitialize(getApplicationContext());
 
         callbackManager = CallbackManager.Factory.create();
+        loginManager = LoginManager.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+        permissions = new ArrayList<>();
+        permissions.add("email");
+
+        accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+                if (currentAccessToken == null) {
+                    Log.i(TAG, "Facebook token revoked");
+                    accessTokenTracker.stopTracking();
+                    facebookLogin.setText(getResources().getString(R.string.facebook));
+                }
+            }
+        };
+
+        if(getActivity() instanceof LogInActivity){
+            Paris.style(facebookLogin).apply(R.style.userProfileSocialButtons);
+        }
+
+        return inflater.inflate(R.layout.facebook_signin, container, true);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         facebookLogin = view.findViewById(R.id.facebook_loging_fragment);
-        facebookLogin.setPermissions("email");
+        facebookLogin.setOnClickListener(this);
 
 
+    }
 
-        firebaseAuth = FirebaseAuth.getInstance();
-
-        return view;
+    private void isFacebookLinked(){
+        if(FirebaseAuth.getInstance().getCurrentUser() != null){
+            for(UserInfo userInfo : FirebaseAuth.getInstance().getCurrentUser().getProviderData()){
+                if(userInfo.getProviderId().equals(FaceBookProviderId)){
+                    facebookLogin.setText(getString(R.string.unlink));
+                }
+            }
+        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
-        Log.i(TAG, "Request code " + requestCode + " resultCode + " + resultCode);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        facebookLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+
+        loginManager.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 if(loginResult != null){
                     Log.i(TAG, "Login Successful :" + loginResult.getAccessToken());
                     handleFacebookAccessToken(loginResult.getAccessToken());
                 }else {
-                    FirebaseAuth.getInstance().signOut();
-                    LoginManager.getInstance().logOut();
                     Log.i(TAG, "Unable To Login");
                 }
             }
-
             @Override
             public void onCancel() {
                 Log.i(TAG, "Login Canceled");
@@ -99,114 +139,124 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener{
             }
         });
 
-        if(firebaseAuth.getCurrentUser() == null){
-            LoginManager.getInstance().logOut();
-        }
+        isFacebookLinked();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        facebookLogin.unregisterCallback(callbackManager);
+        loginManager.unregisterCallback(callbackManager);
     }
 
     private void handleFacebookAccessToken(AccessToken accessToken) {
         Log.i(TAG, "HandlingFacebookAceessToken:" + accessToken);
-        final AuthCredential authCredential = FacebookAuthProvider.getCredential(accessToken.getToken());
 
-        UserFetch.getUser(firebaseAuth.getCurrentUser().getEmail()).addOnCompleteListener(result -> {
-            if (result.isSuccessful() && result.getResult() != null) {
-                if (result.getResult().exists()) {
-                    LinkAccounts.linkAccounts(authCredential, getActivity(), TAG);
-                    UserFetch.update(firebaseAuth.getCurrentUser().getEmail(), "is_facebook_linked", true);
-                } else {
-                    firebaseAuth.signInWithCredential(authCredential).addOnCompleteListener(signInResult -> {
-                        if (signInResult.isSuccessful()) {
-                            Log.i(TAG, "FacebookSignIn:success" + firebaseAuth.getCurrentUser().getEmail());
-                            VerifyUser.checkUser(firebaseAuth.getCurrentUser(), getActivity(), VerificationStatus.GOOGLE);
-                            UserFetch.update(firebaseAuth.getCurrentUser().getEmail(), "is_facebook_linked", true);
-                        } else {
-                            if (signInResult.getException() instanceof FirebaseAuthUserCollisionException) {
-                                FirebaseAuth.getInstance().signOut();
-                                LoginManager.getInstance().logOut();
-                                Log.w(TAG, "FacebookSignIn:failed because", signInResult.getException());
-                                LinkAccounts.linkAccountsInfo(getContext(), "Email is already registered, login and link account or recover password");
-                                Utils.makeSnackBarWithButtons(getResources().getString(R.string.facebook_sign_infailed), facebookLogin, getActivity());
-                            }
-                        }
-                    });
-                }
+
+        final AuthCredential authCredential = FacebookAuthProvider.getCredential(accessToken.getToken());
+        if(firebaseAuth.getCurrentUser() != null){
+            if(getContext() instanceof UserProfile){
+                linkAccounts(authCredential);
+            }else {
+
+                alertDialog("Failed to LogIn", "Email is already registered, Login and link account or Recover Password")
+                        .setPositiveButton("Ok", (dialog, id) -> dialog.cancel())
+                        .setNegativeButton("Recover Password", (dialog, id) -> getContext().startActivity(new Intent(getContext(), ForgotPasswordActivity.class)))
+                        .create()
+                        .show();
             }
+        }else {
+            firebaseAuth.signInWithCredential(authCredential).addOnSuccessListener(result -> {
+                Log.d(TAG, "SignInWithGoogle:success");
+                VerifyUser.checkUser(firebaseAuth.getCurrentUser(), getActivity(), VerificationStatus.FACEBOOK);
+                accessTokenTracker.startTracking();
+            }).addOnFailureListener(result -> {
+                Log.w(TAG, "Failed to LogIn With Google", result);
+                if (result instanceof FirebaseAuthUserCollisionException) {
+                    Log.d(TAG, "Failed to LogIn", result);
+                    alertDialog("Login Error", "Account linked is associated with anther user")
+                            .setPositiveButton("Recover Password", (dialog, i) -> dialog.dismiss())
+                            .create()
+                            .show();
+
+                } else {
+                    Utils.makeSnackBarWithButtons(getResources().getString(R.string.facebook_sign_infailed), facebookLogin, getActivity());
+                }
+            });
+        }
+    }
+
+    private AlertDialog.Builder alertDialog(String title, String message){
+        return new AlertDialog.Builder(getContext())
+                .setTitle(title)
+                .setMessage(message)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setCancelable(true);
+    }
+
+    private void linkAccounts(AuthCredential credential) {
+
+        if (firebaseAuth.getCurrentUser() != null) {
+            firebaseAuth.getCurrentUser().linkWithCredential(credential)
+                    .addOnSuccessListener(result -> {
+                        Log.d(TAG, "linkWithCrediential:success");
+                        facebookLogin.setText(getResources().getString(R.string.unlink_facebook));
+                        UserFetch.update(firebaseAuth.getCurrentUser().getEmail(), "is_facebook_linked", true);
+                        Utils.makeSnackBar("Facebook Linked", facebookLogin, getActivity());
+                        accessTokenTracker.startTracking();
+                    })
+                    .addOnFailureListener(getActivity(), result -> {
+                        Log.w(TAG, "linkWithCreditential:failed", result);
+                    });
+        }
+    }
+
+    private void reload(){
+        FirebaseAuth.getInstance().getCurrentUser().reload().addOnSuccessListener(unlink -> {
+            Log.i(TAG, "Successfully reloaded user");
+            if(getActivity() instanceof UserProfile){
+                facebookLogin.setText(getResources().getString(R.string.facebook));
+
+            }else if(getActivity() instanceof LogInActivity){
+                facebookLogin.setText(getResources().getString(R.string.login_facebook));
+            }
+        }).addOnFailureListener(unlink -> Log.w(TAG, "Failed to reload user", unlink));
+    }
+
+    private void unLinkFaceBook(){
+
+        new GraphRequest(AccessToken.getCurrentAccessToken(), "/me/permissions", null,
+                HttpMethod.DELETE, response -> LoginManager.getInstance().logOut()).executeAsync();
+
+        FirebaseAuth.getInstance().getCurrentUser().unlink(FaceBookProviderId).addOnSuccessListener(authResult -> {
+            Log.d(TAG, "Facebook Unlinked");
+            Utils.makeSnackBarWithButtons("FaceBook Unlinked", facebookLogin, getActivity());
+            UserFetch.update(firebaseAuth.getCurrentUser().getEmail(), "is_facebook_linked", false);
+            reload();
+        }).addOnFailureListener(result -> {
+            Utils.makeSnackBarWithButtons("Failed to Unlink FaceBook", facebookLogin, getActivity());
+            Log.w(TAG, "Failed to unlink Facebook", result);
         });
 
     }
 
-
+    private void unLinkConfirm(){
+        alertDialog("Facebook Unlink", "Are you sure you want to unlink Facebook Account")
+                .setPositiveButton("Yes", (dialog, i) -> unLinkFaceBook())
+                .setNegativeButton("No", (dialog, i) -> dialog.dismiss())
+                .create()
+                .show();
+    }
 
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.facebook_loging_fragment){
-            if(facebookLogin.getText().equals(getResources().getString(R.string.com_facebook_loginview_log_out_button))){
-                new UnlinkFacebook(FaceBookProviderId, (result) ->  {
-                    if(result){
-                        Utils.makeSnackBarWithButtons("FaceBook Unlinked", facebookLogin, getActivity());
-                        Log.d(TAG, "Facebook Unlinked");
-                    }else{
-                        Utils.makeSnackBarWithButtons("Failed to Unlink FaceBook", facebookLogin, getActivity());
-                        Log.d(TAG, "Failed To Unlink Facebook");
-                    }
-                });
+            if(facebookLogin.getText().equals(getResources().getString(R.string.unlink_facebook))){
+                unLinkConfirm();
+            }else if(facebookLogin.getText().equals(getResources().getString(R.string.login_facebook))){
+                loginManager.logIn(this, permissions);
             }
         }
     }
 
-    public static class UnlinkFacebook extends AsyncTask<String, String, Boolean>{
-
-        private boolean unlinked = false;
-        private String provider;
-
-        private FacebookConsumer facebookConsumer;
-
-        public interface FacebookConsumer {
-            void accept(Boolean internet);
-        }
-
-       public UnlinkFacebook(String provider, FacebookConsumer facebookConsumer) {
-            this.provider = provider;
-            this.facebookConsumer = facebookConsumer;
-            execute();
-        }
-
-        @Override
-        protected Boolean doInBackground(String... strings) {
-
-            if(AccessToken.getCurrentAccessToken() == null){
-                Log.d(TAG, "Invalid Facebook Access Token");
-                return false;
-            }
-
-            new GraphRequest(AccessToken.getCurrentAccessToken(), "/me/permissions", null,
-                    HttpMethod.DELETE, response -> LoginManager.getInstance().logOut()).executeAsync();
-
-
-            if(FirebaseAuth.getInstance().getCurrentUser() != null){
-                FirebaseAuth.getInstance().getCurrentUser().unlink(this.provider).addOnCompleteListener(result -> {
-                    if(result.isSuccessful()){
-                        Log.i(TAG, "Unlinked Facebook Successfully");
-                        unlinked = true;
-                    }else {
-                        Log.i(TAG, "Failed To Unlink Facebook");
-                    }
-                });
-            }
-
-            return unlinked;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean unlinked) {
-            facebookConsumer.accept(unlinked);
-        }
-    }
 
 }

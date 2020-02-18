@@ -31,7 +31,6 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         registerButton.setOnClickListener(this);
         findViewById(R.id.forgot_password).setOnClickListener(this);
 
-        connection = new ConnectivityCheck(registerButton);
 
 
     }
@@ -64,18 +63,19 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onStart() {
         super.onStart();
-        registerReceiver(connection, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        //connection = new ConnectivityCheck(registerButton);
+        //registerReceiver(connection, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(connection);
+        //unregisterReceiver(connection);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        unregisterReceiver(connection);
+        //unregisterReceiver(connection);
     }
 }

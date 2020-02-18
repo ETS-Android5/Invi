@@ -80,6 +80,8 @@ public class User implements Serializable {
             this.isEmailVerified = (Boolean) documentSnapshot.get("is_email_verified");
             this.isGoogleLinked = (Boolean) documentSnapshot.get("is_google_linked");
             this.isFacebookLinked = (Boolean) documentSnapshot.get("is_facebook_linked");
+
+            Log.w(TAG, "Facebook " + isFacebookLinked);
         }catch (NullPointerException e){
             Log.w(TAG, "Failed To Read Fields From Document Snapshot", e);
         }

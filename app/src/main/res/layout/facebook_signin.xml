@@ -7,14 +7,10 @@
     >
 
 
-    <com.facebook.login.widget.LoginButton
+    <Button
         android:id="@+id/facebook_loging_fragment"
-        android:layout_width="350dp"
-        android:layout_height="50dp"
-        android:layout_margin="10dp"
-        android:paddingStart="40dp"
-        android:paddingEnd="40dp"
-        android:layout_gravity="center"
+        style="@style/loginSocialMediaButtons"
+        android:drawableStart="@drawable/facebook"
         android:background="@color/facebook_blue"
         android:text="@string/login_facebook"
         android:textColor="@color/white_text"

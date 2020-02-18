@@ -18,7 +18,7 @@ public class PhoneAuthenticationFragment extends Fragment {
     private static final String TAG = "PhoneAuthFrag";
     private EditText phoneNumber;
     private CountryCodePicker countryCodePicker;
-    protected PhoneVerificationSender phoneVerificationSender;
+    private PhoneVerificationSender phoneVerificationSender;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,17 +44,14 @@ public class PhoneAuthenticationFragment extends Fragment {
     }
 
 
-    public void bindActivity(PhoneAuthentication phoneAuthentication){
+    private void bindActivity(PhoneAuthentication phoneAuthentication){
         phoneAuthentication.setPhoneVerificationReciever(this::onCodeReceived);
     }
 
 
     private void onCodeReceived(int code){
-        switch (code){
-            case 4001:{
-                phoneVerificationSender.onPhoneNumberSend(getPhoneNumber());
-                break;
-            }
+        if (code == 4001) {
+            phoneVerificationSender.onPhoneNumberSend(getPhoneNumber());
         }
     }
 

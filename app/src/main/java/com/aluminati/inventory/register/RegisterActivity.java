@@ -1,6 +1,7 @@
 package com.aluminati.inventory.register;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -8,6 +9,8 @@ import com.aluminati.inventory.MainActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.fragments.fragmentListeners.password.PassWordListenerReciever;
+import com.aluminati.inventory.login.authentication.AuthenticationActivity;
+import com.aluminati.inventory.login.authentication.ForgotPasswordActivity;
 import com.aluminati.inventory.login.authentication.LinkAccounts;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
@@ -58,14 +61,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             Log.d(TAG, "Login Method" + loginMethod);
 
 
-            if(firebaseAuth != null){
-                User user = new User(firebaseAuth.getCurrentUser());
-                String[] name_split = user.getDisplayName().split(" ");
-                name.setText(name_split[0]);
-                surName.setText(name_split[1]);
-                email.setText(user.getEmail());
-            }
-
         Password passwordFragment = (Password) getSupportFragmentManager().findFragmentById(R.id.password_fragment);
             if(passwordFragment != null) {
                 bindFragmentToPassword(passwordFragment);
@@ -75,10 +70,20 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         findViewById(R.id.cancel_registration).setOnClickListener(this);
         firebaseAuth = FirebaseAuth.getInstance();
 
+
+        if(firebaseAuth.getCurrentUser() != null){
+            User user = new User(firebaseAuth.getCurrentUser());
+            String[] name_split = user.getDisplayName().split(" ");
+            name.setText(name_split[0]);
+            surName.setText(name_split[1]);
+            email.setText(user.getEmail());
+        }
+
     }
 
 
     public void askForPassWord(String passWord, String passWordConfirm, boolean meetsReqs) {
+        Log.i(TAG, "Password Received");
 
         if(!(passWord.isEmpty() && passWordConfirm.isEmpty())) {
             if (passWord.isEmpty()) {
@@ -86,8 +91,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             } else if (passWordConfirm.isEmpty()) {
                 Utils.makeSnackBarWithButtons(getResources().getString(R.string.confirm_password), name, this);
             } else if (passWord.equals(passWordConfirm)) {
-                if (!checkIfPassWordContains(passWord)) {
-
+                if (checkIfPassWordContains(passWord)) {
                     if (meetsReqs) {
                         createAccount(email.getText().toString().trim(), passWord);
                     } else {
@@ -213,47 +217,55 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
-    private void createAccount(String email, String password){
+    private void createAccount(String email, String password) {
+
+        Log.i(TAG, "Registering User");
 
         User user = addUser(email);
 
-        if(firebaseAuth.getCurrentUser() != null){
+        if (firebaseAuth.getCurrentUser() != null) {
 
             AuthCredential credential = EmailAuthProvider.getCredential(email, password);
 
-            firebaseAuth.getCurrentUser().linkWithCredential(credential).addOnCompleteListener(this, task -> {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "linkWithCredential:success");
-                            VerifyUser.userExists(user);
-                            startActivity(new Intent(RegisterActivity.this, Authentication.class));
-                            finish();
-                        } else {
-                            Log.w(TAG, "linkWithCredential:failure", task.getException());
-                            Utils.makeSnackBarWithButtons(getResources().getString(R.string.authentication_failed), name, this);
-                        }
-                    });
+                firebaseAuth.getCurrentUser().linkWithCredential(credential).addOnSuccessListener(task -> {
+                    Log.d(TAG, "linkWithCredential:success");
+                    VerifyUser.verifyUser(user);
+                    startActivity(new Intent(RegisterActivity.this, AuthenticationActivity.class));
+                    finish();
+                }).addOnFailureListener(result -> {
+                    Log.w(TAG, "linkWithCredential:failure", result);
+                    Utils.makeSnackBarWithButtons(getResources().getString(R.string.authentication_failed), name, this);
+                });
 
-        }else {
+        } else {
 
-            firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, task -> {
-                        if (task.isSuccessful()) {
-                            Log.i(TAG, "Successful");
-                            VerifyUser.userExists(user);
-                            VerifyUser.isUserVerified(user, RegisterActivity.this, true);
-                            if(!name.getText().toString().isEmpty() && !surName.getText().toString().isEmpty()){
-                                VerifyUser.updateFireBaseUser(firebaseAuth.getCurrentUser(), name.getText().toString() + " " + surName.getText().toString());
-                            }
-                        } else {
-                            if(task.getException() instanceof FirebaseAuthUserCollisionException){
-                                LinkAccounts.linkAccountsInfo(RegisterActivity.this, "Email is already registered, login " +
-                                        " or recover password");
-                            }
-                            Utils.makeSnackBarWithButtons(getResources().getString(R.string.authentication_failed), name, this);
-                        }
-                    });
+            firebaseAuth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(task -> {
+                Log.i(TAG, "Successful");
+                VerifyUser.verifyUser(user);
+                if (!name.getText().toString().isEmpty() && !surName.getText().toString().isEmpty()) {
+                    VerifyUser.updateFireBaseUser(firebaseAuth.getCurrentUser(), name.getText().toString() + " " + surName.getText().toString());
+                }
+                VerifyUser.isUserVerified(user, RegisterActivity.this, true);
+            }).addOnFailureListener(result -> {
+                Log.w(TAG, "Creating Account Failed", result);
+                if (result instanceof FirebaseAuthUserCollisionException) {
+                    showAlertDialog("Email is already registered, login " + " or recover password");
+                }
+                Utils.makeSnackBarWithButtons(getResources().getString(R.string.authentication_failed), name, this);
+            });
         }
     }
 
+    private void showAlertDialog(String message){
+        new AlertDialog.Builder(this)
+                .setTitle("Email Registerd")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setMessage(message)
+                .setPositiveButton("Ok", (dialog, id) -> dialog.cancel())
+                .setNegativeButton("Recover Password", (dialog, id) -> startActivity(new Intent(RegisterActivity.this, ForgotPasswordActivity.class)))
+                .create()
+                .show();
+    }
 
 
     private User addUser(String email){

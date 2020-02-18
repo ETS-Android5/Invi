@@ -2,7 +2,7 @@
     <string name="app_name">Invi</string>
     <string name="register_text">Login With</string>
     <string name="login_button">Login</string>
-    <string name="login_facebook">Facebook</string>
+    <string name="login_facebook">LogIn With Facebook</string>
     <string name="login_google">Continue With Google</string>
     <string name="register">Register</string>
     <string name="cancel">Cancel</string>
@@ -26,6 +26,7 @@
     <string name="facebook_app_id">853409325101910</string>
     <string name="fb_login_protocol_scheme">fb853409325101910</string>
     <!-- Facebook api-->
+    <string name="google_client_id">617397433442-urgnv43j7ik4obmqvoemf1huiv0pcnl1.apps.googleusercontent.com</string>
     <string name="title_activity_info_page">activity_info_page</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -86,10 +87,24 @@
     <string name="password_lower_case">Password contains at least 2 Lower Case</string>
     <string name="password_upper_case">Password contains at least 2 Upper Case</string>
     <string name="password_special_char">Password contains at least 1 Special Char</string>
-    <string name="com_facebook_loginview_log_out_button">Unlink Facebook</string>
+    <string name="unlink_facebook">Unlink Facebook</string>
     <string name="photo_update">Click To Change Image</string>
     <string name="profile_image">Profile Image</string>
     <string name="social_platforms">Social Platforms</string>
+    <string name="login_failed">Login Failed</string>
     <string name="reload">Reload</string>
     <string name="extras">Extras</string>
+    <string name="email_registered">Email is already registered, login and link account or recover password</string>
+    <string name="goodbye">We\'re sad to see you go \uD83D\uDE2D</string>
+    <string name="delete_user_inform">Are you sure you want to delete your account ??</string>
+    <string name="delete_reason_1">Don\'t use it enough</string>
+    <string name="delete_reason_2">Too complicated</string>
+    <string name="delete_reason_3">Doesn\'t suit my needs</string>
+    <string name="delete_reason_4">Found a better app </string>
+    <string name="delete_reason_other">Other</string>
+    <string name="delete">Delete</string>
+    <string name="signin_with_twitter">Sign In With Twitter</string>
+    <string name="logout_twitter">Unlink Twitter</string>
+    <string name="unlink">Unlink</string>
+    <string name="twitter">Twitter</string>
 </resources>

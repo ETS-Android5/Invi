@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.Gravity;
@@ -15,8 +14,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,17 +21,14 @@ import androidx.fragment.app.Fragment;
 import com.aluminati.inventory.InfoPageActivity;
 import com.aluminati.inventory.MainActivity;
 import com.aluminati.inventory.R;
+import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.fragments.PhoneAuthenticationFragment;
 import com.aluminati.inventory.fragments.fragmentListeners.phone.PhoneVerificationReciever;
-import com.aluminati.inventory.login.authentication.LinkAccounts;
-import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.encryption.PhoneAESEncryption;
-import com.aluminati.inventory.userprofile.UserProfile;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.FirebaseTooManyRequestsException;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
@@ -58,8 +52,6 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
         private String phoneNumber;
         private LinearLayout linearLayout;
         private CountDownTimer countDownTimer;
-        private String callingActivity;
-
 
 
         @Override
@@ -67,8 +59,11 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
             super.onCreate(savedInstanceState);
             setContentView(R.layout.phone_authentication);
 
-            String phoneNumber = getIntent().getStringExtra("phone_number");
-            callingActivity = getIntent().getStringExtra("calling_activity");
+            try {
+                phoneNumber = Objects.requireNonNull(getIntent().getExtras()).getString("phone_number");
+            }catch (NullPointerException e){
+                Log.w(TAG, "Null Phone number", e);
+            }
 
             enablePhoneLogin = findViewById(R.id.enable_phone_login);
             verifyPhoneNumberButton = findViewById(R.id.verify_phone_number_button);
@@ -76,11 +71,9 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
             linearLayout = findViewById(R.id.frag_layout);
             verifyPhoneNumber = createVerifyPhoneNumber();
             verifyPhoneNumberButton.setOnClickListener(this);
-
             findViewById(R.id.phone_verification_cancel).setOnClickListener(this);
 
             phoneAuthenticationFragment = (PhoneAuthenticationFragment) getSupportFragmentManager().findFragmentById(R.id.phone_authentication);
-
             bindFragmentToPhone(phoneAuthenticationFragment);
 
             callbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -92,20 +85,23 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
                     new Thread(() -> {
                         SystemClock.sleep(3000);
                         runOnUiThread(() -> {
-                            if (phoneNumber != null) {
-                                startActivity(new Intent(PhoneAuthentication.this, UserProfile.class));
-                                finish();
-                            } else {
-                                if (enablePhoneLogin.isChecked()) {
-                                    LinkAccounts.linkAccounts(credential, PhoneAuthentication.this, TAG);
+                            if (getCallingActivity() != null) {
+                                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                                    if (enablePhoneLogin.isChecked()) {
+                                        linkAccounts(credential);
+                                    } else {
+                                        verifyCodeSent(enablePhoneLogin.isChecked(), credential.getSmsCode(), credential);
+                                    }
+                                } else {
+                                    verifyCodeSent(enablePhoneLogin.isChecked(), credential.getSmsCode(), credential);
                                 }
-                                UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(), "is_phone_verified", true);
-                                setResult(Activity.RESULT_OK);
-                                finish();
                             }
                         });
                     }).start();
                 }
+
+
+
 
                 @Override
                 public void onVerificationFailed(FirebaseException e) {
@@ -155,45 +151,29 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
 
         }
 
-        private void makeSnackBar(String message){
-            Snackbar snackbar = Snackbar.make(verifyPhoneNumberButton, message, BaseTransientBottomBar.LENGTH_INDEFINITE);
-            snackbar.setAction(getResources().getString(R.string.ok), view -> {
-                snackbar.dismiss();
-            });
-            snackbar.show();
-        }
 
-
-        private void checkNumberIsRegistered(String email, String phoneNumber){
-            UserFetch.getUser(email).addOnCompleteListener(task -> {
-                if(task.isSuccessful()){
-                    Log.i(TAG, "Got User Successfully");
-                    new PhoneAESEncryption(phoneNumber, (result) -> {
-                        Log.i(TAG, "Result Successfully " + result);
-                        UserFetch.searchUser().whereEqualTo("phone_number", result).get().addOnCompleteListener(returnedResult -> {
-                            if(returnedResult.isSuccessful()) {
-                                if (returnedResult.getResult().size() == 1) {
-                                    Log.i(TAG, "Phone number registered " + returnedResult.getResult().size());
-                                    makeSnackBar(getResources().getString(R.string.phone_already_registered));
-                                } else {
-                                    Log.i(TAG, "Phone number not registered");
-                                    updateUserPhoneNumber(email, result);
-                                    replaceFragment(linearLayout, verifyPhoneNumber);
-                                    startPhoneVerifiation(phoneNumber);
-                                }
-                            }
-                        });
-                    });
-                }
-            });
+    private void checkNumberIsRegistered(String email, String phoneNumber) {
+            UserFetch.getUser(email).addOnSuccessListener(task -> {
+                Log.i(TAG, "Got User Successfully");
+                new PhoneAESEncryption(phoneNumber, (result) -> {
+                    Log.i(TAG, "Result Successfully " + result);
+                    UserFetch.searchUser().whereEqualTo("phone_number", result).get().addOnSuccessListener(returnedResult -> {
+                        if (!returnedResult.isEmpty()) {
+                            Log.i(TAG, "Phone number registered ");
+                            Utils.makeSnackBar(getResources().getString(R.string.phone_already_registered), verifyPhoneNumberButton, this);
+                        } else {
+                            Log.i(TAG, "Phone number not registered");
+                            updateUserPhoneNumber(email, result);
+                            replaceFragment(linearLayout, verifyPhoneNumber);
+                            startPhoneVerifiation(phoneNumber);
+                        }
+                    }).addOnFailureListener(resultFaied -> Log.w(TAG, "Failed to get User from firestore", resultFaied));
+                });
+            }).addOnFailureListener(result -> Log.w(TAG, "Couldn't get user form firestore", result));
         }
 
         private void updateUserPhoneNumber(String email,String phoneNumber){
-            new PhoneAESEncryption(phoneNumber, (result) -> {
-                if(!result.isEmpty()){
-                    UserFetch.update(email,"phone_number", result);
-                }
-            });
+            UserFetch.update(email,"phone_number",phoneNumber);
         }
 
 
@@ -243,54 +223,36 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
         }
 
 
-        private void verifyCodeSent(boolean linkPhoneNumber){
-            String codeSent = this.verifyPhoneNumber.getText().toString().trim();
+        private void verifyCodeSent(boolean linkPhoneNumber, String codeSent, PhoneAuthCredential cred) {
 
-            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(this.phoneAuthVerificationId, codeSent);
 
-            FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener(task -> {
-                if(task.isSuccessful()){
-                    Log.d(TAG, "signInWithCredential:success");
-                    if(phoneNumber != null){
-                        startActivity(new Intent(PhoneAuthentication.this, InfoPageActivity.class));
-                        finish();
-                    }else {
-                        if (linkPhoneNumber) {
-                            LinkAccounts.linkAccounts(credential, PhoneAuthentication.this, TAG);
-                        }
-                        UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(), "is_phone_verified", true);
+            String code = (codeSent == null ? verifyPhoneNumber.getText().toString() : codeSent);
+            PhoneAuthCredential credential = (codeSent == null ? cred : PhoneAuthProvider.getCredential(phoneAuthVerificationId, code));
 
-                        startActivity(new Intent(PhoneAuthentication.this, InfoPageActivity.class));
-                        finish();
+            Log.i(TAG, "code sent" + code);
+
+            if (getCallingActivity() != null) {
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    if (linkPhoneNumber) {
+                        linkAccounts(credential);
                     }
-                }else{
-                    Log.w(TAG, "signInWithCredential:failure", task.getException());
-                    if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                        Log.i(TAG, "Verification code entered is invalid");
-                        makeSnackBar(getResources().getString(R.string.invalide_verification_code));
-                    }
+                } else {
+                    FirebaseAuth.getInstance().signInWithCredential(credential)
+                            .addOnSuccessListener(result -> {
+                                Log.d(TAG, "signInWithCredential:success");
+                                setResult(Activity.RESULT_OK, new Intent());
+                                finish();
+                            })
+                            .addOnFailureListener(result -> {
+                                Log.w(TAG, "Failed to login", result);
+                                setResult(Activity.RESULT_CANCELED, new Intent());
+                                finish();
+                            });
                 }
-            });
+            }
+
         }
 
-
-        private void updatePhoneNumber(){
-
-            String codeSent = this.verifyPhoneNumber.getText().toString().trim();
-
-            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(this.phoneAuthVerificationId, codeSent);
-
-            Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).updatePhoneNumber(credential).addOnCompleteListener(task -> {
-                if(task.isSuccessful()){
-                    Log.i(TAG, "Phone Number Updated Sucessfuly");
-                    setResult(VerificationStatus.SUCCESSFULL_UPDATE);
-                }else{
-                    Log.i(TAG, "Failed to updated number");
-                    setResult(VerificationStatus.FAILED_UPDATE);
-                }
-            });
-
-        }
 
         private void cancel(){
             if(findViewById(R.id.phone_authentication) == null){
@@ -301,11 +263,7 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
             }
 
             if(getCallingActivity() != null){
-                setResult(Activity.RESULT_CANCELED);
-                finish();
-            }else{
-                if(callingActivity.equals(MainActivity.class.getSimpleName()))
-                startActivity(new Intent(PhoneAuthentication.this, MainActivity.class));
+                setResult(Activity.RESULT_CANCELED, new Intent());
                 finish();
             }
 
@@ -316,7 +274,7 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
             switch (view.getId()){
                 case R.id.verify_phone_number_button:{
                     if(verifyPhoneNumberButton.getText().toString().equals(getResources().getString(R.string.verify_button))){
-                        verifyCodeSent(this.enablePhoneLogin.isChecked());
+                        verifyCodeSent(this.enablePhoneLogin.isChecked(), null, null);
                     }else if(verifyPhoneNumberButton.getText().toString().equals(getResources().getString(R.string.send_code))){
                         phoneVerificationReciever.onVerificationRecieved(4001);
                     }
@@ -328,14 +286,33 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
                 }
                 case R.id.phone_verification_cancel:{
                     cancel();
-                    //startActivity();
                     break;
                 }
             }
 
         }
 
-        private void onPhoneNumberRecieved(String phoneNumber){
+    public void linkAccounts(AuthCredential credential) {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        if (firebaseAuth.getCurrentUser() != null) {
+            firebaseAuth.getCurrentUser().linkWithCredential(credential)
+                    .addOnSuccessListener(result -> {
+                            Log.d(TAG, "linkWithCrediential:success");
+                            UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(), "is_phone_verified", true);
+                            setResult(Activity.RESULT_OK, new Intent());
+                            finish();
+                    })
+                    .addOnFailureListener(result -> {
+                        Log.w(TAG, "linkWithCreditential:failed", result);
+                        setResult(Activity.RESULT_CANCELED, new Intent());
+                        finish();
+                    });
+        }
+
+    }
+
+
+    private void onPhoneNumberRecieved(String phoneNumber){
             if(!phoneNumber.isEmpty()){
                 this.phoneNumber = phoneNumber;
                     checkNumberIsRegistered(FirebaseAuth.getInstance().getCurrentUser().getEmail(), phoneNumber);

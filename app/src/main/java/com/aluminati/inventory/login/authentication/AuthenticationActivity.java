@@ -1,5 +1,6 @@
 package com.aluminati.inventory.login.authentication;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -70,42 +71,56 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
             }
         });
 
-
+        userEmailVerified();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-            if(resultCode == Activity.RESULT_OK){
+        if(requestCode == REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                Log.i(TAG, "Info ===== > Ok ");
                 verifyPhone.setVisibility(View.INVISIBLE);
                 phoneVerified.setText(getResources().getString(R.string.veirified));
                 UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(), "is_phone_verified", true);
                 Utils.makeSnackBarWithButtons(getResources().getString(R.string.phone_successfully_linked), verifyPhone, this);
             }
+        }
     }
 
+    private void userEmailVerified(){
+        FirebaseAuth.getInstance().addAuthStateListener(firebaseAuth -> {
+            if(firebaseAuth.getCurrentUser().isEmailVerified()){
+                Log.i(TAG, "Verified");
+            }else{
+                Log.i(TAG, "Still not verified");
+            }
+        });
+    }
 
 
     @Override
     protected void onStart() {
         super.onStart();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        user.reload().addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
+        user.reload().addOnSuccessListener(task -> {
+            Log.i(TAG, "Success to check");
                 if(user.isEmailVerified()){
                     Log.i(TAG, "User successfully email verified");
                     UserFetch.update(user.getEmail(), "is_email_verified", true);
                     emailVerified.setText(getResources().getString(R.string.veirified));
                     verifyEmail.setVisibility(View.INVISIBLE);
                     contineButton.setEnabled(true);
+                }else{
+                    Log.i(TAG, "Not verifired");
                 }
-            }
-        });
+        }).addOnFailureListener(result -> Log.w(TAG, "Failed to check verifiy user", result));
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        finish();
     }
 
 
@@ -114,15 +129,15 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.continue_verify_button:{
-                UserFetch.getUser(FirebaseAuth.getInstance().getCurrentUser().getEmail()).addOnCompleteListener(task -> {
-                    if(task.isSuccessful() && task.getResult() != null) {
-                        User user = new User(task.getResult());
+                UserFetch.getUser(FirebaseAuth.getInstance().getCurrentUser().getEmail()).addOnSuccessListener(task -> {
+                    if (task.exists()) {
+                        User user = new User(task);
                         if (user.isPhoneVerified() && user.isEmailVerified()) {
                             startActivity(new Intent(AuthenticationActivity.this, UserProfile.class));
                             finish();
                         }
                     }
-                });
+                }).addOnFailureListener(task -> Log.w(TAG, "Failed to get user", task));
 
                 break;
             }
@@ -133,14 +148,13 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
                 break;
             }
             case R.id.verify_phone: {
-                startActivityForResult(new Intent(AuthenticationActivity.this, PhoneAuthentication.class), REQUEST_CODE);
+                startActivityForResult(new Intent(AuthenticationActivity.this, PhoneAuthentication.class),REQUEST_CODE);
                 break;
             }
             case R.id.email_verify:{
                 VerifyUser.verifyEmail().addOnCompleteListener(result -> {
                     if(result.isSuccessful()){
                         Utils.makeSnackBarWithButtons("Email Sent", emailVerified, this);
-                        emailVerified.setText(getResources().getString(R.string.veirified));
                     }else{
                         Utils.makeSnackBarWithButtons("Failed to Send Email", emailVerified, this);
                     }
