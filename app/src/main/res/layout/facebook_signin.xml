@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:id="@+id/facebook_login_button"
-    >
+    android:id="@+id/facebook_login_button">
 
-
-    <Button
+    <com.ebanx.swipebtn.SwipeButton
         android:id="@+id/facebook_loging_fragment"
-        style="@style/loginSocialMediaButtons"
-        android:drawableStart="@drawable/facebook"
-        android:background="@color/facebook_blue"
-        android:text="@string/login_facebook"
-        android:textColor="@color/white_text"
-        />
-
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        app:button_background="@drawable/facebook_selector_button"
+        app:button_bottom_padding="20dp"
+        app:button_left_padding="20dp"
+        app:button_right_padding="20dp"
+        app:button_top_padding="20dp"
+        app:inner_text="@string/login_facebook"
+        app:inner_text_background="@drawable/facebook_selector"
+        app:inner_text_bottom_padding="5dp"
+        app:inner_text_left_padding="20dp"
+        app:inner_text_color="@android:color/white"
+        app:inner_text_size="20sp"
+        app:inner_text_top_padding="5dp" />
 </LinearLayout>

@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="300dp"
     android:layout_height="500dp"
     android:layout_gravity="center"
-    android:padding="20dp"
-    >
+    android:padding="20dp">
 
 
     <TextView
@@ -68,15 +67,27 @@
         android:enabled="false"
         />
 
-    <Button
-        android:id="@+id/delete"
+
+    <com.ebanx.swipebtn.SwipeButton
+        android:id="@+id/delete_user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/buttonegative"
-        android:text="@string/delete"
-        android:textSize="20sp"
-        android:textColor="@color/white_text"
-       />
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        app:button_background="@drawable/delete_user_selector_button"
+        app:button_bottom_padding="20dp"
+        app:button_left_padding="20dp"
+        app:button_right_padding="20dp"
+        app:button_top_padding="20dp"
+        app:inner_text="@string/delete_account"
+        app:inner_text_background="@drawable/google_selector"
+        app:inner_text_bottom_padding="5dp"
+        app:inner_text_left_padding="20dp"
+        app:inner_text_color="@android:color/white"
+        app:inner_text_size="20sp"
+        app:inner_text_top_padding="5dp"
+        />
+
+
 
 </LinearLayout>

@@ -107,4 +107,6 @@
     <string name="logout_twitter">Unlink Twitter</string>
     <string name="unlink">Unlink</string>
     <string name="twitter">Twitter</string>
+    <string name="login_twitter">Continue With Twitter</string>
+    <string name="unlink_twitter">Unlink Twitter</string>
 </resources>

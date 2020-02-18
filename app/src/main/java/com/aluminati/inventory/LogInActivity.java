@@ -42,7 +42,6 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                 Intent intent = new Intent(this, RegisterActivity.class);
                 intent.putExtra("login_method", VerificationStatus.EMAIL);
                 startActivity(intent);
-                finish();
                 break;
             }
             case R.id.forgot_password: {

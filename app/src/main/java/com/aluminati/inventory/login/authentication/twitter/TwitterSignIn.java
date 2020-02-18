@@ -18,6 +18,8 @@ import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.userprofile.UserProfile;
+import com.ebanx.swipebtn.OnStateChangeListener;
+import com.ebanx.swipebtn.SwipeButton;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -29,7 +31,7 @@ import com.google.firebase.auth.TwitterAuthCredential;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.auth.UserInfo;
 
-public class TwitterSignIn extends Fragment implements View.OnClickListener
+public class TwitterSignIn extends Fragment implements View.OnClickListener, OnStateChangeListener
 {
 
 
@@ -39,29 +41,39 @@ public class TwitterSignIn extends Fragment implements View.OnClickListener
     private OAuthProvider.Builder provider;
     private FirebaseAuth firebaseAuth;
     private Button twitterButton;
+    private SwipeButton twitterSwipeButton;
+
+
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
+        if(getActivity() instanceof LogInActivity){
+            twitterSwipeButton = view.findViewById(R.id.twitter_swipe_button);
+            twitterSwipeButton.setOnStateChangeListener(this);
+        }else if(getActivity() instanceof UserProfile){
+            twitterButton = view.findViewById(R.id.twitter_button);
+            twitterButton.setOnClickListener(this);
+        }
+    }
+
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         provider = OAuthProvider.newBuilder(TwiiterProviderId);
         firebaseAuth = FirebaseAuth.getInstance();
 
         pendingResultTask = firebaseAuth.getPendingAuthResult();
 
         isTwitterLinked();
-    }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view  = inflater.inflate(getResources().getLayout(R.layout.twitter_signin), container, false);
-
-        twitterButton = view.findViewById(R.id.twitter_button);
-        twitterButton.setOnClickListener(this);
-
+        View view = null;
         if(getActivity() instanceof LogInActivity){
-            Paris.style(twitterButton).apply(R.style.userProfileSocialButtons);
+            view = inflater.inflate(R.layout.twitter_signin, container, false);
+        }else if(getActivity() instanceof UserProfile){
+            view = inflater.inflate(R.layout.twitter_unlink, container, false);
         }
 
         return view;
@@ -133,10 +145,7 @@ public class TwitterSignIn extends Fragment implements View.OnClickListener
 
 
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
+
 
     @Override
     public void onClick(View view) {
@@ -147,5 +156,10 @@ public class TwitterSignIn extends Fragment implements View.OnClickListener
                 signIn();
             }
         }
+    }
+
+    @Override
+    public void onStateChange(boolean active) {
+
     }
 }

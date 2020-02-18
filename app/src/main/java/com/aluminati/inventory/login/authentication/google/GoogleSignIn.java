@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.aluminati.inventory.LogInActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
@@ -23,6 +24,8 @@ import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
 import com.aluminati.inventory.userprofile.UserProfile;
 import com.aluminati.inventory.users.User;
+import com.ebanx.swipebtn.OnStateChangeListener;
+import com.ebanx.swipebtn.SwipeButton;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -35,7 +38,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserInfo;
 
-public class GoogleSignIn extends Fragment implements View.OnClickListener {
+public class GoogleSignIn extends Fragment implements View.OnClickListener, OnStateChangeListener {
 
     private static final String TAG = GoogleSignIn.class.getName();
     private static final String GoogleProviderId = "google.com";
@@ -44,6 +47,7 @@ public class GoogleSignIn extends Fragment implements View.OnClickListener {
     private GoogleSignInClient googleSignInClient;
     private CallbackManager callbackManager;
     private Button googleButton;
+    private SwipeButton googleSwipeButton;
     private FirebaseAuth firebaseAuth;
 
     @Nullable
@@ -56,16 +60,28 @@ public class GoogleSignIn extends Fragment implements View.OnClickListener {
         firebaseAuth = FirebaseAuth.getInstance();
         callbackManager = CallbackManager.Factory.create();
 
+        View view = null;
 
-        return inflater.inflate(R.layout.google_signin, container, false);
+        if(getActivity() instanceof LogInActivity){
+            view = inflater.inflate(R.layout.google_signin, container, false);
+        }else if(getActivity() instanceof UserProfile){
+            view = inflater.inflate(R.layout.google_unlink, container, false);
+        }
+
+        return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        googleButton = view.findViewById(R.id.google_signin_button);
-        googleButton.setOnClickListener(this);
+        if(getActivity() instanceof LogInActivity){
+            googleSwipeButton = view.findViewById(R.id.google_signin_button);
+            googleSwipeButton.setOnStateChangeListener(this);
+        }else if(getActivity() instanceof UserProfile){
+            googleButton = view.findViewById(R.id.google_button);
+            googleButton.setOnClickListener(this);
+        }
 
     }
 
@@ -216,5 +232,10 @@ public class GoogleSignIn extends Fragment implements View.OnClickListener {
     }
 
 
-
+    @Override
+    public void onStateChange(boolean active) {
+        if(active){
+            signIn();
+        }
+    }
 }

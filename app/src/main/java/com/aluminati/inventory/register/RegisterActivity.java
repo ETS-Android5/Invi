@@ -16,6 +16,7 @@ import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
 import com.aluminati.inventory.login.authentication.password.Password;
 import com.aluminati.inventory.users.User;
+import com.facebook.login.LoginManager;
 import com.google.api.Authentication;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -35,7 +36,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private final String TAG = RegisterActivity.class.getSimpleName();
     private PassWordListenerReciever passWordListenerReciever;
     private FirebaseAuth firebaseAuth;
-    private final int request_code = 9002;
     private EditText email;
     private EditText name;
     private EditText surName;
@@ -124,8 +124,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 break;
             }
             case R.id.cancel_registration: {
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(this, MainActivity.class));
+                if(firebaseAuth.getCurrentUser() != null){
+                    FirebaseAuth.getInstance().signOut();
+                    if(LoginManager.getInstance() != null){
+                        LoginManager.getInstance().logOut();
+                    }
+                }
                 finish();
                 break;
             }
@@ -150,6 +154,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode,resultCode,data);
+        int request_code = 9002;
         if(requestCode == request_code){
             if(resultCode == Activity.RESULT_OK){
                 //startActivity();

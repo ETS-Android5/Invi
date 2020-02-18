@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    >
+    android:layout_height="wrap_content">
 
-    <Button
+
+    <com.ebanx.swipebtn.SwipeButton
         android:id="@+id/google_signin_button"
-        style="@style/loginSocialMediaButtons"
-        android:background="@color/google_red"
-        android:drawableStart="@drawable/google"
-        android:text="@string/login_google"
-        />
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        app:button_background="@drawable/google_selector_button"
+        app:button_bottom_padding="20dp"
+        app:button_left_padding="20dp"
+        app:button_right_padding="20dp"
+        app:button_top_padding="20dp"
+        app:inner_text="@string/login_google"
+        app:inner_text_background="@drawable/google_selector"
+        app:inner_text_bottom_padding="5dp"
+        app:inner_text_left_padding="20dp"
+        app:inner_text_color="@android:color/white"
+        app:inner_text_size="20sp"
+        app:inner_text_top_padding="5dp" />
 
 </LinearLayout>

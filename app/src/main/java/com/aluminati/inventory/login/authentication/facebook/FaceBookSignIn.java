@@ -24,6 +24,8 @@ import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
 import com.aluminati.inventory.userprofile.UserProfile;
 import com.aluminati.inventory.users.User;
+import com.ebanx.swipebtn.OnStateChangeListener;
+import com.ebanx.swipebtn.SwipeButton;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -46,11 +48,12 @@ import java.util.Collection;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 
-public class FaceBookSignIn extends Fragment implements View.OnClickListener{
+public class FaceBookSignIn extends Fragment implements View.OnClickListener, OnStateChangeListener {
 
     private static final String TAG = FaceBookSignIn.class.getName();
     private static final String FaceBookProviderId = "facebook.com";
     private AccessTokenTracker accessTokenTracker;
+    private SwipeButton facebookSwipeLogin;
     private Button facebookLogin;
     private CallbackManager callbackManager;
     private LoginManager loginManager;
@@ -76,24 +79,36 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener{
                 if (currentAccessToken == null) {
                     Log.i(TAG, "Facebook token revoked");
                     accessTokenTracker.stopTracking();
-                    facebookLogin.setText(getResources().getString(R.string.facebook));
                 }
             }
         };
 
+        View view = null;
+
         if(getActivity() instanceof LogInActivity){
-            Paris.style(facebookLogin).apply(R.style.userProfileSocialButtons);
+            view = inflater.inflate(R.layout.facebook_signin, container, false);
+        }else if(getActivity() instanceof UserProfile){
+            view = inflater.inflate(R.layout.facebook_unlink, container, false);
         }
 
-        return inflater.inflate(R.layout.facebook_signin, container, true);
+
+        return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        facebookLogin = view.findViewById(R.id.facebook_loging_fragment);
-        facebookLogin.setOnClickListener(this);
+
+        if(getActivity() instanceof LogInActivity){
+            facebookSwipeLogin = view.findViewById(R.id.facebook_loging_fragment);
+            facebookSwipeLogin.setOnStateChangeListener(this);
+        }else if(getActivity() instanceof UserProfile){
+            facebookLogin = view.findViewById(R.id.facebook_unlink_button);
+            facebookLogin.setOnClickListener(this);
+        }
+
+
 
 
     }
@@ -259,4 +274,10 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener{
     }
 
 
+    @Override
+    public void onStateChange(boolean active) {
+        if(active){
+            loginManager.logIn(this, permissions);
+        }
+    }
 }

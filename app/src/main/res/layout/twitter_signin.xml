@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/twitter_button"
-        style="@style/loginSocialMediaButtons"
-        android:background="@color/twitter_blue"
-        android:text="@string/signin_with_twitter"
-        android:drawableStart="@drawable/twitter"
-        />
+
+    <com.ebanx.swipebtn.SwipeButton
+        android:id="@+id/twitter_swipe_button"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        app:button_background="@drawable/twitter_selector_button"
+        app:button_bottom_padding="20dp"
+        app:button_left_padding="20dp"
+        app:button_right_padding="20dp"
+        app:button_top_padding="20dp"
+        app:inner_text="@string/login_twitter"
+        app:inner_text_background="@drawable/twitter_selector"
+        app:inner_text_bottom_padding="5dp"
+        app:inner_text_color="@android:color/white"
+        app:inner_text_left_padding="20dp"
+        app:inner_text_size="20sp"
+        app:inner_text_top_padding="5dp" />
 
 </LinearLayout>
