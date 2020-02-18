@@ -1,5 +1,6 @@
 package com.aluminati.inventory.login.authentication;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import com.aluminati.inventory.HomeActivity;
 import com.aluminati.inventory.MainActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
@@ -17,7 +19,6 @@ import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.login.authentication.phoneauthentication.PhoneAuthentication;
 import com.aluminati.inventory.userprofile.UserProfile;
 import com.aluminati.inventory.users.User;
-import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -89,28 +90,13 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
 
     private void userEmailVerified(){
         FirebaseAuth.getInstance().addAuthStateListener(firebaseAuth -> {
-            if(firebaseAuth.getCurrentUser() != null) {
-                if (firebaseAuth.getCurrentUser().isEmailVerified()) {
-                    Log.i(TAG, "Verified");
-                } else {
-                    Log.i(TAG, "Still not verified");
-                }
+            if(firebaseAuth.getCurrentUser().isEmailVerified()){
+                Log.i(TAG, "Verified");
+            }else{
+                Log.i(TAG, "Still not verified");
             }
         });
     }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        if(FirebaseAuth.getInstance().getCurrentUser() != null){
-            FirebaseAuth.getInstance().signOut();
-            if(LoginManager.getInstance() != null){
-                LoginManager.getInstance().logOut();
-            }
-        }
-        finish();
-    }
-
 
 
     @Override
@@ -147,7 +133,7 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
                     if (task.exists()) {
                         User user = new User(task);
                         if (user.isPhoneVerified() && user.isEmailVerified()) {
-                            startActivity(new Intent(AuthenticationActivity.this, UserProfile.class));
+                            startActivity(new Intent(AuthenticationActivity.this, HomeActivity.class));
                             finish();
                         }
                     }
@@ -156,12 +142,7 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
                 break;
             }
             case R.id.cancel_verify_button:{
-                if(FirebaseAuth.getInstance().getCurrentUser() != null) {
-                    FirebaseAuth.getInstance().signOut();
-                    if(LoginManager.getInstance() != null){
-                        LoginManager.getInstance().logOut();
-                    }
-                }
+                FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(AuthenticationActivity.this, MainActivity.class));
                 finish();
                 break;

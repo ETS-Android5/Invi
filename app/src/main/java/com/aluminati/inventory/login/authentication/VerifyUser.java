@@ -3,6 +3,8 @@ package com.aluminati.inventory.login.authentication;
 import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
+
+import com.aluminati.inventory.HomeActivity;
 import com.aluminati.inventory.InfoPageActivity;
 import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.register.RegisterActivity;
@@ -66,7 +68,8 @@ public class VerifyUser {
         if (user != null) {
             if (user.isPhoneVerified() && user.isEmailVerified()){
                 Log.i(TAG, "User verified -> InfoPage Activity Intent");
-                activity.startActivity(new Intent(activity, UserProfile.class));
+                //TODO: this needs to be put in a frag activity.startActivity(new Intent(activity, UserProfile.class));
+                activity.startActivity(new Intent(activity, HomeActivity.class));
                 activity.finish();
             }else {
                 Log.i(TAG, "User not veirifed -> Authentication Activity Intent");

@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+<!--    <color name="colorPrimary">#008577</color>-->
+<!--    <color name="colorPrimaryDark">#00574B</color>-->
+<!--    <color name="colorAccent">#D81B60</color>-->
+
+    <color name="colorPrimary">#1084E2</color>
+    <color name="colorPrimaryDark">#303D91</color>
+    <color name="colorAccent">#FFEB3B</color>
+
     <color name="link_buttons">#0000ff</color>
     <color name="white_text">#ffffff</color>
     <color name="facebook_blue">#3b5998</color>
@@ -15,5 +20,10 @@
     <color name="button_pink">#fbc2e5</color>
     <color name="button_red">#f70029</color>
     <color name="edittext_tinti">#a3a7aa</color>
-    <color name="twitter_blue">#00acee</color>
+    <color name="twitter_blue">#03A9F4</color>
+
+
+    <color name="fragbg_lightgray">#D8D8D8</color>
+
+
 </resources>
