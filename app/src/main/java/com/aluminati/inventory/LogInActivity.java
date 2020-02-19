@@ -16,6 +16,7 @@ import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.offline.ConnectivityCheck;
 import com.aluminati.inventory.register.RegisterActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 
 public class LogInActivity extends AppCompatActivity implements View.OnClickListener {
 

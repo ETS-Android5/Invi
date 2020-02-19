@@ -80,7 +80,7 @@ public class VerifyUser {
     }
 
     public static Task<Void> verifyEmail(){
-        return FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
+        return FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification(setActionCodeSettings());
     }
 
 
