@@ -5,10 +5,8 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.aluminati.inventory.HomeActivity;
-import com.aluminati.inventory.InfoPageActivity;
 import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.register.RegisterActivity;
-import com.aluminati.inventory.userprofile.UserProfile;
 import com.aluminati.inventory.users.User;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.ActionCodeSettings;
@@ -95,7 +93,6 @@ public class VerifyUser {
         Intent intent = new Intent(activity, RegisterActivity.class);
                intent.putExtra("login_method", loginMethod);
         activity.startActivity(intent);
-        activity.finish();
     }
 
 

@@ -39,11 +39,7 @@
                 android:title="@string/user_profile"
                 />
 
-            <item
-                android:id="@+id/log_out"
-                android:icon="@drawable/logout"
-                android:title="@string/logout_button"
-                />
+
         </menu>
     </item>
 

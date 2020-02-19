@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "617397433442-lsp4cvclvf88h3p4ir4ltju89mvvolvv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aluminati.inventory",
+            "certificate_hash": "1844e38090f9f8f9d052b7956291d65d5cab0bb8"
+          }
+        },
+        {
           "client_id": "617397433442-urgnv43j7ik4obmqvoemf1huiv0pcnl1.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -28,7 +36,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "617397433442-urgnv43j7ik4obmqvoemf1huiv0pcnl1.apps.googleusercontent.com",
+              "client_id": "617397433442-rtqubh9cujd717ojljq1hhvtu42d1dhl.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

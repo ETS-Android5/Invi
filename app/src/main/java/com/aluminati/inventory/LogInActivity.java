@@ -19,6 +19,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
 
 
     private static final String TAG = LogInActivity.class.getName();
+    public static LogInActivity logInActivity;
     private ConnectivityCheck connection;
     private TextView registerButton;
 
@@ -31,7 +32,10 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         registerButton.setOnClickListener(this);
         findViewById(R.id.forgot_password).setOnClickListener(this);
 
+        logInActivity = this;
 
+       // connection = new ConnectivityCheck(registerButton);
+       // this.registerReceiver(connection, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
     }
 
@@ -62,19 +66,17 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onStart() {
         super.onStart();
-        //connection = new ConnectivityCheck(registerButton);
-        //registerReceiver(connection, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //unregisterReceiver(connection);
+  //      unregisterReceiver(connection);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        //unregisterReceiver(connection);
+//        unregisterReceiver(connection);
     }
 }

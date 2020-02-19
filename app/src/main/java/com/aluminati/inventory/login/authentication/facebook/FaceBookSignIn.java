@@ -105,6 +105,7 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener, On
         }else if(getActivity() instanceof UserProfile){
             facebookLogin = view.findViewById(R.id.facebook_unlink_button);
             facebookLogin.setOnClickListener(this);
+            isFacebookLinked();
         }
 
 
@@ -116,7 +117,7 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener, On
         if(FirebaseAuth.getInstance().getCurrentUser() != null){
             for(UserInfo userInfo : FirebaseAuth.getInstance().getCurrentUser().getProviderData()){
                 if(userInfo.getProviderId().equals(FaceBookProviderId)){
-                    facebookLogin.setText(getString(R.string.unlink));
+                    facebookLogin.setText(getString(R.string.unlink_facebook));
                 }
             }
         }
@@ -227,12 +228,7 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener, On
     private void reload(){
         FirebaseAuth.getInstance().getCurrentUser().reload().addOnSuccessListener(unlink -> {
             Log.i(TAG, "Successfully reloaded user");
-            if(getActivity() instanceof UserProfile){
-                facebookLogin.setText(getResources().getString(R.string.facebook));
-
-            }else if(getActivity() instanceof LogInActivity){
-                facebookLogin.setText(getResources().getString(R.string.login_facebook));
-            }
+                facebookLogin.setText(getResources().getString(R.string.link_faebook));
         }).addOnFailureListener(unlink -> Log.w(TAG, "Failed to reload user", unlink));
     }
 
@@ -263,10 +259,10 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener, On
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == R.id.facebook_loging_fragment){
+        if(view.getId() == R.id.facebook_unlink_button){
             if(facebookLogin.getText().equals(getResources().getString(R.string.unlink_facebook))){
                 unLinkConfirm();
-            }else if(facebookLogin.getText().equals(getResources().getString(R.string.login_facebook))){
+            }else if(facebookLogin.getText().equals(getResources().getString(R.string.link_faebook))){
                 loginManager.logIn(this, permissions);
             }
         }

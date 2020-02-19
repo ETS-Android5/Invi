@@ -16,20 +16,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.aluminati.inventory.HomeActivity;
+import androidx.fragment.app.Fragment;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
-import com.aluminati.inventory.login.authentication.BaseFragment;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
 import com.aluminati.inventory.login.authentication.phoneauthentication.PhoneAuthentication;
-import com.aluminati.inventory.userprofile.UserProfile;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.regex.Pattern;
 
-public class EmailPasswordLogIn extends BaseFragment {
+public class EmailPasswordLogIn extends Fragment {
 
 
     private static final String TAG = EmailPasswordLogIn.class.getName();
@@ -39,6 +37,7 @@ public class EmailPasswordLogIn extends BaseFragment {
     private TextView verifyInput;
     private Button loginButton;
     private String email;
+    private FirebaseAuth firebaseAuth;
 
     @Nullable
     @Override
@@ -50,6 +49,7 @@ public class EmailPasswordLogIn extends BaseFragment {
         loginButton = view.findViewById(R.id.login_button);
         verifyInput = view.findViewById(R.id.verify_input);
 
+        firebaseAuth = FirebaseAuth.getInstance();
 
         addTextWatcher(userNameField);
         buttonLogIn();
@@ -82,8 +82,7 @@ public class EmailPasswordLogIn extends BaseFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQUEST_CODE){
             if(resultCode == Activity.RESULT_OK){
-               //TODO: put in frag startActivity(new Intent(getActivity(), UserProfile.class));
-               startActivity(new Intent(getActivity(), HomeActivity.class));
+                startActivity(new Intent(getActivity(), HomeActivity.class));
                 getActivity().finish();
             }else if(resultCode == Activity.RESULT_CANCELED){
                 verifyInput.setText("Failed to Log In");

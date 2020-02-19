@@ -1,16 +1,20 @@
 package com.aluminati.inventory;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TableRow;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
@@ -21,36 +25,54 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.aluminati.inventory.userprofile.UserProfile;
 import com.aluminati.inventory.utils.MiscUtils;
+import com.facebook.login.LoginManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Arrays;
+import java.util.Calendar;
 
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
 
     private CardView floatingTitlebarCard;
     private TableRow floatingTitlebarSearchTable;
     private FloatingActionButton fab;
-    private ImageView imgViewMenuBack, imgViewMenuMain,imgViewMainProfile;
-
+    private ImageView imgViewMenuBack, imgViewMenuMain, imgViewMainProfile;
     private DrawerLayout drawer;
     private AppBarConfiguration mAppBarConfiguration;
     private NavController navController;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        ((TextView)findViewById(R.id.invi_rights_reserved))
+                .setText("| ".concat(getResources()
+                .getString(R.string.app_name))
+                .concat(" " + getYear()).concat(" ®"));
+
+
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         fab = findViewById(R.id.fab);
+        fab.setOnClickListener(this);
+
+        findViewById(R.id.invi_info).setOnClickListener(this);
+
+
 
         //Floating titlebar
         floatingTitlebarCard = findViewById(R.id.floatingTitlebarCard);
@@ -59,21 +81,12 @@ public class HomeActivity extends AppCompatActivity {
         imgViewMenuBack = findViewById(R.id.imgViewMenuBack);
         imgViewMenuMain = findViewById(R.id.imgViewMenuMain);
         imgViewMainProfile = findViewById(R.id.imgViewMainProfile);
+        imgViewMainProfile.setOnClickListener(this);
 
-        fab.setOnClickListener(v -> {
-
-            if(ContextCompat.checkSelfPermission(getApplicationContext(),
-                    Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-            {
-                requestCameraPermission();
-            } else {
-                navController.navigate(R.id.nav_scanner);
-            }
-
-        });
 
         drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
+
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_gallery,
@@ -81,9 +94,11 @@ public class HomeActivity extends AppCompatActivity {
                 R.id.nav_slideshow,
                 R.id.nav_tools,
                 R.id.nav_share,
-                R.id.nav_send)
+                R.id.nav_log_out)
                 .setDrawerLayout(drawer)
                 .build();
+
+        navigationView.setNavigationItemSelectedListener(this);
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
@@ -117,6 +132,13 @@ public class HomeActivity extends AppCompatActivity {
 
         });
 
+        navigationView.setNavigationItemSelectedListener(this);
+
+    }
+
+
+    private String getYear(){
+        return Integer.toString(Calendar.getInstance().get(Calendar.YEAR));
     }
 
     private void requestCameraPermission() {
@@ -165,4 +187,60 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.imgViewMainProfile:{
+                startActivity(new Intent(HomeActivity.this, UserProfile.class));
+                break;
+            }
+            case R.id.fab:{
+                if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+                {
+                    requestCameraPermission();
+                } else {
+                    navController.navigate(R.id.nav_scanner);
+                }
+                break;
+            }
+            case R.id.invi_info:{
+                inviInfo();
+                break;
+            }
+        }
+
+    }
+
+    private void inviInfo(){
+        new AlertDialog
+                .Builder(this)
+                .setView(R.layout.invinfo)
+                .setPositiveButton(getResources().getText(R.string.ok), ((dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                }))
+                .create()
+                .show();
+
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.nav_log_out:{
+                firebaseAuth.signOut();
+                if(LoginManager.getInstance() != null){
+                    LoginManager.getInstance().logOut();
+                }
+                startActivity(new Intent(this, LogInActivity.class));
+                finish();
+                break;
+            }
+            case R.id.nav_gallery:{
+
+                break;
+            }
+
+        }
+        return true;
+    }
 }

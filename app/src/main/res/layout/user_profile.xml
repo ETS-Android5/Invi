@@ -34,9 +34,10 @@
             android:id="@+id/user_image_change"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_row="2"
+            android:layout_row="1"
             android:layout_column="0"
             android:layout_columnSpan="2"
+            android:layout_rowSpan="2"
             android:text="@string/photo_update"
             android:layout_gravity="center"
             android:clickable="true"
@@ -54,6 +55,7 @@
             android:layout_row="0"
             android:layout_column="2"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
             android:text="@string/reg_name"
             android:textSize="20sp" />
 
@@ -74,7 +76,7 @@
             android:layout_row="1"
             android:layout_column="2"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:textSize="15sp" />
 
         <TextView
@@ -94,7 +96,7 @@
             android:layout_row="3"
             android:layout_column="2"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_gravity="bottom"
             android:textSize="15sp" />
 
     </GridLayout>
@@ -272,26 +274,35 @@
             android:layout_gravity="center"
             />
 
-        <fragment
-            class="com.aluminati.inventory.login.authentication.facebook.FaceBookSignIn"
-            android:id="@+id/facebook_unlink"
-            android:layout_height="match_parent"
-            android:layout_width="150dp"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_row="1"
             android:layout_column="0"
-            android:layout_gravity="start"
-            />
+            android:layout_columnSpan="2"
+            android:orientation="horizontal"
+            android:gravity="center"
+            >
+            <fragment
+                class="com.aluminati.inventory.login.authentication.facebook.FaceBookSignIn"
+                android:id="@+id/facebook_unlink"
+                android:layout_height="match_parent"
+                android:layout_width="150dp"
+                android:layout_marginEnd="25dp"
+                />
 
 
-        <fragment
-            class="com.aluminati.inventory.login.authentication.twitter.TwitterSignIn"
-            android:id="@+id/twitter_unlink_frag"
-            android:layout_height="match_parent"
-            android:layout_width="150dp"
-            android:layout_row="1"
-            android:layout_column="1"
-            android:layout_gravity="end"
-            />
+            <fragment
+                class="com.aluminati.inventory.login.authentication.twitter.TwitterSignIn"
+                android:id="@+id/twitter_unlink_frag"
+                android:layout_height="match_parent"
+                android:layout_width="150dp"
+                android:layout_marginStart="25dp"
+                />
+
+        </LinearLayout>
+
+
 
 
 

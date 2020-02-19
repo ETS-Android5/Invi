@@ -59,7 +59,7 @@ public class PassWordReset extends AppCompatActivity implements View.OnClickList
 
     private void onPassWordMatchSend(String password, String confrimPassWord, boolean meetsReq){
         if(password.isEmpty()){
-           // passWordResetMessage.setTextColor(getResources().getString(R.string.pass));
+          // passWordResetMessage.setText(getResources().getString(R.string.em));
         }else if(confrimPassWord.isEmpty()){
 
         }else if(!meetsReq){

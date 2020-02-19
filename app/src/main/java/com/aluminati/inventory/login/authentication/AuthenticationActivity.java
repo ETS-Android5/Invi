@@ -1,6 +1,5 @@
 package com.aluminati.inventory.login.authentication;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,12 +11,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import com.aluminati.inventory.HomeActivity;
+import com.aluminati.inventory.LogInActivity;
 import com.aluminati.inventory.MainActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.login.authentication.phoneauthentication.PhoneAuthentication;
-import com.aluminati.inventory.userprofile.UserProfile;
 import com.aluminati.inventory.users.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,6 +31,7 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
     private Button verifyPhone;
     private Button verifyEmail;
     private Button contineButton;
+    private FirebaseAuth firebaseAuth;
 
 
 
@@ -55,7 +55,9 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
         verifyEmail.setOnClickListener(this);
         contineButton.setOnClickListener(this);
 
-        UserFetch.getUser(FirebaseAuth.getInstance().getCurrentUser().getEmail()).addOnCompleteListener(task -> {
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        UserFetch.getUser(firebaseAuth.getCurrentUser().getEmail()).addOnCompleteListener(task -> {
             if (task.getResult() != null) {
                 User user = new User(task.getResult());
                 phoneVerified.setText(user.isPhoneVerified() ? getResources().getString(R.string.veirified) : getResources().getString(R.string.not_verified));
@@ -89,13 +91,15 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
     }
 
     private void userEmailVerified(){
-        FirebaseAuth.getInstance().addAuthStateListener(firebaseAuth -> {
-            if(firebaseAuth.getCurrentUser().isEmailVerified()){
-                Log.i(TAG, "Verified");
-            }else{
-                Log.i(TAG, "Still not verified");
-            }
-        });
+        if(firebaseAuth.getCurrentUser() != null) {
+           firebaseAuth.addAuthStateListener(firebaseAuth -> {
+                if (firebaseAuth.getCurrentUser().isEmailVerified()) {
+                    Log.i(TAG, "Verified");
+                } else {
+                    Log.i(TAG, "Still not verified");
+                }
+            });
+        }
     }
 
 
@@ -120,7 +124,6 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
     @Override
     protected void onStop() {
         super.onStop();
-        finish();
     }
 
 
@@ -133,6 +136,7 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
                     if (task.exists()) {
                         User user = new User(task);
                         if (user.isPhoneVerified() && user.isEmailVerified()) {
+                            LogInActivity.logInActivity.finish();
                             startActivity(new Intent(AuthenticationActivity.this, HomeActivity.class));
                             finish();
                         }

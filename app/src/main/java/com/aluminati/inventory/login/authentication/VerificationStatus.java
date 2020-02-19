@@ -12,4 +12,5 @@ public class VerificationStatus {
     public static final int FACEBOOK = 5003;
     public static final int PHONE = 5004;
     public static final int FIREBASE = 5005;
+    public static final int TWITTER = 5006;
 }

@@ -58,6 +58,11 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 
     private boolean validateEmailInput(String email){
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();

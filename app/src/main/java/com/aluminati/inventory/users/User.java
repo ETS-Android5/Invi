@@ -20,17 +20,19 @@ public class User implements Serializable {
     private boolean isEmailVerified;
     private boolean isGoogleLinked;
     private boolean isFacebookLinked;
+    private boolean isTwiiterLinked;
 
     public User(){
 
     }
 
-    public User(String email, boolean isPhoneVerified, boolean isEmailVerified, boolean isGoogleLinked, boolean isFacebookLinked){
+    public User(String email, boolean isPhoneVerified, boolean isEmailVerified, boolean isGoogleLinked, boolean isFacebookLinked, boolean isTwiiterLinked){
         this.email = email;
         this.isPhoneVerified = isPhoneVerified;
         this.isEmailVerified = isEmailVerified;
         this.isGoogleLinked = isGoogleLinked;
         this.isFacebookLinked = isFacebookLinked;
+        this.isTwiiterLinked = isTwiiterLinked;
         this.phoneNumber = "";
     }
 
@@ -80,8 +82,9 @@ public class User implements Serializable {
             this.isEmailVerified = (Boolean) documentSnapshot.get("is_email_verified");
             this.isGoogleLinked = (Boolean) documentSnapshot.get("is_google_linked");
             this.isFacebookLinked = (Boolean) documentSnapshot.get("is_facebook_linked");
+            this.isTwiiterLinked = (Boolean) documentSnapshot.get("is_twitter_linked");
+            this.photo = (String) documentSnapshot.get("user_photo");
 
-            Log.w(TAG, "Facebook " + isFacebookLinked);
         }catch (NullPointerException e){
             Log.w(TAG, "Failed To Read Fields From Document Snapshot", e);
         }
@@ -155,6 +158,14 @@ public class User implements Serializable {
         return isFacebookLinked;
     }
 
+    public boolean isTwiiterLinked() {
+        return isTwiiterLinked;
+    }
+
+    public void setTwiiterLinked(boolean twiiterLinked) {
+        isTwiiterLinked = twiiterLinked;
+    }
+
     public void setFacebookLinked(boolean facebookLinked) {
         isFacebookLinked = facebookLinked;
     }
@@ -168,6 +179,8 @@ public class User implements Serializable {
                                 user.put("is_email_verified", isEmailVerified());
                                 user.put("is_facebook_linked", isFacebookLinked());
                                 user.put("is_google_linked", isGoogleLinked());
+                                user.put("is_twitter_linked", isTwiiterLinked());
+                                user.put("user_image", getPhoto());
                                 return user;
     }
 

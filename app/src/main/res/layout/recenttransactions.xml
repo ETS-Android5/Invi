@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="400dp"
+        android:layout_height="300dp"
+        android:padding="10dp"
+        android:layout_gravity="center"
+        android:background="@drawable/transactionssumarry"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/recent_purchase"
+            android:layout_row="0"
+            android:layout_column="0"
+            />
+
+        <TextView
+            android:id="@+id/view_all_transaction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/view_all"
+            android:layout_row="0"
+            android:layout_column="3"
+            android:layout_gravity="end"
+            android:clickable="true"
+            android:focusable="true"
+            android:textColor="@color/link_buttons"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:layout_columnSpan="4"
+            android:background="@drawable/transactionssumarry"
+            >
+
+
+        </LinearLayout>
+</GridLayout>
+
+

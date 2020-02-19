@@ -1,6 +1,4 @@
 <resources>
-
-    <!-- Bart add your string in here START -->
     <string name="app_name">Invi</string>
     <string name="register_text">Login With</string>
     <string name="login_button">Login</string>
@@ -118,4 +116,16 @@
     <string name="camera_permission_failed">Camera Permission Failed</string>
     <string name="try_again">Please Try Again</string>
     <!-- Add by paul end-->
+    <string name="link_faebook">Link Facebook</string>
+    <string name="link_twiiter">Link Twitter</string>
+    <string name="communicate_menu_sec">Communicate</string>
+    <string name="settings">Settings</string>
+    <string name="change_password">Change Password</string>
+    <string name="info">Info</string>
+    <string name="about">Invi is a shoping platfrom which \nintegegrate all the popular supermarkets\ninto one platofrm\n\nThis app was developed for the purpose\n of a semester project by\n\n• Paul Kinsella \n• Bartlomiej Mlynarkiewicz \n• Norbert Cholewka"</string>
+    <string name="recent_purchase">Recent Transactions</string>
+    <string name="view_all">View All</string>
+    <string name="failed_to_verify_code">Failed to verify code</string>
+    <string name="upload_user_image">Upload user image</string>
+    <string name="photo_changed">Photo changed successfully</string>
 </resources>
