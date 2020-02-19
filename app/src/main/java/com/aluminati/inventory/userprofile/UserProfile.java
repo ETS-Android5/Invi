@@ -36,6 +36,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+
+import com.aluminati.inventory.HomeActivity;
 import com.aluminati.inventory.LogInActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
@@ -505,6 +507,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 if (LoginManager.getInstance() != null) {
                     LoginManager.getInstance().logOut();
                 }
+                HomeActivity.homeActivity.finish();
                 startActivity(new Intent(UserProfile.this, LogInActivity.class));
                 finish();
                 break;

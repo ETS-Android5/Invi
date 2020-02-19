@@ -40,6 +40,7 @@ import java.util.Calendar;
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
+    public static HomeActivity homeActivity;
 
     private CardView floatingTitlebarCard;
     private TableRow floatingTitlebarSearchTable;
@@ -54,7 +55,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
+        homeActivity = this;
         firebaseAuth = FirebaseAuth.getInstance();
 
         ((TextView)findViewById(R.id.invi_rights_reserved))
