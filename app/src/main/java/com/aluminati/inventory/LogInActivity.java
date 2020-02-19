@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import com.aluminati.inventory.login.authentication.ForgotPasswordActivity;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.offline.ConnectivityCheck;
 import com.aluminati.inventory.register.RegisterActivity;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class LogInActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -22,6 +24,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
     public static LogInActivity logInActivity;
     private ConnectivityCheck connection;
     private TextView registerButton;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,8 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
 
        // connection = new ConnectivityCheck(registerButton);
        // this.registerReceiver(connection, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
+        firebaseAuth = FirebaseAuth.getInstance();
 
     }
 
@@ -66,6 +71,11 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onStart() {
         super.onStart();
+        if(firebaseAuth.getCurrentUser() != null){
+            firebaseAuth.getCurrentUser().reload().addOnSuccessListener(result -> {
+                Log.i(TAG, "User reloaded");
+            }).addOnFailureListener(result -> Log.w(TAG, "Failed to reload user", result));
+        }
     }
 
     @Override
