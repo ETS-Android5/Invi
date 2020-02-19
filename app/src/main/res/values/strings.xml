@@ -128,4 +128,5 @@
     <string name="failed_to_verify_code">Failed to verify code</string>
     <string name="upload_user_image">Upload user image</string>
     <string name="photo_changed">Photo changed successfully</string>
+    <string name="receipt">Receipts</string>
 </resources>

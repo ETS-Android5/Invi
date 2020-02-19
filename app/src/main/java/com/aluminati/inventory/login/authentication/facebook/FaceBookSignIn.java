@@ -263,7 +263,7 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener, On
             if(facebookLogin.getText().equals(getResources().getString(R.string.unlink_facebook))){
                 unLinkConfirm();
             }else if(facebookLogin.getText().equals(getResources().getString(R.string.link_faebook))){
-                loginManager.logIn(this, permissions);
+                loginManager.logIn(getActivity(), permissions);
             }
         }
     }
@@ -272,7 +272,7 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener, On
     @Override
     public void onStateChange(boolean active) {
         if(active){
-            loginManager.logIn(this, permissions);
+            loginManager.logIn(getActivity(), permissions);
         }
     }
 }
