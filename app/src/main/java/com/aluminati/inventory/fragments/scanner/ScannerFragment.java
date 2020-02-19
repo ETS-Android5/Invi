@@ -2,6 +2,7 @@ package com.aluminati.inventory.fragments.scanner;
 
 import android.app.AlertDialog;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +21,8 @@ import com.aluminati.inventory.ui.home.HomeFragment;
 import com.aluminati.inventory.utils.Toaster;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -49,8 +51,9 @@ public class ScannerFragment extends Fragment {
             mCodeScanner = new CodeScanner(getContext(), scannerView);
 
             mCodeScanner.setDecodeCallback(result -> getActivity().runOnUiThread(() -> {
-                //TODO: remove after debug
+                //TODO: remove after debug -
                 toaster.toastShort(result.getText());
+                MediaPlayer.create(getActivity(), R.raw.scan).start();
             /*
             //TODO: remove after debug
              Test barcode QR code
@@ -62,7 +65,14 @@ public class ScannerFragment extends Fragment {
                 Map<String, Object> scanResult = gson.fromJson(result.getText(), Map.class);
 
                 //TODO: getCurrentUser().getUid() - wont work till auth is fixed
-                scanResult.put("uid", "ng3v4taCYkR2TZ67uwThOCLJDUO2");
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                if(user != null && user.isEmailVerified()) {
+                    scanResult.put("uid", user.getUid());
+                } else {
+                    scanResult.put("uid", "ng3v4taCYkR2TZ67uwThOCLJDUO2");
+                }
+
 
                 isRented(scanResult);
             }));
@@ -80,26 +90,55 @@ public class ScannerFragment extends Fragment {
 
     private void isRented(Map<String, Object> scanResult) {
         String docId = String.format("%s_%s", scanResult.get("iid"), scanResult.get("idx"));
+
         dbHelper.getItem(Constants.FirestoreCollections.RENTALS,docId)
                 .addOnSuccessListener( res -> {
-                    String msg = res.exists() ? "Sorry this item is already rented" :"You can rent this item";
+                   // String msg = res.exists() ? "Sorry this item is already rented" :"You can rent this item";
+
+
+                    final String uid = res.getString("uid");
 
                     dbHelper.getItem(Constants.FirestoreCollections.STORE_ITEMS,
                             scanResult.get("iid").toString())
                             .addOnSuccessListener(task -> {
+
                                 RentalItem item = task.toObject(RentalItem.class);
+
                                 toaster.toastShort(item.getTitle());
+
                                 int color = res.exists() ? Color.RED : Color.GREEN;
+
                                 AlertDialog.Builder dialog = DialogHelper.getInstance(getActivity())
-                                        .createDialog(item.getTitle(), msg, item.getImgLink(), color);
+                                        .createDialog(item.getTitle(), "", item.getImgLink(), color);
+                                dialog.setMessage("This item is all ready rented");
 
                                 if(!res.exists()) { //if item isn't in rentals we can rent it
+                                    dialog.setMessage("You can rent this item");
                                     dialog.setPositiveButton("Rent Item",
                                             (dialogInterface, i) -> {
                                                 scanResult.put("checkedOutDate", Calendar.getInstance().getTime());
                                                 rentItem(scanResult);
                                                 dialogInterface.dismiss();
                                             });
+                                } else {
+                                    //The item is in rentals so is it ours
+                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    if(uid != null && user != null) {
+                                        if(uid.equals(user.getUid())) {
+                                            color = Color.BLUE;
+                                            dialog.setMessage("Do you want to check in this item");
+                                        }
+
+                                        dialog.setPositiveButton("Return Item",
+                                                (dialogInterface, i) -> {
+                                                    //Print receipt here
+                                                    dbHelper.deleteItem(Constants.FirestoreCollections.RENTALS, docId)
+                                                            .addOnSuccessListener( deleted -> {
+                                                                toaster.toastLong("You have now checked in " + item.getTitle());
+                                                            });
+                                                    dialogInterface.dismiss();
+                                                });
+                                    }
                                 }
 
                                 dialog.show();

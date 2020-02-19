@@ -36,5 +36,12 @@ public class DbHelper {
                 .set(item);
     }
 
+    public Task<Void> deleteItem(String collectionName, String docId) {
+        return db.collection(collectionName)
+                .document(docId)
+                .delete();
+    }
+
+
 
 }
