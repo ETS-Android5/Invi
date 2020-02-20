@@ -72,17 +72,6 @@ public class GoogleSignIn extends Fragment implements View.OnClickListener, OnSt
         return view;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        if(getActivity() instanceof LogInActivity){
-
-        }else if(getActivity() instanceof UserProfile){
-
-        }
-
-    }
 
     @Override
     public void onStart() {

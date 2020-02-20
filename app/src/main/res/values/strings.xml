@@ -129,4 +129,11 @@
     <string name="upload_user_image">Upload user image</string>
     <string name="photo_changed">Photo changed successfully</string>
     <string name="receipt">Receipts</string>
+    <string name="price_check">Price Check</string>
+    <string name="price">Price</string>
+    <string name="item">Item</string>
+    <string name="add_to_cart">Add To Cart</string>
+    <string name="failed_log_in">Failed Log In</string>
+    <string name="inccorect_phone_number">Incorrect Phone Number</string>
+    <string name="to_many_requests">To many attempts, phone temporly blocked\n try again in few minutes</string>
 </resources>

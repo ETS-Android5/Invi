@@ -72,8 +72,6 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
                 }
             }
         });
-
-        userEmailVerified();
     }
 
     @Override
@@ -90,35 +88,24 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
         }
     }
 
-    private void userEmailVerified(){
-        if(firebaseAuth.getCurrentUser() != null) {
-           firebaseAuth.addAuthStateListener(firebaseAuth -> {
-                if (firebaseAuth.getCurrentUser().isEmailVerified()) {
-                    Log.i(TAG, "Verified");
-                } else {
-                    Log.i(TAG, "Still not verified");
-                }
-            });
-        }
-    }
-
-
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        user.reload().addOnSuccessListener(task -> {
-            Log.i(TAG, "Success to check");
-                if(user.isEmailVerified()){
+        if(firebaseAuth.getCurrentUser() != null) {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            user.reload().addOnSuccessListener(task -> {
+                Log.i(TAG, "Success to check");
+                if (user.isEmailVerified()) {
                     Log.i(TAG, "User successfully email verified");
                     UserFetch.update(user.getEmail(), "is_email_verified", true);
                     emailVerified.setText(getResources().getString(R.string.veirified));
                     verifyEmail.setVisibility(View.INVISIBLE);
                     contineButton.setEnabled(true);
-                }else{
+                } else {
                     Log.i(TAG, "Not verifired");
                 }
-        }).addOnFailureListener(result -> Log.w(TAG, "Failed to check verifiy user", result));
+            }).addOnFailureListener(result -> Log.w(TAG, "Failed to check verifiy user", result));
+        }
     }
 
     @Override
@@ -126,7 +113,11 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
         super.onStop();
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 
     @Override
     public void onClick(View view) {
@@ -147,7 +138,7 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
             }
             case R.id.cancel_verify_button:{
                 FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(AuthenticationActivity.this, MainActivity.class));
+                startActivity(new Intent(AuthenticationActivity.this, LogInActivity.class));
                 finish();
                 break;
             }

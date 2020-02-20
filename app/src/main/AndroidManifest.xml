@@ -12,9 +12,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/mainicon"
+        android:icon="@drawable/logo_invi"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/mainicon"
+        android:roundIcon="@drawable/logo_invi"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".login.authentication.AuthenticationActivity" android:screenOrientation="portrait"/>

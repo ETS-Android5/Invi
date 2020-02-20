@@ -64,20 +64,11 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
         finish();
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if(this.isFinishing()){
-            finish();
-        }
-    }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if(this.isFinishing()){
-            finish();
-        }
+        finish();
     }
 
     private boolean validateEmailInput(String email){

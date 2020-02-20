@@ -252,16 +252,5 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         super.onStart();
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        finish();
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        finish();
-    }
+   
 }

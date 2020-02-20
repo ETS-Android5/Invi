@@ -24,6 +24,7 @@ import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.fragments.PhoneAuthenticationFragment;
 import com.aluminati.inventory.fragments.fragmentListeners.phone.PhoneVerificationReciever;
+import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.encryption.PhoneAESEncryption;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -76,6 +77,7 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
 
             phoneAuthenticationFragment = (PhoneAuthenticationFragment) getSupportFragmentManager().findFragmentById(R.id.phone_authentication);
             bindFragmentToPhone(phoneAuthenticationFragment);
+            countDown();
 
             callbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
@@ -110,8 +112,12 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
 
                     if (e instanceof FirebaseAuthInvalidCredentialsException) {
                         Log.w(TAG, "Failed ", e);
+                        setResult(VerificationStatus.INCCORECT_PHONE_NUMBER);
+                        finish();
                     } else if (e instanceof FirebaseTooManyRequestsException) {
                         Log.w(TAG, "Failed ", e);
+                        setResult(VerificationStatus.TOO_MANY_REQUESTS);
+                        finish();
                     }
 
 
@@ -142,6 +148,8 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
             }else {
                 this.enablePhoneLogin.setVisibility(View.VISIBLE);
             }
+
+
 
         }
 
@@ -200,7 +208,6 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
 
         private void startPhoneVerifiation(String phoneNumber){
             Log.i(TAG, "Verification started " + phoneNumber);
-            countDown();
 
             PhoneAuthProvider.getInstance().verifyPhoneNumber(
                     phoneNumber,
@@ -209,6 +216,7 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
                     this,
                     callbacks
             );
+            this.countDownTimer.start();
             Log.i(TAG, "Verification started " + phoneNumber);
         }
 
@@ -227,7 +235,6 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
                 }
             };
 
-            this.countDownTimer.start();
         }
 
 
@@ -238,6 +245,8 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
             PhoneAuthCredential credential = (codeSent == null ? cred : PhoneAuthProvider.getCredential(phoneAuthVerificationId, code));
 
             Log.i(TAG, "code sent" + code);
+
+            verifyPhoneNumber.setText(codeSent);
 
             if(!verifyPhoneNumber.getText().toString().isEmpty()){
                 if(verifyPhoneNumber.getText().toString().equals(codeSent)){

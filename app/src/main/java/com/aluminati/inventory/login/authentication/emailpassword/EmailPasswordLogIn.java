@@ -85,7 +85,11 @@ public class EmailPasswordLogIn extends Fragment {
                 startActivity(new Intent(getActivity(), HomeActivity.class));
                 getActivity().finish();
             }else if(resultCode == Activity.RESULT_CANCELED){
-                verifyInput.setText("Failed to Log In");
+                verifyInput.setText(getResources().getString(R.string.failed_log_in));
+            }else if(resultCode == VerificationStatus.INCCORECT_PHONE_NUMBER){
+                verifyInput.setText(getResources().getString(R.string.inccorect_phone_number));
+            }else if(resultCode == VerificationStatus.TOO_MANY_REQUESTS){
+                verifyInput.setText(getResources().getString(R.string.to_many_requests));
             }
         }
     }
@@ -109,7 +113,7 @@ public class EmailPasswordLogIn extends Fragment {
                 getActivity().startActivityForResult(intent, REQUEST_CODE);
             }else if(input.contains("@")){
                 email = input;
-                getPassWordField();
+                if(passWordField == null) getPassWordField();
                 replace(userNameField, passWordField);
             }
         }else{
@@ -135,13 +139,25 @@ public class EmailPasswordLogIn extends Fragment {
     }
 
     private void replace(View view, View replacingView){
-        ViewGroup viewGroup = (ViewGroup)view.getParent();
-        final int index = viewGroup.indexOfChild(view);
-                 viewGroup.removeView(view);
-                 viewGroup.addView(replacingView,index);
+        if(view != null && replacingView != null) {
+            ViewGroup viewGroup = (ViewGroup) view.getParent();
+            if(viewGroup != null) {
+                final int index = viewGroup.indexOfChild(view);
+                replacingView.setLayoutParams(view.getLayoutParams());
+                viewGroup.removeView(view);
+                viewGroup.addView(replacingView, index);
+            }
+        }
 
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(passWordField != null) {
+            replace(passWordField,userNameField);
+        }
+    }
 
     private void signWithEmailAndPassword(String name, String password){
         if(!name.isEmpty() && !password.isEmpty()) {
