@@ -17,13 +17,8 @@
         android:roundIcon="@drawable/mainicon"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
-        <activity
-            android:name=".info_page"
-            android:label="@string/title_activity_info_page"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".login.authentication.AuthenticationActivity" android:screenOrientation="portrait"/>
         <activity android:name=".fragments.PhoneAuthenticationFragment" android:screenOrientation="portrait"/>
-        <activity android:name=".InfoPageActivity" android:screenOrientation="portrait"/>
         <activity android:name=".login.authentication.ForgotPasswordActivity" android:screenOrientation="portrait"/>
         <activity android:name=".userprofile.UserProfile" android:screenOrientation="portrait"/>
         <activity android:name=".LogInActivity" android:screenOrientation="portrait"/>
