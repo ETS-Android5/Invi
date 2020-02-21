@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import com.airbnb.paris.Paris;
 import com.aluminati.inventory.LogInActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
@@ -21,8 +20,8 @@ import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.login.authentication.ForgotPasswordActivity;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
+import com.aluminati.inventory.login.authentication.password.PassWordReset;
 import com.aluminati.inventory.userprofile.UserProfile;
-import com.aluminati.inventory.users.User;
 import com.ebanx.swipebtn.OnStateChangeListener;
 import com.ebanx.swipebtn.SwipeButton;
 import com.facebook.AccessToken;
@@ -171,13 +170,6 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener, On
         if(firebaseAuth.getCurrentUser() != null){
             if(getContext() instanceof UserProfile){
                 linkAccounts(authCredential);
-            }else {
-
-                alertDialog("Failed to LogIn", "Email is already registered, Login and link account or Recover Password")
-                        .setPositiveButton("Ok", (dialog, id) -> dialog.cancel())
-                        .setNegativeButton("Recover Password", (dialog, id) -> getContext().startActivity(new Intent(getContext(), ForgotPasswordActivity.class)))
-                        .create()
-                        .show();
             }
         }else {
             firebaseAuth.signInWithCredential(authCredential).addOnSuccessListener(result -> {
@@ -188,8 +180,11 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener, On
                 Log.w(TAG, "Failed to LogIn With Google", result);
                 if (result instanceof FirebaseAuthUserCollisionException) {
                     Log.d(TAG, "Failed to LogIn", result);
-                    alertDialog("Login Error", "Account linked is associated with anther user")
-                            .setPositiveButton("Recover Password", (dialog, i) -> dialog.dismiss())
+                    alertDialog("Login Error", "Account linked is associated with anther user\n\n Log in to link account or recover password")
+                            .setPositiveButton("Ok", (dialog, i) -> dialog.dismiss())
+                            .setNegativeButton("Recoverd Password", ((dialogInterface, i) -> {
+                                startActivity(new Intent(getActivity(), ForgotPasswordActivity.class));
+                            }))
                             .create()
                             .show();
 

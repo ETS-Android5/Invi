@@ -5,143 +5,162 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TableRow;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
-import com.aluminati.inventory.userprofile.UserProfile;
-import com.aluminati.inventory.utils.MiscUtils;
+import com.aluminati.inventory.fragments.scanner.ScannerFragment;
+import com.aluminati.inventory.ui.gallery.PurchaseFragment;
+import com.aluminati.inventory.ui.home.HomeFragment;
+import com.aluminati.inventory.ui.send.SendFragment;
+import com.aluminati.inventory.ui.share.ShareFragment;
+import com.aluminati.inventory.ui.slideshow.SlideshowFragment;
+import com.aluminati.inventory.ui.tools.ToolsFragment;
+import com.aluminati.inventory.utils.Toaster;
 import com.facebook.login.LoginManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+public class HomeActivity extends AppCompatActivity {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
-    public static HomeActivity homeActivity;
-
-    private CardView floatingTitlebarCard;
-    private TableRow floatingTitlebarSearchTable;
     private FloatingActionButton fab;
-    private ImageView imgViewMenuBack, imgViewMenuMain, imgViewMainProfile;
-    private DrawerLayout drawer;
-    private AppBarConfiguration mAppBarConfiguration;
-    private NavController navController;
+    private DrawerLayout mDrawerLayout;
+    private Map<Integer, Fragment> fragMap;
+    private Fragment lastOpenFrag;
     private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        homeActivity = this;
+
         firebaseAuth = FirebaseAuth.getInstance();
 
         ((TextView)findViewById(R.id.invi_rights_reserved))
                 .setText("| ".concat(getResources()
-                .getString(R.string.app_name))
-                .concat(" " + getYear()).concat(" ®"));
+                        .getString(R.string.app_name))
+                        .concat(" " + getYear()).concat(" ®"));
 
-
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         fab = findViewById(R.id.fab);
-        fab.setOnClickListener(this);
+        fab.setOnClickListener(v -> {
 
-        findViewById(R.id.invi_info).setOnClickListener(this);
-
-
-
-        //Floating titlebar
-        floatingTitlebarCard = findViewById(R.id.floatingTitlebarCard);
-        floatingTitlebarSearchTable = findViewById(R.id.floatingTitlebarSearchTable);
-
-        imgViewMenuBack = findViewById(R.id.imgViewMenuBack);
-        imgViewMenuMain = findViewById(R.id.imgViewMenuMain);
-        imgViewMainProfile = findViewById(R.id.imgViewMainProfile);
-        imgViewMainProfile.setOnClickListener(this);
-
-
-        drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-
-
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_gallery,
-                R.id.nav_home,
-                R.id.nav_slideshow,
-                R.id.nav_tools,
-                R.id.nav_share,
-                R.id.nav_log_out)
-                .setDrawerLayout(drawer)
-                .build();
-
-        navigationView.setNavigationItemSelectedListener(this);
-
-        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
-
-        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-
-            CharSequence lab = destination.getLabel();
-            int searchMode = View.VISIBLE; //default
-            int titlebarMode = View.VISIBLE; //default
-
-            if(lab != null) {
-                switch (lab.toString()) {
-                    case Constants.SCAN_FRAG:
-                        searchMode = titlebarMode = View.GONE;
-                        break;
-                    case Constants.MY_ITEMS_FRAG:
-                        searchMode = View.VISIBLE;
-                        imgViewMenuBack.setVisibility(View.GONE);
-                        break;
-                    case Constants.PROFILE_FRAG:
-                        searchMode = View.INVISIBLE;
-                        imgViewMenuBack.setVisibility(View.VISIBLE);
-                        break;
-                }
-
-                MiscUtils.setViewsState(Arrays.asList(imgViewMenuMain, floatingTitlebarSearchTable, fab),
-                        searchMode);
-                floatingTitlebarCard.setVisibility(titlebarMode);
+            if(ContextCompat.checkSelfPermission(getApplicationContext(),
+                    Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+            {
+                requestCameraPermission();
+            } else {
+                loadFrag(fragMap.get(R.id.nav_scanner));
             }
 
         });
 
-        navigationView.setNavigationItemSelectedListener(this);
+        /*
+         * If you want to send data from a fragment use pass this handler
+         *
+         * In your Fragment send objects like this
+         * handler.obtainMessage(Constants.SCANNER_FINISHED, new ExampleObject()).sendToTarget();
+         *
+         * Pass any Object you want then cast
+         *
+         * or if you want to send a message only
+         * handler.obtainMessage(Constants.SCANNER_FINISHED).sendToTarget();
+         */
+        Handler homeHandler = new Handler(msg -> {
+            //do something here
 
+            switch (msg.what) {
+                case Constants.SCANNER_STARTED:
+                    //ExampleObject obj = (ExampleObject)what.obj;
+                    break;
+                case Constants.SCANNER_FINISHED: break;
+
+            }
+            return false;
+        });
+
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        fragMap = new HashMap<>();
+
+        /* Why go to all this trouble to have custom titlebar?
+         * Gives a lot more options for functionality than the
+         * standard titlebar and easier to code listeners
+         *
+         * We need to pass the drawer into the frag so we can close it
+         * if needed. Another benefit of a custom titlebar is we have
+         * a lot more options with styling
+         */
+        /* --If you want a titlebar in your frag extend the FloatingTitlebarFragment
+         * --If you want access to the nav drawer for closing and opening pass to constructor
+         * --If you want to send data to the call Activity pass a handler
+         */
+        fragMap.put(R.id.nav_gallery, new PurchaseFragment(mDrawerLayout, homeHandler));
+        fragMap.put(R.id.nav_home, new HomeFragment(mDrawerLayout));
+        fragMap.put(R.id.nav_send, new SendFragment(mDrawerLayout));
+        fragMap.put(R.id.nav_share, new ShareFragment(mDrawerLayout));
+        fragMap.put(R.id.nav_slideshow, new SlideshowFragment(mDrawerLayout));
+        fragMap.put(R.id.nav_tools, new ToolsFragment(mDrawerLayout));
+        fragMap.put(R.id.nav_scanner, new ScannerFragment());
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+
+
+        navigationView.setNavigationItemSelectedListener(item -> {
+            Toaster.getInstance(getApplicationContext()).toastShort("" + item.getTitle());
+
+
+            switch (item.getItemId()) {
+                case R.id.nav_log_out:{
+                    FirebaseAuth.getInstance().signOut();
+                    if(LoginManager.getInstance() != null){
+                        LoginManager.getInstance().logOut();
+                    }
+                    Intent logout = new Intent(getApplicationContext(), LogInActivity.class);
+                    logout.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(logout);
+                    finish();
+                    break;
+                }
+                default:
+                    loadFrag(fragMap.get(item.getItemId()));
+            }
+
+            closeDrawer();
+            return false;
+        });
+
+        loadFrag(fragMap.get(R.id.nav_home));//default nav
     }
 
+    private void loadFrag(Fragment frag) {
+        //Hide fab if scanner
+        fab.setVisibility(frag instanceof ScannerFragment ? View.GONE : View.VISIBLE);
 
-    private String getYear(){
-        return Integer.toString(Calendar.getInstance().get(Calendar.YEAR));
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.nav_host_fragment, frag).commit();
+        lastOpenFrag = frag;//catch back press when camera is open
+    }
+    public void closeDrawer() {
+        mDrawerLayout.closeDrawer(GravityCompat.START);
     }
 
     private void requestCameraPermission() {
@@ -151,6 +170,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private String getYear(){
+        return Integer.toString(Calendar.getInstance().get(Calendar.YEAR));
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
@@ -161,7 +183,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.i(TAG, "CAMERA permission has now been granted. Showing preview.");
-                navController.navigate(R.id.nav_scanner);
+                loadFrag(fragMap.get(R.id.nav_scanner));
             } else {
                 Log.i(TAG, "CAMERA permission was NOT granted.");
                 Snackbar.make(getWindow().getDecorView().getRootView(),
@@ -175,41 +197,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
     @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
-    }
-
-    public void openSideMenu(View view) {
-        if(drawer.isDrawerOpen(Gravity.LEFT)) {
-            drawer.closeDrawer(Gravity.LEFT);
+    public void onBackPressed() {
+        if(lastOpenFrag != null && lastOpenFrag instanceof ScannerFragment) {
+            loadFrag(fragMap.get(R.id.nav_home));
         } else {
-            drawer.openDrawer(Gravity.LEFT);
-        }
-    }
-
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.imgViewMainProfile:{
-                startActivity(new Intent(HomeActivity.this, UserProfile.class));
-                break;
-            }
-            case R.id.fab:{
-                if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-                {
-                    requestCameraPermission();
-                } else {
-                    navController.navigate(R.id.nav_scanner);
-                }
-                break;
-            }
-            case R.id.invi_info:{
-                inviInfo();
-                break;
-            }
+            super.onBackPressed();
         }
 
     }
@@ -226,31 +218,4 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.nav_log_out:{
-                firebaseAuth.signOut();
-                if(LoginManager.getInstance() != null){
-                    LoginManager.getInstance().logOut();
-                }
-                startActivity(new Intent(this, LogInActivity.class));
-                finish();
-                break;
-            }
-            case R.id.nav_gallery:{
-
-                break;
-            }
-
-        }
-        return true;
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-   
 }

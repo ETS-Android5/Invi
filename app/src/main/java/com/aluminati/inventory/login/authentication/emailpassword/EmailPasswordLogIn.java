@@ -18,11 +18,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.aluminati.inventory.HomeActivity;
 import androidx.fragment.app.Fragment;
+
+import com.aluminati.inventory.LogInActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
 import com.aluminati.inventory.login.authentication.phoneauthentication.PhoneAuthentication;
+import com.aluminati.inventory.offline.ConnectivityCheck;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.regex.Pattern;
@@ -96,10 +99,14 @@ public class EmailPasswordLogIn extends Fragment {
 
     private void buttonLogIn(){
         loginButton.setOnClickListener(view -> {
-            if(loginButton.getText().toString().equals(getString(R.string.login_button))){
-                checkInput();
-            }else if(loginButton.getText().toString().equals(getString(R.string.confirm_password))){
-                signWithEmailAndPassword(email, passWordField.getText().toString().trim());
+            if(!ConnectivityCheck.isSnacBarVisible()) {
+                if (loginButton.getText().toString().equals(getString(R.string.login_button))) {
+                    checkInput();
+                } else if (loginButton.getText().toString().equals(getString(R.string.confirm_password))) {
+                    signWithEmailAndPassword(email, passWordField.getText().toString().trim());
+                }
+            }else{
+                LogInActivity.alertDialog.show();
             }
         });
     }

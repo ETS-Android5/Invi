@@ -1,28 +1,44 @@
 package com.aluminati.inventory.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.aluminati.inventory.HomeActivity;
 import com.aluminati.inventory.R;
+import com.aluminati.inventory.fragments.FloatingTitlebarFragment;
+import com.aluminati.inventory.userprofile.UserProfile;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends FloatingTitlebarFragment {
 
     private HomeViewModel homeViewModel;
 
+    public HomeFragment() {}
+
+    public HomeFragment(DrawerLayout drawer) {
+        super(drawer);
+    }
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
+
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
-        homeViewModel.getText().observe(this, s -> textView.setText(s));
+        setView(root);//setup floating titlebar
         return root;
+    }
+
+    @Override
+    public void onTextChanged(String searchText) {
+
+    }
+
+    @Override
+    public void onRightButtonToggle(boolean isActive) {
+        super.onRightButtonToggle(isActive);
+        startActivity(new Intent(getActivity(), UserProfile.class));
     }
 }

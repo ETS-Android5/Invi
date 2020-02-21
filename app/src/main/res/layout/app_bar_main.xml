@@ -7,67 +7,6 @@
     android:background="@color/fragbg_lightgray"
     tools:context=".HomeActivity">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/floatingTitlebarCard"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:elevation="15dp"
-        app:cardCornerRadius="8dp">
-
-        <TableRow
-            android:id="@+id/floatingTitlebarSearchTable"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal|center_vertical"
-            android:paddingStart="5dp"
-            android:paddingEnd="5dp">
-
-            <ImageView
-                android:id="@+id/imgViewMenuBack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hapticFeedbackEnabled="true"
-                android:onClick="openSideMenu"
-                android:visibility="gone"
-                app:srcCompat="@drawable/ic_menu_back" />
-
-            <ImageView
-                android:id="@+id/imgViewMenuMain"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hapticFeedbackEnabled="true"
-                android:onClick="openSideMenu"
-                app:srcCompat="@drawable/ic_side_list_blue" />
-
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-            <androidx.appcompat.widget.AppCompatEditText
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.1"
-                android:hint="@android:string/search_go"
-                android:singleLine="true" />
-
-            <ImageView
-                android:id="@+id/imgViewMainProfile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hapticFeedbackEnabled="true"
-                app:srcCompat="@drawable/ic_side_profile_blue"
-                android:clickable="true"
-                android:focusable="true"
-                />
-
-        </TableRow>
-    </androidx.cardview.widget.CardView>
-
     <include
         layout="@layout/content_main"
         android:background="@color/fragbg_lightgray" />
