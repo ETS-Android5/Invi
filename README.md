@@ -1,6 +1,7 @@
 # Inventory
 
 
+![alt text](https://github.com/Bartekm1996/Inventory/blob/master/app/src/main/res/drawable/logo_invi.png "Invi Logo")
 
 
 
