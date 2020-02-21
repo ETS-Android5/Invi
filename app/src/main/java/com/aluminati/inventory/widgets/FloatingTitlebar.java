@@ -231,6 +231,7 @@ public class FloatingTitlebar extends LinearLayout {
      * @param drawable
      */
     public void setLeftButtonIcon(int drawable) {
+        leftButtonIcon = drawable;
         leftButton.setImageResource(drawable);
     }
 
@@ -247,6 +248,7 @@ public class FloatingTitlebar extends LinearLayout {
      * @param drawable
      */
     public void setRightButtonIcon(int drawable) {
+        rightButtonIcon = drawable;
         rightButton.setImageResource(drawable);
     }
 
