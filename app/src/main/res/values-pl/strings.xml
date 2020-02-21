@@ -118,4 +118,13 @@
     <string name="verify_login_input">Wpisz poprawny email lub numer telefonu</string>
     <string name="verify_phone_number">Potwierdź numer telefonu</string>
     <string name="view_all">Pokaż wszystko</string>
+    <string name="add_to_cart">Dodaj do koszyka</string>
+    <string name="failed_log_in">Logowanie nieudane</string>
+    <string name="inccorect_phone_number">Nieprawidowy numer telefonu</string>
+    <string name="item">Produkt</string>
+    <string name="price">Cena</string>
+    <string name="price_check">Sprawd cenę</string>
+    <string name="to_many_requests">za dużo prób, numer telefonu tymczasowo zablokowany. Sprubój ponownie za pare minut</string>
+    <string name="user_email">Email uzytkownika</string>
+    <string name="user_name">Imię użytkownika</string>
 </resources>
