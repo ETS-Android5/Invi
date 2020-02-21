@@ -1,44 +1,39 @@
 package com.aluminati.inventory;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
-import com.aluminati.inventory.userprofile.UserProfile;
-import com.aluminati.inventory.utils.MiscUtils;
+import com.aluminati.inventory.fragments.scanner.ScannerFragment;
+import com.aluminati.inventory.ui.gallery.PurchaseFragment;
+import com.aluminati.inventory.ui.home.HomeFragment;
+import com.aluminati.inventory.ui.send.SendFragment;
+import com.aluminati.inventory.ui.share.ShareFragment;
+import com.aluminati.inventory.ui.slideshow.SlideshowFragment;
+import com.aluminati.inventory.ui.tools.ToolsFragment;
+import com.aluminati.inventory.utils.Toaster;
 import com.facebook.login.LoginManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 
-import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Calendar;
-import java.util.Set;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -97,7 +92,24 @@ public class HomeActivity extends AppCompatActivity {
         NavigationView navigationView = findViewById(R.id.nav_view);
 
         navigationView.setNavigationItemSelectedListener(item -> {
-            loadFrag(fragMap.get(item.getItemId()));
+            Toaster.getInstance(getApplicationContext()).toastShort("" + item.getTitle());
+
+            switch (item.getItemId()) {
+                case R.id.nav_log_out:{
+                    FirebaseAuth.getInstance().signOut();
+                    if(LoginManager.getInstance() != null){
+                        LoginManager.getInstance().logOut();
+                    }
+                    Intent logout = new Intent(getApplicationContext(), LogInActivity.class);
+                    logout.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(logout);
+                    finish();
+                    break;
+                }
+                default:
+                    loadFrag(fragMap.get(item.getItemId()));
+            }
+
             closeDrawer();
             return false;
         });
@@ -148,13 +160,14 @@ public class HomeActivity extends AppCompatActivity {
 
 
     @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
+    public void onBackPressed() {
+        if(lastOpenFrag != null && lastOpenFrag instanceof ScannerFragment) {
+            loadFrag(fragMap.get(R.id.nav_home));
+        } else {
+            super.onBackPressed();
+        }
+
     }
-
-
 
     private void inviInfo(){
         new AlertDialog

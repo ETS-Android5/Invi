@@ -1,5 +1,6 @@
 package com.aluminati.inventory.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,8 +9,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.aluminati.inventory.HomeActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.fragments.FloatingTitlebarFragment;
+import com.aluminati.inventory.userprofile.UserProfile;
 
 public class HomeFragment extends FloatingTitlebarFragment {
 
@@ -33,5 +36,9 @@ public class HomeFragment extends FloatingTitlebarFragment {
 
     }
 
-
+    @Override
+    public void onRightButtonToggle(boolean isActive) {
+        super.onRightButtonToggle(isActive);
+        startActivity(new Intent(getActivity(), UserProfile.class));
+    }
 }

@@ -103,6 +103,8 @@
     <string name="twitter">Twitter</string>
     <string name="login_twitter">Continue With Twitter</string>
     <string name="unlink_twitter">Unlink Twitter</string>
+
+
     <!-- Bart add your string in here START -->
 
     <!-- Add by paul start-->
@@ -135,5 +137,5 @@
     <string name="add_to_cart">Add To Cart</string>
     <string name="failed_log_in">Failed Log In</string>
     <string name="inccorect_phone_number">Incorrect Phone Number</string>
-    <string name="to_many_requests">To many attempts, phone temporly blocked\n try again in few minutes</string>
+    <string name="to_many_requests">To many attempts, phone temporally blocked\n try again in few minutes</string>
 </resources>

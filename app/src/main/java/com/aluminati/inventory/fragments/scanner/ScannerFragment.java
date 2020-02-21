@@ -215,4 +215,5 @@ public class ScannerFragment extends Fragment {
 
         super.onPause();
     }
+
 }

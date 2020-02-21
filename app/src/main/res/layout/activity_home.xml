@@ -55,10 +55,6 @@
 
         </TableRow>
 
-
-    </com.google.android.material.navigation.NavigationView>
-
-
-
+</com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>

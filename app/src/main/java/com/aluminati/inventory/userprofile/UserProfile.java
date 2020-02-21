@@ -507,8 +507,10 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 if (LoginManager.getInstance() != null) {
                     LoginManager.getInstance().logOut();
                 }
-                HomeActivity.homeActivity.finish();
-                startActivity(new Intent(UserProfile.this, LogInActivity.class));
+                //TODO: not good --> look for clear flags when creating intent HomeActivity.homeActivity.finish();
+                Intent logout = new Intent(UserProfile.this, LogInActivity.class);
+                logout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(logout);
                 finish();
                 break;
             }
