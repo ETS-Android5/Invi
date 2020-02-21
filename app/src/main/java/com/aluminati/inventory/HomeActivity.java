@@ -10,6 +10,7 @@ import android.view.Gravity;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -34,6 +35,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -43,12 +45,16 @@ public class HomeActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private Map<Integer, Fragment> fragMap;
     private Fragment lastOpenFrag;
+    private FirebaseAuth firebaseAuth;
+    public static AtomicBoolean scannerTurendOn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        scannerTurendOn = new AtomicBoolean(false);
 
+        firebaseAuth = FirebaseAuth.getInstance();
 
         ((TextView)findViewById(R.id.invi_rights_reserved))
                 .setText("| ".concat(getResources()
@@ -91,8 +97,10 @@ public class HomeActivity extends AppCompatActivity {
 
         NavigationView navigationView = findViewById(R.id.nav_view);
 
+
         navigationView.setNavigationItemSelectedListener(item -> {
             Toaster.getInstance(getApplicationContext()).toastShort("" + item.getTitle());
+
 
             switch (item.getItemId()) {
                 case R.id.nav_log_out:{

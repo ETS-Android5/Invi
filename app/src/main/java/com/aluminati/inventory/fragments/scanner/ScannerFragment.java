@@ -8,12 +8,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioGroup;
+import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.aluminati.inventory.Constants;
+import com.aluminati.inventory.HomeActivity;
 import com.aluminati.inventory.R;
+import com.aluminati.inventory.fragments.DeleteUser;
+import com.aluminati.inventory.fragments.PriceCheck;
 import com.aluminati.inventory.helpers.DbHelper;
 import com.aluminati.inventory.helpers.DialogHelper;
 import com.aluminati.inventory.model.RentalItem;
@@ -21,6 +26,7 @@ import com.aluminati.inventory.ui.home.HomeFragment;
 import com.aluminati.inventory.utils.Toaster;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
+import com.ebanx.swipebtn.OnStateChangeListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -29,6 +35,7 @@ import com.google.gson.GsonBuilder;
 
 import java.util.Calendar;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class ScannerFragment extends Fragment {
 
@@ -36,45 +43,44 @@ public class ScannerFragment extends Fragment {
     private FirebaseFirestore db;
     private DbHelper dbHelper;
     private Toaster toaster;
+    private Switch switchPriceCheck;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.scanner_layout, container, false);
         dbHelper = DbHelper.getInstance();
         toaster = Toaster.getInstance(getActivity());
-
+        switchPriceCheck = root.findViewById(R.id.price_check_switch);
 
         try {
+
             CodeScannerView scannerView = root.findViewById(R.id.scanner_view);
 
-            mCodeScanner = new CodeScanner(getContext(), scannerView);
+                            mCodeScanner = new CodeScanner(getContext(), scannerView);
+                            mCodeScanner.setDecodeCallback(result ->
+                                    getActivity().runOnUiThread(() -> {
+                                        MediaPlayer.create(getActivity(), R.raw.scan).start();
 
-            mCodeScanner.setDecodeCallback(result -> getActivity().runOnUiThread(() -> {
+                                        if(switchPriceCheck.isChecked()){
+                                            PriceCheck priceCheck = PriceCheck.newInstance("PriceCheck");
+                                            priceCheck.show(getActivity().getSupportFragmentManager(), "price_check_frag");
+                                        }else{
+                                            parseScanResult(result.getText());
+                                        }
+
                 //TODO: remove after debug -
-                toaster.toastShort(result.getText());
-                MediaPlayer.create(getActivity(), R.raw.scan).start();
+
             /*
             //TODO: remove after debug
              Test barcode QR code
              {"sid":"Wcxb1fSbI0uz2RRaIaTl","iid":"tg4AccyV3uulNiVAa8jT","idx":"3"}
              https://barcode.tec-it.com/en/QRCode?data=%7B%22sid%22%3A%22Wcxb1fSbI0uz2RRaIaTl%22%2C%22iid%22%3A%22tg4AccyV3uulNiVAa8jT%22%2C%22idx%22%3A%223%22%7D
-             */
-                Gson gson = new GsonBuilder().create();
+
                 //I could cast to ScanItem here but map is better because we can add more fields dynamically
-                Map<String, Object> scanResult = gson.fromJson(result.getText(), Map.class);
 
-                //TODO: getCurrentUser().getUid() - wont work till auth is fixed
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                */
 
-                if(user != null && user.isEmailVerified()) {
-                    scanResult.put("uid", user.getUid());
-                } else {
-                    scanResult.put("uid", "ng3v4taCYkR2TZ67uwThOCLJDUO2");
-                }
-
-
-                isRented(scanResult);
+                Log.i(ScannerFragment.class.getName(), "Result --> " + result.getText());
             }));
 
             scannerView.setOnClickListener(view -> mCodeScanner.startPreview());
@@ -86,6 +92,31 @@ public class ScannerFragment extends Fragment {
         }
 
         return root;
+    }
+
+    private void parseScanResult(String result){
+        if(result.contains("sid")){
+            Gson gson = new GsonBuilder().create();
+
+            Map<String, Object> scanResult = gson.fromJson(result, Map.class);
+
+            //TODO: getCurrentUser().getUid() - wont work till auth is fixed
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+            if(user != null && user.isEmailVerified()) {
+                scanResult.put("uid", user.getUid());
+            } else {
+                scanResult.put("uid", "ng3v4taCYkR2TZ67uwThOCLJDUO2");
+            }
+
+
+            isRented(scanResult);
+
+        }else if(Pattern.compile("[0-9]+").matcher(result).matches()){
+            toaster.toastShort(result);
+        }else{
+            toaster.toastShort("Un know barcode format");
+        }
     }
 
     private void isRented(Map<String, Object> scanResult) {
@@ -203,6 +234,7 @@ public class ScannerFragment extends Fragment {
         super.onResume();
         if (mCodeScanner != null) {
             mCodeScanner.startPreview();
+            HomeActivity.scannerTurendOn.set(true);
         }
 
     }
@@ -211,9 +243,21 @@ public class ScannerFragment extends Fragment {
     public void onPause() {
         if (mCodeScanner != null) {
             mCodeScanner.releaseResources();
+            HomeActivity.scannerTurendOn.set(false);
         }
 
         super.onPause();
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mCodeScanner != null) {
+            mCodeScanner.releaseResources();
+            HomeActivity.scannerTurendOn.set(false);
+
+        }
+    }
+
 
 }

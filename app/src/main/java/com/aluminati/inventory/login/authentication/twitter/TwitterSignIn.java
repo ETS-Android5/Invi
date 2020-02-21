@@ -1,5 +1,6 @@
 package com.aluminati.inventory.login.authentication.twitter;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,17 +9,22 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import com.aluminati.inventory.LogInActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
+import com.aluminati.inventory.login.authentication.VerificationStatus;
+import com.aluminati.inventory.login.authentication.VerifyUser;
+import com.aluminati.inventory.login.authentication.password.PassWordReset;
 import com.aluminati.inventory.userprofile.UserProfile;
 import com.ebanx.swipebtn.OnStateChangeListener;
 import com.ebanx.swipebtn.SwipeButton;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.OAuthProvider;
 import com.google.firebase.auth.UserInfo;
@@ -47,6 +53,9 @@ public class TwitterSignIn extends Fragment implements View.OnClickListener, OnS
             twitterButton = view.findViewById(R.id.twitter_button);
             twitterButton.setOnClickListener(this);
         }
+
+        isTwitterLinked();
+
     }
 
 
@@ -58,7 +67,6 @@ public class TwitterSignIn extends Fragment implements View.OnClickListener, OnS
 
         pendingResultTask = firebaseAuth.getPendingAuthResult();
 
-        isTwitterLinked();
 
         View view = null;
         if(getActivity() instanceof LogInActivity){
@@ -81,14 +89,46 @@ public class TwitterSignIn extends Fragment implements View.OnClickListener, OnS
         if (pendingResultTask != null) {
             pendingResultTask.addOnSuccessListener(authResult -> {
                 Log.i(TAG, "Twitter Successfully loged in");
-            }).addOnFailureListener(e -> Log.w(TAG, "Failed to login Twitter", e));
+                VerifyUser.checkUser(authResult.getUser(), getActivity(), VerificationStatus.TWITTER);
+            }).addOnFailureListener(e -> {
+                if(e instanceof FirebaseAuthUserCollisionException){
+                    userExists();
+                }
+                Log.w(TAG, "Failed to login Twitter", e);
+                Utils.makeSnackBar("Failed to Login", twitterSwipeButton, getActivity());
+            });
         } else {
             firebaseAuth.startActivityForSignInWithProvider(getActivity(), provider.build())
                .addOnSuccessListener(authResult -> {
-                   Log.i(TAG, "Twitter Successfully loged in");
+                   Log.i(TAG, "Twitter Successfully loged in" + authResult.getUser().getEmail());
+                   VerifyUser.checkUser(authResult.getUser(), getActivity(), VerificationStatus.TWITTER);
                })
-               .addOnFailureListener(e -> Log.w(TAG, "Failed to login Twitter", e));
+               .addOnFailureListener(e -> {
+                   if(e instanceof FirebaseAuthUserCollisionException){
+                       userExists();
+                   }
+                   Log.w(TAG, "Failed to login Twitter", e);
+                   Utils.makeSnackBar("Failed to Login", twitterSwipeButton, getActivity());
+               });
         }
+    }
+
+    private AlertDialog.Builder alertDialog(String title, String message){
+        return new AlertDialog.Builder(getContext())
+                .setTitle(title)
+                .setMessage(message)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setCancelable(true);
+    }
+
+    private void userExists(){
+        alertDialog("Login Error", "Account linked is associated with anther user\n\n Log in to link account or recover password")
+                .setPositiveButton("Ok", (dialog, i) -> dialog.dismiss())
+                .setNegativeButton("Recoverd Password", ((dialogInterface, i) -> {
+                    startActivity(new Intent(getActivity(), PassWordReset.class));
+                }))
+                .create()
+                .show();
     }
 
     private void isTwitterLinked(){

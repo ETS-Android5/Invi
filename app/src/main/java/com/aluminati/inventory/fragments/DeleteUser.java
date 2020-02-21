@@ -12,12 +12,14 @@ import android.widget.RadioGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
 import com.aluminati.inventory.LogInActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
 import com.ebanx.swipebtn.SwipeButton;
 import com.google.firebase.auth.FirebaseAuth;
+
 
 
 public class DeleteUser extends DialogFragment {

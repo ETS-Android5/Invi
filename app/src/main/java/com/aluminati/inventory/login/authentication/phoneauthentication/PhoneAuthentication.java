@@ -36,6 +36,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -226,12 +227,13 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
 
                 @Override
                 public void onTick(long l) {
-                    countDownLabel.setText(Long.toString(l/1000));
+
+                    countDownLabel.setText(String.format("d%n", l/1000));
                 }
 
                 @Override
                 public void onFinish() {
-                    countDownLabel.setText("Resend");
+                    countDownLabel.setText(getResources().getString(R.string.resend));
                 }
             };
 
