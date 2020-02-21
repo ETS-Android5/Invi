@@ -234,7 +234,6 @@ public class ScannerFragment extends Fragment {
         super.onResume();
         if (mCodeScanner != null) {
             mCodeScanner.startPreview();
-            HomeActivity.scannerTurendOn.set(true);
         }
 
     }
@@ -243,7 +242,6 @@ public class ScannerFragment extends Fragment {
     public void onPause() {
         if (mCodeScanner != null) {
             mCodeScanner.releaseResources();
-            HomeActivity.scannerTurendOn.set(false);
         }
 
         super.onPause();
@@ -254,8 +252,6 @@ public class ScannerFragment extends Fragment {
         super.onStop();
         if (mCodeScanner != null) {
             mCodeScanner.releaseResources();
-            HomeActivity.scannerTurendOn.set(false);
-
         }
     }
 

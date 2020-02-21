@@ -1,6 +1,7 @@
 package com.aluminati.inventory.ui.gallery;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +37,9 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
 
     public PurchaseFragment(DrawerLayout drawer) {
         super(drawer);
+    }
+    public PurchaseFragment(DrawerLayout drawer, Handler handler) {
+        super(drawer, handler);
     }
 
     public void setNavDrawer(DrawerLayout drawer) {

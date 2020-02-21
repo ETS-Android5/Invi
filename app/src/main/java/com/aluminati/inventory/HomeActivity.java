@@ -5,15 +5,17 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -35,7 +37,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -46,13 +47,11 @@ public class HomeActivity extends AppCompatActivity {
     private Map<Integer, Fragment> fragMap;
     private Fragment lastOpenFrag;
     private FirebaseAuth firebaseAuth;
-    public static AtomicBoolean scannerTurendOn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        scannerTurendOn = new AtomicBoolean(false);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -75,19 +74,46 @@ public class HomeActivity extends AppCompatActivity {
 
         });
 
+        /*
+         * If you want to send data from a fragment use pass this handler
+         *
+         * In your Fragment send objects like this
+         * handler.obtainMessage(Constants.SCANNER_FINISHED, new ExampleObject()).sendToTarget();
+         *
+         * Pass any Object you want then cast
+         *
+         * or if you want to send a message only
+         * handler.obtainMessage(Constants.SCANNER_FINISHED).sendToTarget();
+         */
+        Handler homeHandler = new Handler(msg -> {
+            //do something here
+
+            switch (msg.what) {
+                case Constants.SCANNER_STARTED:
+                    //ExampleObject obj = (ExampleObject)what.obj;
+                    break;
+                case Constants.SCANNER_FINISHED: break;
+
+            }
+            return false;
+        });
+
         mDrawerLayout = findViewById(R.id.drawer_layout);
         fragMap = new HashMap<>();
 
         /* Why go to all this trouble to have custom titlebar?
          * Gives a lot more options for functionality than the
-         * standard titlebar and easier to code listeners amoung
-         * other things
+         * standard titlebar and easier to code listeners
          *
-         * We need to pass the drawer into the nav so we can close it
+         * We need to pass the drawer into the frag so we can close it
          * if needed. Another benefit of a custom titlebar is we have
          * a lot more options with styling
          */
-        fragMap.put(R.id.nav_gallery, new PurchaseFragment(mDrawerLayout));
+        /* --If you want a titlebar in your frag extend the FloatingTitlebarFragment
+         * --If you want access to the nav drawer for closing and opening pass to constructor
+         * --If you want to send data to the call Activity pass a handler
+         */
+        fragMap.put(R.id.nav_gallery, new PurchaseFragment(mDrawerLayout, homeHandler));
         fragMap.put(R.id.nav_home, new HomeFragment(mDrawerLayout));
         fragMap.put(R.id.nav_send, new SendFragment(mDrawerLayout));
         fragMap.put(R.id.nav_share, new ShareFragment(mDrawerLayout));
@@ -126,12 +152,15 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void loadFrag(Fragment frag) {
+        //Hide fab if scanner
+        fab.setVisibility(frag instanceof ScannerFragment ? View.GONE : View.VISIBLE);
+
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.nav_host_fragment, frag).commit();
         lastOpenFrag = frag;//catch back press when camera is open
     }
     public void closeDrawer() {
-        mDrawerLayout.closeDrawer(Gravity.LEFT);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
     }
 
     private void requestCameraPermission() {
@@ -188,52 +217,5 @@ public class HomeActivity extends AppCompatActivity {
                 .show();
 
     }
-
-    /*
-
-        @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.imgViewMainProfile:{
-                startActivity(new Intent(HomeActivity.this, UserProfile.class));
-                break;
-            }
-            case R.id.fab:{
-                if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-                {
-                    requestCameraPermission();
-                } else {
-                    navController.navigate(R.id.nav_scanner);
-                }
-                break;
-            }
-            case R.id.invi_info:{
-                inviInfo();
-                break;
-            }
-        }
-
-    }
-        @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.nav_log_out:{
-                firebaseAuth.signOut();
-                if(LoginManager.getInstance() != null){
-                    LoginManager.getInstance().logOut();
-                }
-                startActivity(new Intent(this, LogInActivity.class));
-                finish();
-                break;
-            }
-            case R.id.nav_gallery:{
-
-                break;
-            }
-
-        }
-        return true;
-
-     */
 
 }

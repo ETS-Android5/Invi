@@ -8,6 +8,9 @@ public class Constants {
     public static final String SCAN_FRAG = "Scan";
     public static final String PROFILE_FRAG = "Profile";
     public static final String MY_ITEMS_FRAG = "MyItems";
+    public static final int SCANNER_STARTED = 0x1234;
+    public static final int SCANNER_FINISHED = 0x1235;
+
     private Constants() {}
 
     public class FirestoreCollections {

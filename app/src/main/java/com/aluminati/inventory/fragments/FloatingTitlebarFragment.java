@@ -1,7 +1,8 @@
 package com.aluminati.inventory.fragments;
 
-import android.view.Gravity;
+import android.os.Handler;
 import android.view.View;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
@@ -12,18 +13,23 @@ public abstract class FloatingTitlebarFragment extends Fragment implements Float
         FloatingTitlebar.SearchTextChangeListener {
     protected FloatingTitlebar floatingTitlebar;
     protected DrawerLayout drawer;
+    protected Handler handler;
 
     public FloatingTitlebarFragment() {}
     public FloatingTitlebarFragment(DrawerLayout drawer) {
         this.drawer = drawer;
     }
+    public FloatingTitlebarFragment(DrawerLayout drawer, Handler handler) {
+        this.handler = handler;
+        this.drawer = drawer;
+    }
 
     public void closeDrawer() {
-        if(drawer != null) drawer.closeDrawer(Gravity.LEFT);
+        if(drawer != null) drawer.closeDrawer(GravityCompat.START);
     }
 
     public void openDrawer() {
-        if(drawer != null) drawer.openDrawer(Gravity.LEFT);
+        if(drawer != null) drawer.openDrawer(GravityCompat.START);
     }
 
     public FloatingTitlebar getFloatingTitlebar() {
