@@ -7,11 +7,11 @@
 
     <Button
         android:id="@+id/twitter_button"
-        android:layout_width="160dp"
+        android:layout_width="170dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
         android:layout_marginTop="5dp"
-        android:text="@string/unlink_twitter"
+        android:text="@string/link_twiiter"
         android:background="@color/twitter_blue"
         android:textSize="12sp"
         android:textColor="@color/white_text"

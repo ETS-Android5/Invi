@@ -6,24 +6,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-
 import com.aluminati.inventory.LogInActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
-import com.aluminati.inventory.users.User;
+import com.ebanx.swipebtn.SwipeButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 
 public class DeleteUser extends DialogFragment {
@@ -31,9 +25,9 @@ public class DeleteUser extends DialogFragment {
     private static final String TAG = DeleteUser.class.getName();
 
     private RadioGroup deleteUserReasons;
-    private Button deleteUser;
+    private SwipeButton deleteUser;
     private EditText otherReason;
-    private String reason;
+    private String reason = "";
 
     public DeleteUser() {
 
@@ -55,8 +49,18 @@ public class DeleteUser extends DialogFragment {
 
         deleteUser = view.findViewById(R.id.delete_user);
         otherReason = view.findViewById(R.id.other_reason);
-        deleteUser.setOnClickListener(click -> deleteUser());
 
+        deleteUser.setOnStateChangeListener(click -> {
+            if(click){
+                if(reason.isEmpty()){
+                    otherReason.setText("Please give reason");
+                    otherReason.setTextColor(getResources().getColor(R.color.google_red));
+                    deleteUser.setActivated(false);
+                }else{
+                    deleteUser();
+                }
+            }
+        });
 
         deleteUserReasons.setOnCheckedChangeListener((group, checkedId) -> {
             if(checkedId == R.id.radio_reason_5){
@@ -101,6 +105,7 @@ public class DeleteUser extends DialogFragment {
             Utils.makeSnackBarWithButtons("Failed To Delete User", deleteUser, getActivity());
         });
     }
+
 
 
 }

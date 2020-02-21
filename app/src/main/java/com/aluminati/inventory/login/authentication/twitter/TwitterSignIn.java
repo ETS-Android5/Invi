@@ -1,18 +1,14 @@
 package com.aluminati.inventory.login.authentication.twitter;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import com.airbnb.paris.Paris;
 import com.aluminati.inventory.LogInActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
@@ -20,19 +16,14 @@ import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.userprofile.UserProfile;
 import com.ebanx.swipebtn.OnStateChangeListener;
 import com.ebanx.swipebtn.SwipeButton;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.OAuthProvider;
-import com.google.firebase.auth.TwitterAuthCredential;
-import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.auth.UserInfo;
 
-public class TwitterSignIn extends Fragment implements View.OnClickListener, OnStateChangeListener
-{
+public class TwitterSignIn extends Fragment implements View.OnClickListener, OnStateChangeListener {
 
 
     private static final String TAG = TwitterSignIn.class.getName();
@@ -80,32 +71,23 @@ public class TwitterSignIn extends Fragment implements View.OnClickListener, OnS
     }
 
 
-
+    @Override
+    public void onStart() {
+        super.onStart();
+        isTwitterLinked();
+    }
 
     private void signIn(){
         if (pendingResultTask != null) {
             pendingResultTask.addOnSuccessListener(authResult -> {
                 Log.i(TAG, "Twitter Successfully loged in");
-
             }).addOnFailureListener(e -> Log.w(TAG, "Failed to login Twitter", e));
         } else {
             firebaseAuth.startActivityForSignInWithProvider(getActivity(), provider.build())
-                    .addOnSuccessListener(authResult -> {
-                        Log.i(TAG, "Twitter Successfully loged in");
-                    })
-                    .addOnFailureListener(e -> Log.w(TAG, "Failed to login Twitter", e));
-        }
-    }
-
-    private void signInWithTwitter(AuthResult authResult){
-        if(firebaseAuth.getCurrentUser() != null){
-            if(getActivity() instanceof UserProfile){
-
-            }else{
-
-            }
-        }else {
-            signIn();
+               .addOnSuccessListener(authResult -> {
+                   Log.i(TAG, "Twitter Successfully loged in");
+               })
+               .addOnFailureListener(e -> Log.w(TAG, "Failed to login Twitter", e));
         }
     }
 
@@ -119,47 +101,58 @@ public class TwitterSignIn extends Fragment implements View.OnClickListener, OnS
         }
     }
 
-    private void linkAccounts(AuthCredential credential) {
+    private void linkAccounts() {
 
-        if (firebaseAuth.getCurrentUser() != null) {
-            firebaseAuth.getCurrentUser().linkWithCredential(credential)
-                    .addOnSuccessListener(result -> {
-                        Log.d(TAG, "linkWithCrediential:success");
-                        twitterButton.setText(getResources().getString(R.string.logout_twitter));
-                        //UserFetch.update(firebaseAuth.getCurrentUser().getEmail(), "is_facebook_linked", true);
-                        Utils.makeSnackBar("Twitter Linked", twitterButton, getActivity());
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
-                    })
-                    .addOnFailureListener(getActivity(), result -> {
-                        Log.w(TAG, "linkWithCreditential:failed", result);
+        if(firebaseUser != null) {
+
+            firebaseUser.startActivityForLinkWithProvider(getActivity(), provider.build())
+                    .addOnSuccessListener(
+                            authResult -> {
+                                Log.i(TAG, "Twitter account linked");
+                                Utils.makeSnackBar("Twitter Account Linked", twitterButton, getActivity());
+                                UserFetch.update(firebaseUser.getEmail(), "is_twitter_linked", true);
+                            })
+                    .addOnFailureListener(result -> {
+                        Log.w(TAG, "Failed to linke Twitter", result);
+                        Utils.makeSnackBar("Failed to Link Twitter", twitterButton, getActivity());
                     });
+
         }
+
     }
 
     private void unlinkTwitter(){
         if(firebaseAuth.getCurrentUser() != null){
-
+            firebaseAuth.getCurrentUser().unlink(TwiiterProviderId)
+                    .addOnSuccessListener(result -> {
+                        Log.i(TAG, "Twitter unlinked");
+                        twitterButton.setText(getResources().getString(R.string.link_twiiter));
+                        Utils.makeSnackBar("Twitter unlinked", twitterButton, getActivity());
+                    }).addOnFailureListener(result -> {
+                        Log.w(TAG, "Failed to unlink Twitter account", result);
+                        Utils.makeSnackBarWithButtons("Failed to unlink Twitter", twitterButton, getActivity());
+            });
         }
     }
-
-
-
-
 
 
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.twitter_button){
-            if(twitterButton.getText().toString().equals(getResources().getString(R.string.logout_twitter))){
-
-            }else if(twitterButton.getText().toString().equals(getResources().getString(R.string.signin_with_twitter))){
-                signIn();
-            }
+               if(twitterButton.getText().equals(getResources().getString(R.string.link_twiiter))){
+                    linkAccounts();
+               }else if(twitterButton.getText().equals(getResources().getString(R.string.unlink_twitter))){
+                    unlinkTwitter();
+               }
         }
     }
 
     @Override
     public void onStateChange(boolean active) {
-
+        if(active){
+            signIn();
+        }
     }
 }

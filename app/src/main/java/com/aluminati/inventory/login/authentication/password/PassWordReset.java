@@ -12,12 +12,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.aluminati.inventory.LogInActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.fragments.fragmentListeners.password.PassWordListenerReciever;
 import com.aluminati.inventory.fragments.fragmentListeners.password.PassWordListenerSender;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.users.User;
+import com.bumptech.glide.util.Util;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class PassWordReset extends AppCompatActivity implements View.OnClickListener{
@@ -26,6 +28,8 @@ public class PassWordReset extends AppCompatActivity implements View.OnClickList
     private TextView passWordResetMessage;
     private PassWordListenerReciever passWordListenerReciever;
     private User user;
+    private String oobCode = "";
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,11 +40,20 @@ public class PassWordReset extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.password_reset_cancel).setOnClickListener(this);
         findViewById(R.id.password_reset_button).setOnClickListener(this);
 
+        if(getIntent().getExtras() != null) {
+            oobCode = getIntent().getExtras().getString("oobCode");
+        }
+
 
         Password password = (Password) getSupportFragmentManager().findFragmentById(R.id.password_reset_frag);
         bindPassWordFragment(password);
 
-        user = new User(FirebaseAuth.getInstance().getCurrentUser());
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        if(firebaseAuth.getCurrentUser() != null){
+            user = new User(firebaseAuth.getCurrentUser());
+        }
+
 
     }
 
@@ -58,32 +71,54 @@ public class PassWordReset extends AppCompatActivity implements View.OnClickList
     }
 
     private void onPassWordMatchSend(String password, String confrimPassWord, boolean meetsReq){
+
         if(password.isEmpty()){
-           // passWordResetMessage.setTextColor(getResources().getString(R.string.pass));
+          // passWordResetMessage.setText(getResources().getString(R.string.em));
         }else if(confrimPassWord.isEmpty()){
 
         }else if(!meetsReq){
             passWordResetMessage.setText(getResources().getString(R.string.password_dont_meet_requirements));
         }else if(!password.equals(confrimPassWord)){
             passWordResetMessage.setText(getResources().getString(R.string.password_dont_match));
-        }else if(password.contains(user.getDisplayName().split(" ")[0]) || password.contains(user.getDisplayName().split("")[1])){
-            passWordResetMessage.setText(getResources().getString(R.string.password_conatins_name));
+        }else if(firebaseAuth.getCurrentUser() != null){
+            if(password.contains(user.getDisplayName().split(" ")[0]) || password.contains(user.getDisplayName().split("")[1])) {
+                passWordResetMessage.setText(getResources().getString(R.string.password_conatins_name));
+            }
         }else{
-            resetPassWord(password);
+            resetPassWord(password, confrimPassWord);
         }
     }
 
-    private void resetPassWord(String password){
-        FirebaseAuth.getInstance().getCurrentUser().updatePassword(password).addOnCompleteListener(update -> {
-            if(update.isSuccessful()){
+    private void resetPassWord(String password, String confirmPassword) {
+
+        if (!oobCode.isEmpty()) {
+            firebaseAuth.checkActionCode(oobCode).addOnSuccessListener(result -> {
+                firebaseAuth.confirmPasswordReset(oobCode, confirmPassword).addOnSuccessListener(
+                        resultReset -> {
+                            Log.i(TAG, "Password reset successfully");
+                            Utils.makeSnackBar("Password reset", passWordResetMessage, this);
+                            startActivity(new Intent(PassWordReset.this, LogInActivity.class));
+                            finish();
+                        }).addOnFailureListener(resultReset -> {
+                            Log.w(TAG, "Failed to reset password", resultReset);
+                });
+
+            }).addOnFailureListener(result -> {
+                Log.w(TAG, "Failed to reset password successfully", result);
+                Utils.makeSnackBar("Failed to reset Password", passWordResetMessage, this);
+            });
+        } else {
+
+            firebaseAuth.getCurrentUser().updatePassword(password).addOnSuccessListener(update -> {
                 Log.i(TAG, "Password updated successfully");
                 setResult(Activity.RESULT_OK);
                 finish();
-            }else{
-                Log.w(TAG, "Password Update Failed", update.getException());
-            }
-        });
+            }).addOnFailureListener(resultv -> Log.w(TAG, "Password Update Failed", resultv));
+        }
     }
+
+
+
 
     public <T extends Fragment> void setPassWordListenerReciever(PassWordListenerReciever passWordListenerReciever){
         this.passWordListenerReciever = passWordListenerReciever;

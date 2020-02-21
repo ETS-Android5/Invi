@@ -5,19 +5,16 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.aluminati.inventory.MainActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.fragments.fragmentListeners.password.PassWordListenerReciever;
 import com.aluminati.inventory.login.authentication.AuthenticationActivity;
 import com.aluminati.inventory.login.authentication.ForgotPasswordActivity;
-import com.aluminati.inventory.login.authentication.LinkAccounts;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
 import com.aluminati.inventory.login.authentication.password.Password;
 import com.aluminati.inventory.users.User;
 import com.facebook.login.LoginManager;
-import com.google.api.Authentication;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -136,6 +133,18 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(firebaseAuth.getCurrentUser() != null){
+            FirebaseAuth.getInstance().signOut();
+            if(LoginManager.getInstance() != null){
+                LoginManager.getInstance().logOut();
+            }
+        }
+        finish();
     }
 
     private boolean checkIfPassWordContains(String password){
@@ -278,16 +287,20 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         switch (loginMethod){
             case VerificationStatus.GOOGLE:{
                 Log.d(TAG, "Google Profile Linking");
-                user = new User(email, false, false, true, false);
+                user = new User(email, false, false, true, false, false);
                 break;
             }
             case VerificationStatus.FACEBOOK:{
                 Log.d(TAG, "Facebook Profile Linking");
-                user = new User(email, false, false, true, true);
+                user = new User(email, false, false, true, true,false);
                 break;
             }case VerificationStatus.EMAIL: {
                 Log.d(TAG, "Email registration");
-                user = new User(email, false, false, false, false);
+                user = new User(email, false, false, false, false,false);
+                break;
+            }case VerificationStatus.TWITTER:{
+                Log.d(TAG, "Twitter Profile Linking");
+                user = new User(email, false,false,false,false,true);
                 break;
             }
         }

@@ -9,18 +9,16 @@
     tools:context=".LogInActivity">
 
 
-
-
-    <TextView
+    <ImageView
         android:id="@+id/id"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:contentDescription="@string/app_name"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
         android:layout_marginBottom="50dp"
-        android:text="@string/app_name"
-        android:textAlignment="center"
-        android:textSize="50sp"
-        android:textColor="@color/text_color"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:background="@drawable/logo_invi"
         />
+
 
     <fragment
         class="com.aluminati.inventory.login.authentication.emailpassword.EmailPasswordLogIn"
@@ -148,9 +146,11 @@
 
         </GridLayout>
 
+
+
+
+
     </GridLayout>
-
-
 
 
 

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,13 +15,17 @@ import com.aluminati.inventory.login.authentication.ForgotPasswordActivity;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.offline.ConnectivityCheck;
 import com.aluminati.inventory.register.RegisterActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 
 public class LogInActivity extends AppCompatActivity implements View.OnClickListener {
 
 
     private static final String TAG = LogInActivity.class.getName();
+    public static LogInActivity logInActivity;
     private ConnectivityCheck connection;
     private TextView registerButton;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +36,12 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         registerButton.setOnClickListener(this);
         findViewById(R.id.forgot_password).setOnClickListener(this);
 
+        logInActivity = this;
 
+       // connection = new ConnectivityCheck(registerButton);
+       // this.registerReceiver(connection, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
+        firebaseAuth = FirebaseAuth.getInstance();
 
     }
 
@@ -62,19 +72,22 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onStart() {
         super.onStart();
-        //connection = new ConnectivityCheck(registerButton);
-        //registerReceiver(connection, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        if(firebaseAuth.getCurrentUser() != null){
+            firebaseAuth.getCurrentUser().reload().addOnSuccessListener(result -> {
+                Log.i(TAG, "User reloaded");
+            }).addOnFailureListener(result -> Log.w(TAG, "Failed to reload user", result));
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //unregisterReceiver(connection);
+  //      unregisterReceiver(connection);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        //unregisterReceiver(connection);
+//        unregisterReceiver(connection);
     }
 }

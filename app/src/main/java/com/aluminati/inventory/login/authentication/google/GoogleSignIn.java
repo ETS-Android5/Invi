@@ -1,7 +1,6 @@
 package com.aluminati.inventory.login.authentication.google;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,12 +17,10 @@ import com.aluminati.inventory.LogInActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
-import com.aluminati.inventory.login.authentication.BaseFragment;
 import com.aluminati.inventory.login.authentication.ForgotPasswordActivity;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
 import com.aluminati.inventory.userprofile.UserProfile;
-import com.aluminati.inventory.users.User;
 import com.ebanx.swipebtn.OnStateChangeListener;
 import com.ebanx.swipebtn.SwipeButton;
 import com.facebook.CallbackManager;
@@ -55,7 +52,7 @@ public class GoogleSignIn extends Fragment implements View.OnClickListener, OnSt
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getResources().getString(R.string.google_client_id)).requestEmail().build();
+                .requestIdToken("617397433442-urgnv43j7ik4obmqvoemf1huiv0pcnl1.apps.googleusercontent.com").requestEmail().build();
         googleSignInClient = com.google.android.gms.auth.api.signin.GoogleSignIn.getClient(getActivity(), googleSignInOptions);
         firebaseAuth = FirebaseAuth.getInstance();
         callbackManager = CallbackManager.Factory.create();
@@ -64,26 +61,17 @@ public class GoogleSignIn extends Fragment implements View.OnClickListener, OnSt
 
         if(getActivity() instanceof LogInActivity){
             view = inflater.inflate(R.layout.google_signin, container, false);
+            googleSwipeButton = view.findViewById(R.id.google_signin_button);
+            googleSwipeButton.setOnStateChangeListener(this);
         }else if(getActivity() instanceof UserProfile){
             view = inflater.inflate(R.layout.google_unlink, container, false);
+            googleButton = view.findViewById(R.id.google_button);
+            googleButton.setOnClickListener(this);
         }
 
         return view;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        if(getActivity() instanceof LogInActivity){
-            googleSwipeButton = view.findViewById(R.id.google_signin_button);
-            googleSwipeButton.setOnStateChangeListener(this);
-        }else if(getActivity() instanceof UserProfile){
-            googleButton = view.findViewById(R.id.google_button);
-            googleButton.setOnClickListener(this);
-        }
-
-    }
 
     @Override
     public void onStart() {
@@ -218,7 +206,7 @@ public class GoogleSignIn extends Fragment implements View.OnClickListener, OnSt
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.google_signin_button) {
+        if (view.getId() == R.id.google_button) {
             if (googleButton.getText().toString().equals(getResources().getString(R.string.login_google))) {
                 signIn();
             } else if (googleButton.getText().toString().equals(getResources().getString(R.string.unlink_google))) {
@@ -235,6 +223,7 @@ public class GoogleSignIn extends Fragment implements View.OnClickListener, OnSt
     @Override
     public void onStateChange(boolean active) {
         if(active){
+            googleSwipeButton.dispatchSetActivated(false);
             signIn();
         }
     }

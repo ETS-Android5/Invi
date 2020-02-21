@@ -18,14 +18,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import com.aluminati.inventory.InfoPageActivity;
-import com.aluminati.inventory.MainActivity;
+
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.fragments.PhoneAuthenticationFragment;
 import com.aluminati.inventory.fragments.fragmentListeners.phone.PhoneVerificationReciever;
+import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.encryption.PhoneAESEncryption;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.AuthCredential;
@@ -75,6 +77,7 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
 
             phoneAuthenticationFragment = (PhoneAuthenticationFragment) getSupportFragmentManager().findFragmentById(R.id.phone_authentication);
             bindFragmentToPhone(phoneAuthenticationFragment);
+            countDown();
 
             callbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
@@ -109,8 +112,12 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
 
                     if (e instanceof FirebaseAuthInvalidCredentialsException) {
                         Log.w(TAG, "Failed ", e);
+                        setResult(VerificationStatus.INCCORECT_PHONE_NUMBER);
+                        finish();
                     } else if (e instanceof FirebaseTooManyRequestsException) {
                         Log.w(TAG, "Failed ", e);
+                        setResult(VerificationStatus.TOO_MANY_REQUESTS);
+                        finish();
                     }
 
 
@@ -141,6 +148,8 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
             }else {
                 this.enablePhoneLogin.setVisibility(View.VISIBLE);
             }
+
+
 
         }
 
@@ -180,14 +189,20 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
         private void replaceFragment(View view, View replacingView){
             ViewGroup viewGroup = (ViewGroup)view.getParent();
             final int index = viewGroup.indexOfChild(view);
-                      viewGroup.removeView(view);
+            replacingView.setLayoutParams(view.getLayoutParams());
+            viewGroup.removeView(view);
                       viewGroup.addView(replacingView, index);
                       this.verifyPhoneNumberButton.setText(getResources().getString(R.string.verify_button));
         }
 
         private EditText createVerifyPhoneNumber(){
+
             EditText editText = new EditText(this);
-                     editText.setGravity(Gravity.CENTER);
+                     editText.setHint(getResources().getString(R.string.verify_phone_number));
+                     editText.setTextColor(getResources().getColor(R.color.text_color));
+                     editText.setTextSize(20);
+                     editText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                     editText.setGravity(Gravity.BOTTOM);
             return editText;
         }
 
@@ -201,11 +216,12 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
                     this,
                     callbacks
             );
-            countDown();
+            this.countDownTimer.start();
             Log.i(TAG, "Verification started " + phoneNumber);
         }
 
         private void countDown(){
+            countDownLabel.setVisibility(View.VISIBLE);
             this.countDownTimer = new CountDownTimer(60 * 1000, 1000){
 
                 @Override
@@ -219,7 +235,6 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
                 }
             };
 
-            this.countDownTimer.start();
         }
 
 
@@ -231,6 +246,27 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
 
             Log.i(TAG, "code sent" + code);
 
+            verifyPhoneNumber.setText(codeSent);
+
+            if(!verifyPhoneNumber.getText().toString().isEmpty()){
+                if(verifyPhoneNumber.getText().toString().equals(codeSent)){
+                    checkCreditential(linkPhoneNumber,credential);
+                }else{
+                    Snackbar snackbar = Snackbar.make(verifyPhoneNumberButton, getResources().getString(R.string.failed_to_verify_code), BaseTransientBottomBar.LENGTH_INDEFINITE);
+                    snackbar.setAction(getResources().getString(R.string.ok), re -> {
+                        snackbar.dismiss();
+                    });
+                    snackbar.show();
+                }
+            }else{
+                checkCreditential(linkPhoneNumber,credential);
+            }
+
+
+
+        }
+
+        private void checkCreditential(boolean linkPhoneNumber, AuthCredential credential){
             if (getCallingActivity() != null) {
                 if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                     if (linkPhoneNumber) {
@@ -250,7 +286,6 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
                             });
                 }
             }
-
         }
 
 

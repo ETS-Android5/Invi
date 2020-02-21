@@ -7,11 +7,12 @@
 
     <Button
         android:id="@+id/facebook_unlink_button"
-        android:layout_width="160dp"
+        android:layout_width="170dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
         android:layout_marginTop="5dp"
         android:background="@color/facebook_blue"
+        android:text="@string/link_faebook"
         android:textSize="12sp"
         android:textColor="@color/white_text"
         />

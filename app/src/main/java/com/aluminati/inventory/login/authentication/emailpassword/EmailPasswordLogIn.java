@@ -16,20 +16,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.aluminati.inventory.HomeActivity;
+import androidx.fragment.app.Fragment;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
-import com.aluminati.inventory.login.authentication.BaseFragment;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
 import com.aluminati.inventory.login.authentication.phoneauthentication.PhoneAuthentication;
-import com.aluminati.inventory.userprofile.UserProfile;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.regex.Pattern;
 
-public class EmailPasswordLogIn extends BaseFragment {
+public class EmailPasswordLogIn extends Fragment {
 
 
     private static final String TAG = EmailPasswordLogIn.class.getName();
@@ -39,6 +37,7 @@ public class EmailPasswordLogIn extends BaseFragment {
     private TextView verifyInput;
     private Button loginButton;
     private String email;
+    private FirebaseAuth firebaseAuth;
 
     @Nullable
     @Override
@@ -50,6 +49,7 @@ public class EmailPasswordLogIn extends BaseFragment {
         loginButton = view.findViewById(R.id.login_button);
         verifyInput = view.findViewById(R.id.verify_input);
 
+        firebaseAuth = FirebaseAuth.getInstance();
 
         addTextWatcher(userNameField);
         buttonLogIn();
@@ -82,11 +82,14 @@ public class EmailPasswordLogIn extends BaseFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQUEST_CODE){
             if(resultCode == Activity.RESULT_OK){
-               //TODO: put in frag startActivity(new Intent(getActivity(), UserProfile.class));
-               startActivity(new Intent(getActivity(), HomeActivity.class));
+                startActivity(new Intent(getActivity(), HomeActivity.class));
                 getActivity().finish();
             }else if(resultCode == Activity.RESULT_CANCELED){
-                verifyInput.setText("Failed to Log In");
+                verifyInput.setText(getResources().getString(R.string.failed_log_in));
+            }else if(resultCode == VerificationStatus.INCCORECT_PHONE_NUMBER){
+                verifyInput.setText(getResources().getString(R.string.inccorect_phone_number));
+            }else if(resultCode == VerificationStatus.TOO_MANY_REQUESTS){
+                verifyInput.setText(getResources().getString(R.string.to_many_requests));
             }
         }
     }
@@ -110,7 +113,7 @@ public class EmailPasswordLogIn extends BaseFragment {
                 getActivity().startActivityForResult(intent, REQUEST_CODE);
             }else if(input.contains("@")){
                 email = input;
-                getPassWordField();
+                if(passWordField == null) getPassWordField();
                 replace(userNameField, passWordField);
             }
         }else{
@@ -136,13 +139,25 @@ public class EmailPasswordLogIn extends BaseFragment {
     }
 
     private void replace(View view, View replacingView){
-        ViewGroup viewGroup = (ViewGroup)view.getParent();
-        final int index = viewGroup.indexOfChild(view);
-                 viewGroup.removeView(view);
-                 viewGroup.addView(replacingView,index);
+        if(view != null && replacingView != null) {
+            ViewGroup viewGroup = (ViewGroup) view.getParent();
+            if(viewGroup != null) {
+                final int index = viewGroup.indexOfChild(view);
+                replacingView.setLayoutParams(view.getLayoutParams());
+                viewGroup.removeView(view);
+                viewGroup.addView(replacingView, index);
+            }
+        }
 
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(passWordField != null) {
+            replace(passWordField,userNameField);
+        }
+    }
 
     private void signWithEmailAndPassword(String name, String password){
         if(!name.isEmpty() && !password.isEmpty()) {

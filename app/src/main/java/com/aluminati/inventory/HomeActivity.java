@@ -6,43 +6,39 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TableRow;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.aluminati.inventory.fragments.scanner.ScannerFragment;
-import com.aluminati.inventory.ui.gallery.PurchaseFragment;
-import com.aluminati.inventory.ui.home.HomeFragment;
-import com.aluminati.inventory.ui.send.SendFragment;
-import com.aluminati.inventory.ui.share.ShareFragment;
-import com.aluminati.inventory.ui.slideshow.SlideshowFragment;
-import com.aluminati.inventory.ui.tools.ToolsFragment;
+import com.aluminati.inventory.userprofile.UserProfile;
 import com.aluminati.inventory.utils.MiscUtils;
+import com.facebook.login.LoginManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Calendar;
+import java.util.Set;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -57,6 +53,12 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+
+        ((TextView)findViewById(R.id.invi_rights_reserved))
+                .setText("| ".concat(getResources()
+                        .getString(R.string.app_name))
+                        .concat(" " + getYear()).concat(" ®"));
 
 
         fab = findViewById(R.id.fab);
@@ -119,6 +121,9 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    private String getYear(){
+        return Integer.toString(Calendar.getInstance().get(Calendar.YEAR));
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
@@ -141,13 +146,73 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
-    public void onBackPressed() {
-        if(lastOpenFrag != null && lastOpenFrag instanceof ScannerFragment) {
-            loadFrag(fragMap.get(R.id.nav_home));
-        } else {
-            super.onBackPressed();
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
+                || super.onSupportNavigateUp();
+    }
+
+
+
+    private void inviInfo(){
+        new AlertDialog
+                .Builder(this)
+                .setView(R.layout.invinfo)
+                .setPositiveButton(getResources().getText(R.string.ok), ((dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                }))
+                .create()
+                .show();
+
+    }
+
+    /*
+
+        @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.imgViewMainProfile:{
+                startActivity(new Intent(HomeActivity.this, UserProfile.class));
+                break;
+            }
+            case R.id.fab:{
+                if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+                {
+                    requestCameraPermission();
+                } else {
+                    navController.navigate(R.id.nav_scanner);
+                }
+                break;
+            }
+            case R.id.invi_info:{
+                inviInfo();
+                break;
+            }
         }
 
     }
+        @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.nav_log_out:{
+                firebaseAuth.signOut();
+                if(LoginManager.getInstance() != null){
+                    LoginManager.getInstance().logOut();
+                }
+                startActivity(new Intent(this, LogInActivity.class));
+                finish();
+                break;
+            }
+            case R.id.nav_gallery:{
+
+                break;
+            }
+
+        }
+        return true;
+
+     */
+
 }
