@@ -21,6 +21,12 @@
             android:icon="@drawable/receipt"
             android:title="@string/receipt"
             />
+        <item
+            android:id="@+id/maps"
+            android:icon="@drawable/google_maps"
+            android:title="@string/google_maps"
+            />
+
         <item android:title="@string/settings">
             <menu>
                 <item

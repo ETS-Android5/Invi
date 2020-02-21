@@ -14,12 +14,14 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -32,11 +34,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
@@ -52,11 +53,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private AppBarConfiguration mAppBarConfiguration;
     private NavController navController;
     private FirebaseAuth firebaseAuth;
+    public static AtomicBoolean scannerTurendOn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        scannerTurendOn = new AtomicBoolean(false);
         homeActivity = this;
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -97,6 +100,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 R.id.nav_slideshow,
                 R.id.nav_tools,
                 R.id.nav_share,
+                R.id.maps,
                 R.id.nav_log_out)
                 .setDrawerLayout(drawer)
                 .build();
@@ -173,6 +177,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            fragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -202,7 +213,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 {
                     requestCameraPermission();
                 } else {
-                    navController.navigate(R.id.nav_scanner);
+                    if(!scannerTurendOn.get()) {
+                        navController.navigate(R.id.nav_scanner);
+                        scannerTurendOn.set(true);
+                    }
                 }
                 break;
             }
@@ -238,10 +252,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 finish();
                 break;
             }
-            case R.id.nav_gallery:{
-
+            case R.id.maps:{
+                startActivity(new Intent(HomeActivity.this, MapsActivity.class));
                 break;
             }
+
 
         }
         return true;

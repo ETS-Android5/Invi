@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import com.aluminati.inventory.HomeActivity;
 import com.aluminati.inventory.LogInActivity;
-import com.aluminati.inventory.MainActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;

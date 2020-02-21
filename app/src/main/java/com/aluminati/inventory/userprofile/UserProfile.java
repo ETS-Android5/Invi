@@ -17,7 +17,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.PersistableBundle;
-import android.os.SystemClock;
 import android.util.Base64;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -60,15 +59,12 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UserProfile extends AppCompatActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
 
     private static final String TAG = UserProfile.class.getName();
-    private static final int GET_PHOTO = 1;
     private static final int STORAGE_PERMISSION_CODE = 101;
     private static final int PHONE_VERIFICATION = 3000;
     private static final int PASSWORD_RESET = 2999;
@@ -80,7 +76,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private EditText userName;
     private EditText userEmail;
     private EditText phoneNumber;
-    private ImageView userPhoto;
     private TextView displayNameChange;
     private TextView emailChange;
     private TextView phoneChange;
@@ -88,7 +83,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private TextView surNameField;
     private TextView phoneVerified;
     private TextView emailVerified;
-    private TextView userImageChange;
     private ImageButton settingButton;
     private FirebaseUser firebaseUser;
     private FirebaseAuth firebaseAuth;
@@ -112,21 +106,17 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         userEmail = findViewById(R.id.email_field);
         userName = findViewById(R.id.display_name_field);
         phoneNumber = findViewById(R.id.phone_number_field);
-        userPhoto = findViewById(R.id.userImage);
         surNameField = findViewById(R.id.surname_field);
         nameField = findViewById(R.id.name_field);
         phoneChange = findViewById(R.id.phone_number_change);
         settingButton = findViewById(R.id.profile_settings_button);
         phoneVerified = findViewById(R.id.phone_number_verified);
         emailVerified = findViewById(R.id.email_verified);
-        userImageChange = findViewById(R.id.user_image_change);
 
         displayNameChange.setOnClickListener(this);
         emailChange.setOnClickListener(this);
         phoneChange.setOnClickListener(this);
-        userPhoto.setOnClickListener(this);
         settingButton.setOnClickListener(this);
-        userImageChange.setOnClickListener(this);
         findViewById(R.id.delete_user).setOnClickListener(this);
         registerForContextMenu(settingButton);
 
@@ -158,32 +148,9 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     }
 
 
-    private void countDown() {
-        new CountDownTimer(5 * 1000, 1000) {
-            @Override
-            public void onTick(long l) {
 
-            }
 
-            @Override
-            public void onFinish() {
-                userImageChange.setVisibility(View.INVISIBLE);
-            }
-        }.start();
-    }
 
-    private boolean hasImage(@NonNull ImageView view) {
-
-                Drawable drawable = view.getDrawable();
-                boolean hasImage = (drawable != null);
-
-                if (hasImage && (drawable instanceof BitmapDrawable)) {
-                    hasImage = ((BitmapDrawable) drawable).getBitmap() != null;
-                }
-
-                return hasImage;
-
-    }
 
 
 
@@ -213,64 +180,10 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             }
         }
 
-        if (requestCode == GET_PHOTO && resultCode == Activity.RESULT_OK) {
-            if (data == null) {
-                Log.i(TAG, "Picture not found");
-                return;
-            }
-            try {
-                Log.i(TAG, "Picture found");
-
-                InputStream inputStream = this.getContentResolver().openInputStream(data.getData());
-                if(inputStream != null){
-                    Log.i(TAG, "Stream not null" + inputStream.toString());
-                    Bitmap bitmap = BitmapFactory.decodeStream(new BufferedInputStream(inputStream));
-                    userPhoto.setImageBitmap(bitmap);
-                    if(hasImage(userPhoto)) {
-                        userImageChange.setVisibility(View.INVISIBLE);
-                        UserFetch.update(firebaseUser.getEmail(), "user_photo", encodeTobase64(bitmap));
-                        Snackbar.make(settingButton, getResources().getString(R.string.photo_changed), BaseTransientBottomBar.LENGTH_LONG);
-                    }
-                }else Log.i(TAG, "Stream  null");
-            }catch (FileNotFoundException e){
-                Log.w(TAG, "File not found", e);
-            }
-        }
     }
 
-    public String encodeTobase64(Bitmap image)
-    {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] b = baos.toByteArray();
-        String imageEncoded = Base64.encodeToString(b,Base64.DEFAULT);
 
-        Log.e("LOOK", imageEncoded);
-        return imageEncoded;
-    }
 
-    public Bitmap decodeBase64(String input)
-    {
-        try{
-            byte [] encodeByte = Base64.decode(input,Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-            return bitmap;
-        }
-        catch(Exception e){
-            e.getMessage();
-            return null;
-        }
-    }
-
-    private void changeView(EditText editText, TextView textView) {
-        if (editText.isEnabled()) {
-            editText.setEnabled(false);
-            textView.setText(getResources().getString(R.string.change));
-        } else {
-            editText.setEnabled(true);
-            textView.setText(getResources().getString(R.string.save));
-        }
-    }
 
     private void emailCheck() {
         new AlertDialog.Builder(this)
@@ -370,15 +283,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 });
                 break;
             }
-            case R.id.userImage: {
-                userImageChange.setVisibility(View.VISIBLE);
-                countDown();
-                break;
-            }
-            case R.id.user_image_change: {
-                checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, STORAGE_PERMISSION_CODE);
-                break;
-            }
             case R.id.delete_user: {
                 deleteUser();
                 break;
@@ -426,21 +330,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             userName.setText(firebaseUser.getDisplayName());
             userEmail.setText(firebaseUser.getEmail());
             phoneNumber.setText(firebaseUser.getPhoneNumber());
-            try {
-                new RemoteImage(userPhoto).execute(firebaseUser.getPhotoUrl().toString());
-            } catch (NullPointerException e) {
-                Log.w(TAG, "User photo null", e);
-                UserFetch.getUser(firebaseUser.getEmail()).addOnSuccessListener(resultImage -> {
-                    Log.i(TAG, "Got user successfully");
-                    User user = new User(resultImage);
-                    if(user.getPhoto() != null){
-                        userPhoto.setImageBitmap(decodeBase64(user.getPhoto()));
-                        userImageChange.setVisibility(View.INVISIBLE);
-                    }
-                }).addOnFailureListener(resultImage -> {
-                    Log.w(TAG, "Failed to get user successfully", resultImage);
-                });
-            }
+
             setVerificationLabels();
 
             //Utils.makeSnackBarWithButtons("User reloaded successfully", displayNameChange, this);
@@ -457,10 +347,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         reloadUser();
         registerReceiver(connection, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
-        if (!hasImage(userPhoto)) {
-            userImageChange.setVisibility(View.VISIBLE);
-            userImageChange.setText(getResources().getString(R.string.upload_user_image));
-        }
     }
 
     @Override
@@ -479,17 +365,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         super.onStateNotSaved();
     }
 
-    public static void verifyStoragePermissions(Activity activity) {
-        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    activity,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-            );
-        }
-    }
 
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
@@ -522,63 +397,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         finish();
     }
 
-    public void checkPermission(String permission, int requestCode) {
-        if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this, new String[]{permission}, requestCode);
-        } else {
-            Snackbar.make(settingButton, " Permission already granted", BaseTransientBottomBar.LENGTH_LONG).show();
-            pickImage();
-        }
-    }
-
-    public void pickImage() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
-        startActivityForResult(intent, GET_PHOTO);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == STORAGE_PERMISSION_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Snackbar.make(settingButton, "Storage Permission Granted", BaseTransientBottomBar.LENGTH_LONG).show();
-                pickImage();
-            } else {
-                Snackbar.make(settingButton, "Storage Permission Denied", BaseTransientBottomBar.LENGTH_LONG).show();
-            }
-        }
-    }
 
 
 
-private static class RemoteImage extends AsyncTask<String, Void, Bitmap> {
 
-        @SuppressLint("StaticFieldLeak")
-        ImageView profileImageViwe;
-
-        RemoteImage(ImageView profileImageViwe){
-            this.profileImageViwe = profileImageViwe;
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... urls) {
-            String urlDisplay = urls[0];
-            Bitmap userIcon = null;
-            try{
-                InputStream inputStream = new java.net.URL(urlDisplay).openStream();
-                userIcon = BitmapFactory.decodeStream(inputStream);
-            }catch (Exception e){
-                Log.w("Error Converting", e);
-            }
-            return userIcon;
-        }
-
-        protected void onPostExecute(Bitmap result){
-            profileImageViwe.setImageBitmap(result);
-        }
-
-
-    }
 }

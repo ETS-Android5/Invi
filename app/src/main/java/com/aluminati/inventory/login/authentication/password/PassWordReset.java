@@ -3,9 +3,9 @@ package com.aluminati.inventory.login.authentication.password;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -16,10 +16,7 @@ import com.aluminati.inventory.LogInActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.fragments.fragmentListeners.password.PassWordListenerReciever;
-import com.aluminati.inventory.fragments.fragmentListeners.password.PassWordListenerSender;
-import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.users.User;
-import com.bumptech.glide.util.Util;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class PassWordReset extends AppCompatActivity implements View.OnClickListener{
@@ -97,8 +94,14 @@ public class PassWordReset extends AppCompatActivity implements View.OnClickList
                         resultReset -> {
                             Log.i(TAG, "Password reset successfully");
                             Utils.makeSnackBar("Password reset", passWordResetMessage, this);
-                            startActivity(new Intent(PassWordReset.this, LogInActivity.class));
-                            finish();
+                            new Thread(() -> {
+                                SystemClock.sleep(3000);
+                                runOnUiThread(() -> {
+                                    startActivity(new Intent(PassWordReset.this, LogInActivity.class));
+                                    finish();
+                                });
+                            }).start();
+
                         }).addOnFailureListener(resultReset -> {
                             Log.w(TAG, "Failed to reset password", resultReset);
                 });
