@@ -129,10 +129,11 @@
          <string name = "to_many_requests"> Do wielu prób telefon tymczasowo zablokowany \ n spróbuj ponownie za kilka minut </string>
          <string name = "resend"> Wyślij ponownie </string>
          <string name = "title_activity_maps"> Mapa </string>
-       <!-- Facebook api -->
-        <string name = "facebook_app_id"> 853409325101910 </string>
-        <string name = "fb_login_protocol_scheme"> fb853409325101910 </string>
-        <!-- Facebook api -->
+        <string name="options">Opcje</string>
+         <!-- Facebook api-->
+        <string name="facebook_app_id" translatable="false">853409325101910</string>
+        <string name="fb_login_protocol_scheme" translatable="false">fb853409325101910</string>
+        <!-- Facebook api-->
         <string name = "google_client_id"> 617397433442-urgnv43j7ik4obmqvoemf1huiv0pcnl1.apps.googleusercontent.com </string>
         <string name = "twitter_consumer_key" translatable = "false"> rot5O7aYRSHm8wZW9sDnzs2FL </string>
         <string name = "twitter_consumer_secret" translatable = "false"> LWMKBJ8aQwpyFYgenwjGPBySNOXGYAOuH2Civ7Qw4Cnat6T8YJ </string>

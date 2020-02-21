@@ -356,8 +356,10 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
             }
         }
 
-        public void bindFragmentToPhone(PhoneAuthenticationFragment fragment){
-            fragment.setFragmentPhone(this::onPhoneNumberRecieved);
+        public void bindFragmentToPhone(Fragment fragment){
+            if(fragment instanceof PhoneAuthenticationFragment) {
+                ((PhoneAuthenticationFragment)fragment).setFragmentPhone(this::onPhoneNumberRecieved);
+            }
         }
 
 

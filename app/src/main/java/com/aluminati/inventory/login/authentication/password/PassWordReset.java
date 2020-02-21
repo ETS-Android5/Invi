@@ -63,8 +63,10 @@ public class PassWordReset extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void bindPassWordFragment(Password password){
-        password.setPassWordListenerSender(this::onPassWordMatchSend);
+    private void bindPassWordFragment(Fragment password){
+        if(password instanceof Password) {
+            ((Password)password).setPassWordListenerSender(this::onPassWordMatchSend);
+        }
     }
 
     private void onPassWordMatchSend(String password, String confrimPassWord, boolean meetsReq){

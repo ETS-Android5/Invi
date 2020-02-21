@@ -44,8 +44,10 @@ public class PhoneAuthenticationFragment extends Fragment {
     }
 
 
-    private void bindActivity(PhoneAuthentication phoneAuthentication){
-        phoneAuthentication.setPhoneVerificationReciever(this::onCodeReceived);
+    private void bindActivity(AppCompatActivity phoneAuthentication){
+        if(phoneAuthentication instanceof PhoneAuthentication) {
+            ((PhoneAuthentication)phoneAuthentication).setPhoneVerificationReciever(this::onCodeReceived);
+        }
     }
 
 

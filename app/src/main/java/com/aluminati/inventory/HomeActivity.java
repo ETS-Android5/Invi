@@ -64,8 +64,7 @@ public class HomeActivity extends AppCompatActivity {
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(v -> {
 
-            if(ContextCompat.checkSelfPermission(getApplicationContext(),
-                    Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+            if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
             {
                 requestCameraPermission();
             } else {
@@ -87,19 +86,19 @@ public class HomeActivity extends AppCompatActivity {
          */
         Handler homeHandler = new Handler(msg -> {
             //do something here
-
             switch (msg.what) {
                 case Constants.SCANNER_STARTED:
                     //ExampleObject obj = (ExampleObject)what.obj;
                     break;
-                case Constants.SCANNER_FINISHED: break;
+                case Constants.SCANNER_FINISHED:
+                    break;
 
             }
             return false;
         });
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
-        fragMap = new HashMap<>();
+        fragMap = new HashMap<Integer, Fragment>();
 
         /* Why go to all this trouble to have custom titlebar?
          * Gives a lot more options for functionality than the
@@ -123,6 +122,9 @@ public class HomeActivity extends AppCompatActivity {
 
         NavigationView navigationView = findViewById(R.id.nav_view);
 
+                      navigationView.findViewById(R.id.invi_nfo).setOnClickListener(click -> {
+                          Utils.invInfo(this);
+                      });
 
         navigationView.setNavigationItemSelectedListener(item -> {
             Toaster.getInstance(getApplicationContext()).toastShort("" + item.getTitle());
@@ -138,6 +140,10 @@ public class HomeActivity extends AppCompatActivity {
                     logout.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(logout);
                     finish();
+                    break;
+                }
+                case R.id.maps:{
+                    startActivity(new Intent(this, MapsActivity.class));
                     break;
                 }
                 default:
@@ -206,16 +212,6 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    private void inviInfo(){
-        new AlertDialog
-                .Builder(this)
-                .setView(R.layout.invinfo)
-                .setPositiveButton(getResources().getText(R.string.ok), ((dialogInterface, i) -> {
-                    dialogInterface.dismiss();
-                }))
-                .create()
-                .show();
 
-    }
 
 }

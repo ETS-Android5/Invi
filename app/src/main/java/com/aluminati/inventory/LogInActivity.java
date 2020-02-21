@@ -43,7 +43,8 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         registerButton.setOnClickListener(this);
         findViewById(R.id.langauge_select).setOnClickListener(this);
         findViewById(R.id.forgot_password).setOnClickListener(this);
-        ((TextView)findViewById(R.id.invi_info_login_page)).setText(getResources().getString(R.string.app_name).concat(" " + getYear()).concat(" ®"));
+        findViewById(R.id.invi_info_login_page).setOnClickListener(this);
+        ((TextView)findViewById(R.id.invi_info_login_page)).setText(getResources().getString(R.string.app_name).concat(" " + getYear()).concat(" ® | "));
 
          logInActivity = this;
             connetionInfo();
@@ -59,7 +60,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view){
         switch (view.getId()){
             case R.id.register_button: {
-                if(!connection.isSnacBarVisible()) {
+                if(!ConnectivityCheck.isSnacBarVisible()) {
                     Intent intent = new Intent(this, RegisterActivity.class);
                     intent.putExtra("login_method", VerificationStatus.EMAIL);
                     startActivity(intent);
@@ -67,7 +68,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                 break;
             }
             case R.id.forgot_password: {
-                if (!connection.isSnacBarVisible()) {
+                if (!ConnectivityCheck.isSnacBarVisible()) {
                     startActivity(new Intent(this, ForgotPasswordActivity.class));
                 }
                 break;
@@ -77,8 +78,13 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                 languageSelection.show(getSupportFragmentManager(), "language_select_frag");
                 break;
             }
+            case R.id.invi_info_login_page:{
+                Utils.invInfo(this);
+                break;
+            }
         }
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -86,8 +92,6 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         for (Fragment fragment : getSupportFragmentManager().getFragments()) {
             fragment.onActivityResult(requestCode, resultCode, data);
         }
-
-
         if(requestCode == ACTION_SETTINGS){
             Log.i(TAG, "Result code ==> " + resultCode);
         }
@@ -119,6 +123,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                 }).create();
 
     }
+
     @Override
     protected void onPause() {
         super.onPause();

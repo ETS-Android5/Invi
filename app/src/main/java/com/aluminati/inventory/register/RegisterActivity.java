@@ -20,6 +20,8 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -308,8 +310,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
-    public void bindFragmentToPassword(Password fragment){
-        fragment.setPassWordListenerSender(this::askForPassWord);
+    public void bindFragmentToPassword(Fragment fragment){
+        if(fragment instanceof Password) {
+            ((Password)fragment).setPassWordListenerSender(this::askForPassWord);
+        }
     }
 
 
