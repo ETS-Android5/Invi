@@ -6,13 +6,10 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
@@ -20,13 +17,13 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.aluminati.inventory.fragments.scanner.ScannerFragment;
-import com.aluminati.inventory.ui.gallery.PurchaseFragment;
-import com.aluminati.inventory.ui.home.HomeFragment;
-import com.aluminati.inventory.ui.send.SendFragment;
-import com.aluminati.inventory.ui.share.ShareFragment;
-import com.aluminati.inventory.ui.slideshow.SlideshowFragment;
-import com.aluminati.inventory.ui.tools.ToolsFragment;
+import com.aluminati.inventory.fragments.ui.scanner.ScannerFragment;
+import com.aluminati.inventory.fragments.ui.purchase.PurchaseFragment;
+import com.aluminati.inventory.fragments.ui.recent.RecentFragment;
+import com.aluminati.inventory.fragments.ui.receipt.ReceiptFragment;
+import com.aluminati.inventory.fragments.ui.rental.RentalFragment;
+import com.aluminati.inventory.fragments.ui.search.SearchFragment;
+import com.aluminati.inventory.fragments.ui.tools.ToolsFragment;
 import com.aluminati.inventory.utils.Toaster;
 import com.facebook.login.LoginManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -113,11 +110,12 @@ public class HomeActivity extends AppCompatActivity {
          * --If you want to send data to the call Activity pass a handler
          */
         fragMap.put(R.id.nav_gallery, new PurchaseFragment(mDrawerLayout, homeHandler));
-        fragMap.put(R.id.nav_home, new HomeFragment(mDrawerLayout));
-        fragMap.put(R.id.nav_send, new SendFragment(mDrawerLayout));
-        fragMap.put(R.id.nav_share, new ShareFragment(mDrawerLayout));
-        fragMap.put(R.id.nav_slideshow, new SlideshowFragment(mDrawerLayout));
+        fragMap.put(R.id.nav_home, new RecentFragment(mDrawerLayout));
+        fragMap.put(R.id.nav_send, new ReceiptFragment(mDrawerLayout));
+        fragMap.put(R.id.nav_share, new RentalFragment(mDrawerLayout));
+        fragMap.put(R.id.nav_slideshow, new SearchFragment(mDrawerLayout));
         fragMap.put(R.id.nav_tools, new ToolsFragment(mDrawerLayout));
+        fragMap.put(R.id.maps, new MapsActivity());
         fragMap.put(R.id.nav_scanner, new ScannerFragment());
 
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -127,8 +125,6 @@ public class HomeActivity extends AppCompatActivity {
                       });
 
         navigationView.setNavigationItemSelectedListener(item -> {
-            Toaster.getInstance(getApplicationContext()).toastShort("" + item.getTitle());
-
 
             switch (item.getItemId()) {
                 case R.id.nav_log_out:{
@@ -140,10 +136,6 @@ public class HomeActivity extends AppCompatActivity {
                     logout.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(logout);
                     finish();
-                    break;
-                }
-                case R.id.maps:{
-                    startActivity(new Intent(this, MapsActivity.class));
                     break;
                 }
                 default:
@@ -159,11 +151,12 @@ public class HomeActivity extends AppCompatActivity {
 
     private void loadFrag(Fragment frag) {
         //Hide fab if scanner
-        fab.setVisibility(frag instanceof ScannerFragment ? View.GONE : View.VISIBLE);
+        boolean isMapOrScan = frag instanceof ScannerFragment || frag instanceof MapsActivity;
+        fab.setVisibility(isMapOrScan ? View.GONE : View.VISIBLE);
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.nav_host_fragment, frag).commit();
-        lastOpenFrag = frag;//catch back press when camera is open
+        lastOpenFrag = frag;//catch back press when camera/maps is open
     }
     public void closeDrawer() {
         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -204,7 +197,7 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(lastOpenFrag != null && lastOpenFrag instanceof ScannerFragment) {
+        if(lastOpenFrag != null && (lastOpenFrag instanceof ScannerFragment ||lastOpenFrag instanceof MapsActivity)) {
             loadFrag(fragMap.get(R.id.nav_home));
         } else {
             super.onBackPressed();

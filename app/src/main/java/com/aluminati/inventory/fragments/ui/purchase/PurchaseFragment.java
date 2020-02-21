@@ -1,4 +1,4 @@
-package com.aluminati.inventory.ui.gallery;
+package com.aluminati.inventory.fragments.ui.purchase;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -49,7 +49,7 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.fragment_gallery, container, false);
+        View root = inflater.inflate(R.layout.fragment_purchase, container, false);
         super.setView(root);
 
         floatingTitlebar.setLeftToggleOff(true);//dont change icon on toggle

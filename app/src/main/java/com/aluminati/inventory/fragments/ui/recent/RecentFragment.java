@@ -1,4 +1,4 @@
-package com.aluminati.inventory.ui.home;
+package com.aluminati.inventory.fragments.ui.recent;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,24 +9,20 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.aluminati.inventory.HomeActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.fragments.FloatingTitlebarFragment;
 import com.aluminati.inventory.userprofile.UserProfile;
 
-public class HomeFragment extends FloatingTitlebarFragment {
+public class RecentFragment extends FloatingTitlebarFragment {
+    public RecentFragment() {}
 
-    private HomeViewModel homeViewModel;
-
-    public HomeFragment() {}
-
-    public HomeFragment(DrawerLayout drawer) {
+    public RecentFragment(DrawerLayout drawer) {
         super(drawer);
     }
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
+        View root = inflater.inflate(R.layout.fragment_recent, container, false);
         setView(root);//setup floating titlebar
         return root;
     }

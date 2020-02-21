@@ -1,4 +1,4 @@
-package com.aluminati.inventory.ui.share;
+package com.aluminati.inventory.fragments.ui.tools;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,18 +11,18 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.fragments.FloatingTitlebarFragment;
 
-public class ShareFragment extends FloatingTitlebarFragment {
+public class ToolsFragment extends FloatingTitlebarFragment {
 
-    private ShareViewModel shareViewModel;
+    private ToolsViewModel toolsViewModel;
 
-    public ShareFragment(DrawerLayout drawer) {
+    public ToolsFragment(DrawerLayout drawer) {
         super(drawer);
     }
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_share, container, false);
-        setView(root);
 
+        View root = inflater.inflate(R.layout.fragment_tools, container, false);
+        setView(root);
         return root;
     }
 

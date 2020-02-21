@@ -1,4 +1,4 @@
-package com.aluminati.inventory.ui.slideshow;
+package com.aluminati.inventory.fragments.ui.receipt;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,17 +11,17 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.fragments.FloatingTitlebarFragment;
 
-public class SlideshowFragment extends FloatingTitlebarFragment {
 
-    private SlideshowViewModel slideshowViewModel;
-    public SlideshowFragment(DrawerLayout drawer) {
+public class ReceiptFragment extends FloatingTitlebarFragment {
+
+    public ReceiptFragment(DrawerLayout drawer) {
         super(drawer);
     }
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
-        View root = inflater.inflate(R.layout.fragment_slideshow, container, false);
+        View root = inflater.inflate(R.layout.fragment_receipt, container, false);
         setView(root);
+
         return root;
     }
 
