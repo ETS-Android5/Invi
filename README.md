@@ -3,7 +3,9 @@
 
 ![alt text](https://github.com/Bartekm1996/Inventory/blob/master/app/src/main/res/drawable/logo_invi.png "Invi Logo")
 
-
+• Paul Kinsella
+• Norbert Cholewka
+• Bartlomiej Mlynarkiewicz
 
 Invi is a mobile application which allows users to self-checkout in stores who opt to integrate this application. Invi also permits stores who offer equipment renting such as bikes, kayaks or scooters to self-rent the asset by scanning a QR code on the asset which will then link it with your account until returned. Using Invi for self-checkout aims to reduce ques, enlarge store space by removing more tills which will translate into extra rows for products and an increase in revenue. As the user conveniently scans items while putting them in his/her trolley or basket, it will check if a cheaper alternative product is available. 
 
