@@ -17,6 +17,7 @@ import com.aluminati.inventory.LogInActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
+import com.aluminati.inventory.login.authentication.ForgotPasswordActivity;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
 import com.aluminati.inventory.login.authentication.password.PassWordReset;
@@ -182,7 +183,7 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener, On
                     alertDialog("Login Error", "Account linked is associated with anther user\n\n Log in to link account or recover password")
                             .setPositiveButton("Ok", (dialog, i) -> dialog.dismiss())
                             .setNegativeButton("Recoverd Password", ((dialogInterface, i) -> {
-                                startActivity(new Intent(getActivity(), PassWordReset.class));
+                                startActivity(new Intent(getActivity(), ForgotPasswordActivity.class));
                             }))
                             .create()
                             .show();

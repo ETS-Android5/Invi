@@ -1,31 +1,38 @@
 package com.aluminati.inventory;
-
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.aluminati.inventory.R;
+import com.aluminati.inventory.fragments.DeleteUser;
+import com.aluminati.inventory.fragments.languageSelect.LanguageSelection;
 import com.aluminati.inventory.login.authentication.ForgotPasswordActivity;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.offline.ConnectivityCheck;
 import com.aluminati.inventory.register.RegisterActivity;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+
+import java.util.Calendar;
 
 public class LogInActivity extends AppCompatActivity implements View.OnClickListener {
 
 
     private static final String TAG = LogInActivity.class.getName();
+    private static final int ACTION_SETTINGS = 0;
     public static LogInActivity logInActivity;
     private ConnectivityCheck connection;
     private TextView registerButton;
     private FirebaseAuth firebaseAuth;
+    public static AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,14 +41,17 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         registerButton = findViewById(R.id.register_button);
         registerButton.setOnClickListener(this);
+        findViewById(R.id.langauge_select).setOnClickListener(this);
         findViewById(R.id.forgot_password).setOnClickListener(this);
+        ((TextView)findViewById(R.id.invi_info_login_page)).setText(getResources().getString(R.string.app_name).concat(" " + getYear()).concat(" ®"));
 
-        logInActivity = this;
+         logInActivity = this;
+            connetionInfo();
 
-       // connection = new ConnectivityCheck(registerButton);
-       // this.registerReceiver(connection, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+         connection = new ConnectivityCheck(registerButton);
+         registerReceiver(connection, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
-        firebaseAuth = FirebaseAuth.getInstance();
+         firebaseAuth = FirebaseAuth.getInstance();
 
     }
 
@@ -49,13 +59,22 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view){
         switch (view.getId()){
             case R.id.register_button: {
-                Intent intent = new Intent(this, RegisterActivity.class);
-                intent.putExtra("login_method", VerificationStatus.EMAIL);
-                startActivity(intent);
+                if(!connection.isSnacBarVisible()) {
+                    Intent intent = new Intent(this, RegisterActivity.class);
+                    intent.putExtra("login_method", VerificationStatus.EMAIL);
+                    startActivity(intent);
+                }
                 break;
             }
             case R.id.forgot_password: {
-                startActivity(new Intent(this, ForgotPasswordActivity.class));
+                if (!connection.isSnacBarVisible()) {
+                    startActivity(new Intent(this, ForgotPasswordActivity.class));
+                }
+                break;
+            }
+            case R.id.langauge_select:{
+                LanguageSelection languageSelection = LanguageSelection.newInstance("Select Language");
+                languageSelection.show(getSupportFragmentManager(), "language_select_frag");
                 break;
             }
         }
@@ -67,7 +86,13 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         for (Fragment fragment : getSupportFragmentManager().getFragments()) {
             fragment.onActivityResult(requestCode, resultCode, data);
         }
+
+
+        if(requestCode == ACTION_SETTINGS){
+            Log.i(TAG, "Result code ==> " + resultCode);
+        }
     }
+
 
     @Override
     protected void onStart() {
@@ -77,17 +102,36 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                 Log.i(TAG, "User reloaded");
             }).addOnFailureListener(result -> Log.w(TAG, "Failed to reload user", result));
         }
+        registerReceiver(connection, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
+    private void connetionInfo(){
+        this.alertDialog = new AlertDialog.Builder(this)
+                .setTitle("No Internet Connection")
+                .setMessage("INVI Needs an Active Internet Connection\n\nCheck your Internet Settings")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setCancelable(true)
+                .setPositiveButton("Ok", (dialog, i) -> {
+                            dialog.dismiss();
+                        }
+                ).setNegativeButton("Settings", (dialog, i) -> {
+                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), ACTION_SETTINGS);
+                }).create();
+
+    }
     @Override
     protected void onPause() {
         super.onPause();
-  //      unregisterReceiver(connection);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-//        unregisterReceiver(connection);
+        unregisterReceiver(connection);
     }
+
+    private String getYear(){
+        return Integer.toString(Calendar.getInstance().get(Calendar.YEAR));
+    }
+
 }
