@@ -103,6 +103,7 @@
     <string name="twitter">Twitter</string>
     <string name="login_twitter">Continue With Twitter</string>
     <string name="unlink_twitter">Unlink Twitter</string>
+
     <!-- Bart add your string in here START -->
 
     <!-- Add by paul start-->
@@ -136,6 +137,11 @@
     <string name="failed_log_in">Failed Log In</string>
     <string name="inccorect_phone_number">Incorrect Phone Number</string>
     <string name="to_many_requests">To many attempts, phone temporly blocked\n try again in few minutes</string>
-    <string name="user_name">User Name</string>
-    <string name="user_email">User Email</string>
+    <string name="user_name">Imię użytkownika</string>
+    <string name="user_email">Addres email</string>
+    <string name="title_activity_maps"></string>
+    <string name="select_language"></string>
+    <string name="options"></string>
+<string name="google_maps"></string>
+    <string name="resend"> Wyślij ponownie </string>
 </resources>
