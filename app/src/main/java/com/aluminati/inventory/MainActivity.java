@@ -1,12 +1,21 @@
 package com.aluminati.inventory;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.aluminati.inventory.currencyConverter.Currency;
+import com.aluminati.inventory.currencyConverter.CurrencyConverter;
+import com.aluminati.inventory.currencyConverter.CurrencyFrag;
+import com.aluminati.inventory.currencyConverter.CurrencyResult;
 import com.aluminati.inventory.login.authentication.VerificationStatus;
 import com.aluminati.inventory.login.authentication.VerifyUser;
 import com.aluminati.inventory.login.authentication.password.PassWordReset;
@@ -14,10 +23,20 @@ import com.google.firebase.auth.ActionCodeResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 
+import java.util.Locale;
+import java.util.regex.Pattern;
 
-public class MainActivity extends Activity {
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
+
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getName();
+
     private FirebaseAuth firebaseAuth;
 
     @Override
@@ -26,6 +45,8 @@ public class MainActivity extends Activity {
         setContentView(R.layout.main_activity);
         firebaseAuth = FirebaseAuth.getInstance();
         listenForDynamicLink();
+
+
     }
 
     private void listenForDynamicLink(){
@@ -90,7 +111,6 @@ public class MainActivity extends Activity {
     protected void onStop() {
         super.onStop();
     }
-
 
 
 }

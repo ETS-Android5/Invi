@@ -3,6 +3,7 @@ package com.aluminati.inventory;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,8 +19,10 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.aluminati.inventory.currencyConverter.CurrencyFrag;
 import com.aluminati.inventory.fragments.scanner.ScannerFragment;
 import com.aluminati.inventory.ui.gallery.PurchaseFragment;
 import com.aluminati.inventory.ui.home.HomeFragment;
@@ -34,8 +37,10 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.lang.reflect.Field;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -119,6 +124,7 @@ public class HomeActivity extends AppCompatActivity {
         fragMap.put(R.id.nav_slideshow, new SlideshowFragment(mDrawerLayout));
         fragMap.put(R.id.nav_tools, new ToolsFragment(mDrawerLayout));
         fragMap.put(R.id.nav_scanner, new ScannerFragment());
+        fragMap.put(R.id.converions_fragment, new CurrencyFrag());
 
         NavigationView navigationView = findViewById(R.id.nav_view);
 
@@ -146,6 +152,7 @@ public class HomeActivity extends AppCompatActivity {
                     startActivity(new Intent(this, MapsActivity.class));
                     break;
                 }
+
                 default:
                     loadFrag(fragMap.get(item.getItemId()));
             }
@@ -179,6 +186,7 @@ public class HomeActivity extends AppCompatActivity {
     private String getYear(){
         return Integer.toString(Calendar.getInstance().get(Calendar.YEAR));
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
@@ -211,6 +219,7 @@ public class HomeActivity extends AppCompatActivity {
         }
 
     }
+
 
 
 

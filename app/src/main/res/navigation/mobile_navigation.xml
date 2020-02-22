@@ -46,4 +46,5 @@
         android:name="com.aluminati.inventory.fragments.scanner.ScannerFragment"
         android:label="@string/menu_scanner"
         tools:layout="@layout/scanner_layout" />
+
 </navigation>

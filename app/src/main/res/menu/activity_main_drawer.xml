@@ -21,6 +21,12 @@
             android:icon="@drawable/receipt"
             android:title="@string/receipt"
             />
+
+        <item
+            android:id="@+id/currency_converions"
+            android:title="@string/converions"
+            android:icon="@drawable/converision"
+            />
         <item
             android:id="@+id/maps"
             android:icon="@drawable/google_maps"
