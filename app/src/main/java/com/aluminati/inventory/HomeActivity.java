@@ -6,13 +6,10 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
@@ -20,13 +17,17 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.aluminati.inventory.fragments.MapsActivity;
+import com.aluminati.inventory.fragments.ui.currencyConverter.ui.CurrencyFrag;
+import com.aluminati.inventory.fragments.purchase.PurchaseFragment;
+import com.aluminati.inventory.fragments.receipt.ReceiptFragment;
+import com.aluminati.inventory.fragments.recent.RecentFragment;
+import com.aluminati.inventory.fragments.rental.RentalFragment;
 import com.aluminati.inventory.fragments.scanner.ScannerFragment;
-import com.aluminati.inventory.ui.gallery.PurchaseFragment;
-import com.aluminati.inventory.ui.home.HomeFragment;
-import com.aluminati.inventory.ui.send.SendFragment;
-import com.aluminati.inventory.ui.share.ShareFragment;
-import com.aluminati.inventory.ui.slideshow.SlideshowFragment;
-import com.aluminati.inventory.ui.tools.ToolsFragment;
+import com.aluminati.inventory.fragments.search.SearchFragment;
+import com.aluminati.inventory.fragments.tools.ToolsFragment;
+
+import com.aluminati.inventory.login.authentication.LogInActivity;
 import com.aluminati.inventory.utils.Toaster;
 import com.facebook.login.LoginManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -113,12 +114,14 @@ public class HomeActivity extends AppCompatActivity {
          * --If you want to send data to the call Activity pass a handler
          */
         fragMap.put(R.id.nav_gallery, new PurchaseFragment(mDrawerLayout, homeHandler));
-        fragMap.put(R.id.nav_home, new HomeFragment(mDrawerLayout));
-        fragMap.put(R.id.nav_send, new SendFragment(mDrawerLayout));
-        fragMap.put(R.id.nav_share, new ShareFragment(mDrawerLayout));
-        fragMap.put(R.id.nav_slideshow, new SlideshowFragment(mDrawerLayout));
+        fragMap.put(R.id.nav_home, new RecentFragment(mDrawerLayout));
+        fragMap.put(R.id.nav_send, new ReceiptFragment(mDrawerLayout));
+        fragMap.put(R.id.nav_share, new RentalFragment(mDrawerLayout));
+        fragMap.put(R.id.nav_slideshow, new SearchFragment(mDrawerLayout));
         fragMap.put(R.id.nav_tools, new ToolsFragment(mDrawerLayout));
+        fragMap.put(R.id.maps, new MapsActivity());
         fragMap.put(R.id.nav_scanner, new ScannerFragment());
+        fragMap.put(R.id.currency_converions, new CurrencyFrag());
 
         NavigationView navigationView = findViewById(R.id.nav_view);
 
@@ -140,10 +143,6 @@ public class HomeActivity extends AppCompatActivity {
                     logout.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(logout);
                     finish();
-                    break;
-                }
-                case R.id.maps:{
-                    startActivity(new Intent(this, MapsActivity.class));
                     break;
                 }
                 default:

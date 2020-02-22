@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.aluminati.inventory.LogInActivity;
+import com.aluminati.inventory.login.authentication.LogInActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
@@ -32,7 +32,6 @@ public class DeleteUser extends DialogFragment {
     private String reason = "";
 
     public DeleteUser() {
-
     }
 
     @Nullable

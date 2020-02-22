@@ -22,9 +22,8 @@ import androidx.fragment.app.Fragment;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
-import com.aluminati.inventory.fragments.PhoneAuthenticationFragment;
 import com.aluminati.inventory.fragments.fragmentListeners.phone.PhoneVerificationReciever;
-import com.aluminati.inventory.login.authentication.VerificationStatus;
+import com.aluminati.inventory.login.authentication.verification.VerificationStatus;
 import com.aluminati.inventory.login.authentication.encryption.PhoneAESEncryption;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -36,7 +35,6 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
-import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 

@@ -8,25 +8,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioGroup;
 import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.aluminati.inventory.Constants;
-import com.aluminati.inventory.HomeActivity;
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.fragments.DeleteUser;
 import com.aluminati.inventory.fragments.PriceCheck;
 import com.aluminati.inventory.helpers.DbHelper;
 import com.aluminati.inventory.helpers.DialogHelper;
 import com.aluminati.inventory.model.RentalItem;
-import com.aluminati.inventory.ui.home.HomeFragment;
+import com.aluminati.inventory.fragments.recent.RecentFragment;
 import com.aluminati.inventory.utils.Toaster;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
-import com.ebanx.swipebtn.OnStateChangeListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -47,7 +43,7 @@ public class ScannerFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.scanner_layout, container, false);
+        View root = inflater.inflate(R.layout.fragment_scanner, container, false);
         dbHelper = DbHelper.getInstance();
         toaster = Toaster.getInstance(getActivity());
         switchPriceCheck = root.findViewById(R.id.price_check_switch);
@@ -87,7 +83,7 @@ public class ScannerFragment extends Fragment {
 
         } catch (Exception ex) {
             toaster.toastLong("Error opening camera. Make sure permission is set");
-            Log.e(HomeFragment.class.getSimpleName(), ex.toString());
+            Log.e(RecentFragment.class.getSimpleName(), ex.toString());
 
         }
 
