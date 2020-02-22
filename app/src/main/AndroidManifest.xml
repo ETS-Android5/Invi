@@ -37,22 +37,22 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
         <activity
-            android:name=".MapsActivity"
+            android:name=".fragments.MapsActivity"
             android:label="@string/title_activity_maps"></activity>
         <activity
-            android:name=".login.authentication.AuthenticationActivity"
+            android:name=".login.authentication.authentication.AuthenticationActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".fragments.PhoneAuthenticationFragment"
+            android:name=".login.authentication.phoneauthentication.PhoneAuthenticationFragment"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".login.authentication.ForgotPasswordActivity"
+            android:name=".login.authentication.forgotPassWord.ForgotPasswordActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".userprofile.UserProfile"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".LogInActivity"
+            android:name=".login.authentication.LogInActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".HomeActivity"

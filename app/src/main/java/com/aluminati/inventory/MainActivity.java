@@ -2,35 +2,18 @@ package com.aluminati.inventory;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.aluminati.inventory.currencyConverter.Currency;
-import com.aluminati.inventory.currencyConverter.CurrencyConverter;
-import com.aluminati.inventory.currencyConverter.CurrencyFrag;
-import com.aluminati.inventory.currencyConverter.CurrencyResult;
-import com.aluminati.inventory.login.authentication.VerificationStatus;
-import com.aluminati.inventory.login.authentication.VerifyUser;
+import com.aluminati.inventory.login.authentication.LogInActivity;
+import com.aluminati.inventory.login.authentication.verification.VerificationStatus;
+import com.aluminati.inventory.login.authentication.verification.VerifyUser;
 import com.aluminati.inventory.login.authentication.password.PassWordReset;
 import com.google.firebase.auth.ActionCodeResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
-
-import java.util.Locale;
-import java.util.regex.Pattern;
-
-import io.reactivex.SingleObserver;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 
 public class MainActivity extends AppCompatActivity {

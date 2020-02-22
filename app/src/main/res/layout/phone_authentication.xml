@@ -43,7 +43,7 @@
 
         <fragment
             android:id="@+id/phone_authentication"
-            class="com.aluminati.inventory.fragments.PhoneAuthenticationFragment"
+            class="com.aluminati.inventory.login.authentication.phoneauthentication.PhoneAuthenticationFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp" />

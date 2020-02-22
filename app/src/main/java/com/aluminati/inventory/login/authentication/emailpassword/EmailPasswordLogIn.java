@@ -19,11 +19,11 @@ import androidx.annotation.Nullable;
 import com.aluminati.inventory.HomeActivity;
 import androidx.fragment.app.Fragment;
 
-import com.aluminati.inventory.LogInActivity;
+import com.aluminati.inventory.login.authentication.LogInActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
-import com.aluminati.inventory.login.authentication.VerificationStatus;
-import com.aluminati.inventory.login.authentication.VerifyUser;
+import com.aluminati.inventory.login.authentication.verification.VerificationStatus;
+import com.aluminati.inventory.login.authentication.verification.VerifyUser;
 import com.aluminati.inventory.login.authentication.phoneauthentication.PhoneAuthentication;
 import com.aluminati.inventory.offline.ConnectivityCheck;
 import com.google.firebase.auth.FirebaseAuth;

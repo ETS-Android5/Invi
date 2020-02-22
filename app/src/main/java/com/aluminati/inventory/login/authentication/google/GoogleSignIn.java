@@ -13,13 +13,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import com.aluminati.inventory.LogInActivity;
+import com.aluminati.inventory.login.authentication.LogInActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
-import com.aluminati.inventory.login.authentication.ForgotPasswordActivity;
-import com.aluminati.inventory.login.authentication.VerificationStatus;
-import com.aluminati.inventory.login.authentication.VerifyUser;
+import com.aluminati.inventory.login.authentication.forgotPassWord.ForgotPasswordActivity;
+import com.aluminati.inventory.login.authentication.verification.VerificationStatus;
+import com.aluminati.inventory.login.authentication.verification.VerifyUser;
 import com.aluminati.inventory.userprofile.UserProfile;
 import com.ebanx.swipebtn.OnStateChangeListener;
 import com.ebanx.swipebtn.SwipeButton;
