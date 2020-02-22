@@ -136,15 +136,10 @@
     <string name="failed_log_in">Failed Log In</string>
     <string name="inccorect_phone_number">Incorrect Phone Number</string>
     <string name="to_many_requests">To many attempts, phone temporly blocked\n try again in few minutes</string>
-    <string name="user_name">User Name</string>
-    <string name="user_email">User Email</string>
+    <string name="user_name" translatable="false">User Name</string>
+    <string name="user_email" translatable="false">User Email</string>
 
     <!-- @BART These strings where missing after merge down, Maybe you forgot to commint this file-->
-    <string name="title_activity_maps">FIX THIS</string>
-    <string name="google_maps">FIX THIS</string>
-    <string name="select_language">FIX THIS</string>
-    <string name="options">FIX THIS</string>
-    <string name="resend">FIX THIS</string>
     <string name="title_activity_maps">Maps</string>
     <string name="google_maps">Google Maps</string>
     <string name="select_language">Select Laguage</string>

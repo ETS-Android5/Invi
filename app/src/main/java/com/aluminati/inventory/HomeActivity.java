@@ -20,13 +20,15 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.aluminati.inventory.fragments.scanner.ScannerFragment;
-import com.aluminati.inventory.ui.gallery.PurchaseFragment;
-import com.aluminati.inventory.ui.home.HomeFragment;
-import com.aluminati.inventory.ui.send.SendFragment;
-import com.aluminati.inventory.ui.share.ShareFragment;
-import com.aluminati.inventory.ui.slideshow.SlideshowFragment;
-import com.aluminati.inventory.ui.tools.ToolsFragment;
+import com.aluminati.inventory.currencyConverter.CurrencyFrag;
+import com.aluminati.inventory.fragments.ui.purchase.PurchaseFragment;
+import com.aluminati.inventory.fragments.ui.receipt.ReceiptFragment;
+import com.aluminati.inventory.fragments.ui.recent.RecentFragment;
+import com.aluminati.inventory.fragments.ui.rental.RentalFragment;
+import com.aluminati.inventory.fragments.ui.scanner.ScannerFragment;
+import com.aluminati.inventory.fragments.ui.search.SearchFragment;
+import com.aluminati.inventory.fragments.ui.tools.ToolsFragment;
+
 import com.aluminati.inventory.utils.Toaster;
 import com.facebook.login.LoginManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -34,6 +36,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.sql.RowId;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -120,6 +123,7 @@ public class HomeActivity extends AppCompatActivity {
         fragMap.put(R.id.nav_tools, new ToolsFragment(mDrawerLayout));
         fragMap.put(R.id.maps, new MapsActivity());
         fragMap.put(R.id.nav_scanner, new ScannerFragment());
+        fragMap.put(R.id.currency_converions, new CurrencyFrag());
 
         NavigationView navigationView = findViewById(R.id.nav_view);
 

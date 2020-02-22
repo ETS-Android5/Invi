@@ -52,7 +52,7 @@ public class CurrencyFrag extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View view = inflater.inflate(getResources().getLayout(R.layout.currencies), container, true);
+        View view = inflater.inflate(getResources().getLayout(R.layout.currencies), container, false);
         layoutManager = new LinearLayoutManager(getContext());
 
 

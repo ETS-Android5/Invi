@@ -43,7 +43,14 @@
 
     <fragment
         android:id="@+id/nav_scanner"
-        android:name="com.aluminati.inventory.fragments.scanner.ScannerFragment"
+        android:name="com.aluminati.inventory.fragments.ui.scanner.ScannerFragment"
         android:label="@string/menu_scanner"
-        tools:layout="@layout/scanner_layout" />
+        tools:layout="@layout/fragment_scanner" />
+
+    <fragment
+        android:id="@+id/nav_conversions"
+        android:name="com.aluminati.inventory.currencyConverter.CurrencyFrag"
+        android:label="@string/converions"
+        tools:layout="@layout/currencies"
+        />
 </navigation>
