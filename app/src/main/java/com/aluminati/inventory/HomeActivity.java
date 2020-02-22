@@ -124,7 +124,6 @@ public class HomeActivity extends AppCompatActivity {
         fragMap.put(R.id.nav_slideshow, new SlideshowFragment(mDrawerLayout));
         fragMap.put(R.id.nav_tools, new ToolsFragment(mDrawerLayout));
         fragMap.put(R.id.nav_scanner, new ScannerFragment());
-        fragMap.put(R.id.converions_fragment, new CurrencyFrag());
 
         NavigationView navigationView = findViewById(R.id.nav_view);
 
