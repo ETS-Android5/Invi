@@ -62,8 +62,13 @@ public class CurrencyConverter{
                     Currency currency = Currency.getInstance(locale);
                     if(currenciesSymbols.contains(currency.getCurrencyCode())){
                         Resources resources = getActivity().getResources();
-                        final String name = "flag_"+locale.getDisplayCountry().toLowerCase();
-                        final int indexOfCCode = currenciesSymbols.indexOf(currency.getCurrencyCode());
+                        String name = "";
+                        if(locale.getDisplayCountry().equals("United States"))
+                        {
+                            name = "flag_united_states_of_america";
+                        }else {
+                            name = "flag_" + locale.getDisplayCountry().toLowerCase();
+                        }
                         final int resourceId = resources.getIdentifier(name, "drawable", getActivity().getPackageName());
                         if(resourceId != 0){
                             Log.i(TAG, "Flag ==== > " + name);
@@ -72,7 +77,6 @@ public class CurrencyConverter{
                                             Float.toString(curren.get(currency.getCurrencyCode())), currency.getSymbol()));
                             //Log.i(TAG, "Got flag Resources " + getActivity().getResources().getResourceEntryName(resourceId));
                         }
-                        currenciesSymbols.remove(indexOfCCode);
                     }
 
 
