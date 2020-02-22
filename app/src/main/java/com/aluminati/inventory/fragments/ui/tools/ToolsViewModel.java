@@ -1,4 +1,4 @@
-package com.aluminati.inventory.ui.tools;
+package com.aluminati.inventory.fragments.ui.tools;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

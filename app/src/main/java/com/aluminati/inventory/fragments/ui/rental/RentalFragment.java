@@ -1,4 +1,4 @@
-package com.aluminati.inventory.ui.send;
+package com.aluminati.inventory.fragments.ui.rental;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,17 +11,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.fragments.FloatingTitlebarFragment;
 
+public class RentalFragment extends FloatingTitlebarFragment {
 
-public class SendFragment extends FloatingTitlebarFragment {
-
-    private SendViewModel sendViewModel;
-
-    public SendFragment(DrawerLayout drawer) {
+    public RentalFragment(DrawerLayout drawer) {
         super(drawer);
     }
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_send, container, false);
+        View root = inflater.inflate(R.layout.fragment_rental, container, false);
         setView(root);
 
         return root;

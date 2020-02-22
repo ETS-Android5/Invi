@@ -1,4 +1,4 @@
-package com.aluminati.inventory.ui.gallery;
+package com.aluminati.inventory.fragments.ui.purchase;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -49,10 +49,16 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.fragment_gallery, container, false);
+        View root = inflater.inflate(R.layout.fragment_purchase, container, false);
         super.setView(root);
 
+
         floatingTitlebar.setLeftToggleOff(true);//dont change icon on toggle
+
+        //How to programmatically set icons on floating action bar
+        floatingTitlebar.setRightButtonIcon(R.drawable.ic_toggle_list);
+        floatingTitlebar.setRightToggleIcon(R.drawable.ic_toggle_grid);
+        floatingTitlebar.setToggleActive(true);
 
         firestore = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
@@ -83,6 +89,14 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
         setTrackerSwipe();
 
         return root;
+    }
+
+    @Override
+    public void onRightButtonToggle(boolean isActive) {
+        super.onRightButtonToggle(isActive);
+
+        //TODO debug only
+        toaster.toastShort(isActive ? "Load grid view" : "Load list view");
     }
 
     private void setTrackerSwipe() {

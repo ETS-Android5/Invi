@@ -1,4 +1,4 @@
-package com.aluminati.inventory.fragments.scanner.model;
+package com.aluminati.inventory.fragments.ui.scanner.model;
 
 import java.util.HashMap;
 import java.util.Map;

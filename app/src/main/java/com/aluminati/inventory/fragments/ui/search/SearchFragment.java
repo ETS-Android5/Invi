@@ -1,4 +1,4 @@
-package com.aluminati.inventory.ui.tools;
+package com.aluminati.inventory.fragments.ui.search;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,17 +11,15 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.fragments.FloatingTitlebarFragment;
 
-public class ToolsFragment extends FloatingTitlebarFragment {
+public class SearchFragment extends FloatingTitlebarFragment {
 
-    private ToolsViewModel toolsViewModel;
-
-    public ToolsFragment(DrawerLayout drawer) {
+    public SearchFragment(DrawerLayout drawer) {
         super(drawer);
     }
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.fragment_tools, container, false);
+        View root = inflater.inflate(R.layout.fragment_search, container, false);
         setView(root);
         return root;
     }
