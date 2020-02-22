@@ -8,6 +8,9 @@ import com.aluminati.inventory.R;
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -98,7 +101,19 @@ public class CurrencyConverter{
         currencies.clear();
         currencies.addAll(map.values());
 
-       return new ArrayList<>(currencies);
+        ArrayList arrayList = new ArrayList<>(currencies);
+        Collections.sort(arrayList, new Comparator<com.aluminati.inventory.currencyConverter.Currency>() {
+            @Override
+            public int compare(com.aluminati.inventory.currencyConverter.Currency currency, com.aluminati.inventory.currencyConverter.Currency t1) {
+                return currency.getCurrencySymbol().compareTo(t1.getCurrencySymbol());
+            }
+
+            @Override
+            public boolean equals(Object o) {
+                return false;
+            }
+        });
+        return arrayList;
     }
 
 

@@ -63,11 +63,11 @@ public class ConversionPopUp extends DialogFragment
 
 
     private float convertToBase(EditText editText){
-       return Float.parseFloat(editText.getText().toString()) / conversionRate;
+       return !editText.toString().isEmpty() ? (Float.parseFloat(editText.getText().toString()) / conversionRate) : 0;
     }
 
     private float convertToTarget(EditText editText){
-        return Float.parseFloat(editText.getText().toString()) * conversionRate;
+        return !editText.toString().isEmpty() ? (Float.parseFloat(editText.getText().toString()) * conversionRate) : 0;
     }
 
 
