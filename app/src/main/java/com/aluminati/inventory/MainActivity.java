@@ -1,23 +1,25 @@
 package com.aluminati.inventory;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.aluminati.inventory.login.authentication.VerificationStatus;
-import com.aluminati.inventory.login.authentication.VerifyUser;
+import com.aluminati.inventory.login.authentication.LogInActivity;
+import com.aluminati.inventory.login.authentication.verification.VerificationStatus;
+import com.aluminati.inventory.login.authentication.verification.VerifyUser;
 import com.aluminati.inventory.login.authentication.password.PassWordReset;
 import com.google.firebase.auth.ActionCodeResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getName();
+
     private FirebaseAuth firebaseAuth;
 
     @Override
@@ -26,6 +28,8 @@ public class MainActivity extends Activity {
         setContentView(R.layout.main_activity);
         firebaseAuth = FirebaseAuth.getInstance();
         listenForDynamicLink();
+
+
     }
 
     private void listenForDynamicLink(){
@@ -90,7 +94,6 @@ public class MainActivity extends Activity {
     protected void onStop() {
         super.onStop();
     }
-
 
 
 }

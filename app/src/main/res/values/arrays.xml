@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="items">
-        <item>Polish</item>
-        <item>Item 2</item>
-        <item>Item 3</item>
-        <item>Item 4</item>
-        <item>Item 5</item>
+        <item>USD</item>
+        <item>EUR</item>
+        <item>GBP</item>
+        <item>PLN</item>
+        <item>BGN</item>
+        <item>HRK</item>
+        <item>DKK</item>
+        <item>SGD</item>
     </string-array>
 </resources>

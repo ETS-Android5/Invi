@@ -107,7 +107,7 @@
                 app:srcCompat="@drawable/profile_img" />
 
             <TextView
-                android:id="@+id/display_name_field"
+                android:id="@+id/tvProfileName"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_weight="0.8"
@@ -121,17 +121,6 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.15">
 
-                <TextView
-                    android:id="@+id/display_name_change"
-                    style="@style/userProfileChangeButton"
-                    android:layout_width="55dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_gravity="end"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="4dp"
-                    android:text="@string/change" />
             </RelativeLayout>
 
 
@@ -170,7 +159,7 @@
                 app:srcCompat="@drawable/email_icon" />
 
             <TextView
-                android:id="@+id/email_field"
+                android:id="@+id/tvProfileEmail"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_weight="0.8"
@@ -185,14 +174,6 @@
                 android:layout_weight="0.15">
 
 
-                <TextView
-                    android:id="@+id/change_email"
-                    style="@style/userProfileChangeButton"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="10dp"
-                    android:text="@string/change" />
 
                 <TextView
                     android:id="@+id/email_verified"
@@ -253,14 +234,6 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.15">
 
-                <TextView
-                    android:id="@+id/change_address"
-                    style="@style/userProfileChangeButton"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="10dp"
-                    android:text="@string/change" />
 
 
             </RelativeLayout>
@@ -309,15 +282,6 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.15">
 
-                <TextView
-                    android:id="@+id/phone_number_change"
-                    style="@style/userProfileChangeButton"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="10dp"
-                    android:text="@string/change"
-                    tools:ignore="DuplicateIds" />
 
                 <TextView
                     android:id="@+id/phone_number_verified"

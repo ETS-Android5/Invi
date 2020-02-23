@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".login.authentication.AuthenticationActivity">
+    tools:context=".login.authentication.authentication.AuthenticationActivity">
 
     <LinearLayout
         android:id="@+id/phone_authenctication_layout"
