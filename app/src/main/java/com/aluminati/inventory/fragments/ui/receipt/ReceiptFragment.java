@@ -11,7 +11,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.fragments.FloatingTitlebarFragment;
 
-
 public class ReceiptFragment extends FloatingTitlebarFragment {
 
     public ReceiptFragment(DrawerLayout drawer) {

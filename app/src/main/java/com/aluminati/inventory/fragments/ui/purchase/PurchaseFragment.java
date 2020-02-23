@@ -52,12 +52,10 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
         View root = inflater.inflate(R.layout.fragment_purchase, container, false);
         super.setView(root);
 
-
-        floatingTitlebar.setLeftToggleOff(true);//dont change icon on toggle
+        floatingTitlebar.setLeftToggleOn(false);//dont change icon on toggle
 
         //How to programmatically set icons on floating action bar
-        floatingTitlebar.setRightButtonIcon(R.drawable.ic_toggle_list);
-        floatingTitlebar.setRightToggleIcon(R.drawable.ic_toggle_grid);
+        floatingTitlebar.setRightToggleIcons(R.drawable.ic_toggle_list, R.drawable.ic_toggle_grid);
         floatingTitlebar.setToggleActive(true);
 
         firestore = FirebaseFirestore.getInstance();
@@ -97,6 +95,11 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
 
         //TODO debug only
         toaster.toastShort(isActive ? "Load grid view" : "Load list view");
+        if(isActive) {
+            floatingTitlebar.showTitleTextBar();
+        } else floatingTitlebar.showSearchBar();
+
+
     }
 
     private void setTrackerSwipe() {

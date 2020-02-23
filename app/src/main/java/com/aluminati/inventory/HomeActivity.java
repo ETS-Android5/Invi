@@ -105,7 +105,8 @@ public class HomeActivity extends AppCompatActivity {
          * if needed. Another benefit of a custom titlebar is we have
          * a lot more options with styling
          */
-        /* --If you want a titlebar in your frag extend the FloatingTitlebarFragment
+        /* --If you want a titlebar in your frag extend the FloatingTitlebarFragment or
+         *   implement the widget like another android widget
          * --If you want access to the nav drawer for closing and opening pass to constructor
          * --If you want to send data to the call Activity pass a handler
          */

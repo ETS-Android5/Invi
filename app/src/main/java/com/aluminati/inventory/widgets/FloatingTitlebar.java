@@ -9,15 +9,14 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableRow;
-
+import android.widget.TextView;
 import androidx.cardview.widget.CardView;
-
 import com.aluminati.inventory.R;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Floating Titlebar. This widget is a lot more flexible
@@ -25,13 +24,13 @@ import com.aluminati.inventory.R;
  * against easier than standard android titlebar.
  */
 public class FloatingTitlebar extends LinearLayout {
-    private ImageView leftButton, rightButton;
+    private ToggleButton leftButton, rightButton;
     private EditText searchField;
+    private TextView titleText;
     private CardView card;
-    private boolean leftActive, rightActive, toggleActive, leftToggleOff, rightToggleOff;
     private ToggleListener toggleListener;
-    private int leftButtonIcon, leftToggleIcon, rightToggleIcon, rightButtonIcon;
     private SearchTextChangeListener searchTextChangeListener;
+    private List<ToggleButton> toggleButtonList;
 
     /**
      * Implement to capture text from title search bar
@@ -55,6 +54,8 @@ public class FloatingTitlebar extends LinearLayout {
     public FloatingTitlebar(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        toggleButtonList = new ArrayList<>();
+
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
                 R.styleable.FloatingTitlebar,
@@ -63,9 +64,10 @@ public class FloatingTitlebar extends LinearLayout {
         card = new CardView(context);
         TableRow row = new TableRow(context, attrs);
 
-        leftButton = new ImageView(context);
-        rightButton = new ImageView(context);
+        leftButton = new ToggleButton(context, attrs);
+        rightButton = new ToggleButton(context, attrs);
         searchField = new EditText(context);
+        titleText = new TextView(context);
 
         ViewGroup.LayoutParams btnW = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.1f);
         ViewGroup.LayoutParams editW = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.8f);
@@ -73,16 +75,18 @@ public class FloatingTitlebar extends LinearLayout {
         leftButton.setLayoutParams(btnW);
         rightButton.setLayoutParams(btnW);
         searchField.setLayoutParams(editW);
+        titleText.setLayoutParams(editW); //same with as search field
+        titleText.setVisibility(View.GONE);//not visible by default
 
         try {
-            leftButtonIcon = a.getResourceId(R.styleable.FloatingTitlebar_leftDrawable, R.mipmap.ic_launcher);
-            rightButtonIcon = a.getResourceId(R.styleable.FloatingTitlebar_rightDrawable, R.mipmap.ic_launcher);
+            leftButton.setToggleImages(a.getResourceId(R.styleable.FloatingTitlebar_leftToggleOffIcon, R.mipmap.ic_launcher),
+                    a.getResourceId(R.styleable.FloatingTitlebar_leftToggleOnIcon, R.mipmap.ic_launcher));
+            rightButton.setToggleImages(a.getResourceId(R.styleable.FloatingTitlebar_rightToggleOffIcon, R.mipmap.ic_launcher),
+                    a.getResourceId(R.styleable.FloatingTitlebar_rightToggleOnIcon, R.mipmap.ic_launcher));
 
-            leftToggleIcon = a.getResourceId(R.styleable.FloatingTitlebar_leftDrawableToggle, 0);
-            rightToggleIcon = a.getResourceId(R.styleable.FloatingTitlebar_rightDrawableToggle, 0);
-
-            leftButton.setImageResource(leftButtonIcon);
-            rightButton.setImageResource(rightButtonIcon);;
+//            titleText.setTextColor(a.getInt(R.styleable.FloatingTitlebar_titleTextColor, Color.BLACK));
+            titleText.setMinHeight(a.getInt(R.styleable.FloatingTitlebar_titleTextMinHeight, 30));
+            titleText.setHint(a.getString(R.styleable.FloatingTitlebar_titleText));
 
             searchField.setHint(a.getString(R.styleable.FloatingTitlebar_searchHint));
             card.setCardElevation(a.getFloat(R.styleable.FloatingTitlebar_setElevation, 15f));
@@ -93,6 +97,7 @@ public class FloatingTitlebar extends LinearLayout {
         }
         row.addView(leftButton);
         row.addView(searchField);
+        row.addView(titleText);
         row.addView(rightButton);
 
         ViewGroup.LayoutParams lp = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
@@ -104,31 +109,18 @@ public class FloatingTitlebar extends LinearLayout {
         card.addView(row);
 
         addView(card);
-        setPadding(10,5,10,5);
+        setPadding(10,10,10,10);
 
         setBackgroundColor(Color.TRANSPARENT);
     }
 
     private void loadListeners() {
-        leftButton.setOnClickListener(view -> {
-            leftActive = !leftActive;
-            if(toggleActive && !leftToggleOff && leftToggleIcon != 0) {
-                leftButton.setImageResource(leftActive ? leftToggleIcon : leftButtonIcon);
-            }
-            if(toggleListener != null) {
-                toggleListener.onLeftButtonToggle(leftActive);
-            }
-
+        leftButton.setOnToggleButtonListener(isActive -> {
+            toggleListener.onLeftButtonToggle(isActive);
         });
 
-        rightButton.setOnClickListener(view -> {
-            rightActive = !rightActive;
-            if(toggleActive && !rightToggleOff && rightToggleIcon != 0) {
-                rightButton.setImageResource(rightActive ? rightToggleIcon : rightButtonIcon);
-            }
-            if(toggleListener != null) {
-                toggleListener.onRightButtonToggle(rightActive);
-            }
+        rightButton.setOnToggleButtonListener(isActive -> {
+            toggleListener.onRightButtonToggle(isActive);
         });
 
         searchField.addTextChangedListener(new TextWatcher() {
@@ -150,6 +142,49 @@ public class FloatingTitlebar extends LinearLayout {
 
             }
         });
+    }
+
+    public void addToggleButton(ToggleButton toggleButton) {
+        toggleButtonList.add(toggleButton);
+    }
+
+    public boolean removeToggleButton(ToggleButton toggleButton) {
+        return toggleButtonList.remove(toggleButton);
+    }
+
+    public void clearToggleButtons() {
+        toggleButtonList.clear();
+    }
+
+
+    /**
+     * Set text of title bar
+     * @param txt
+     */
+    public void setTitleText(String txt) {
+        titleText.setText(txt);
+    }
+
+    /**
+     * Show Title Text Bar. Hides search bar when visible
+     */
+    public void showTitleTextBar() {
+        titleText.setVisibility(View.VISIBLE);
+        searchField.setVisibility(View.GONE);
+    }
+
+    /**
+     * Show Search Bar. Hides Title Text Bar when visible
+     */
+    public void showSearchBar() {
+        titleText.setVisibility(View.GONE);
+        searchField.setVisibility(View.VISIBLE);
+    }
+
+    public void showButtonsOnly(boolean buttonsOnly) {
+        int v = buttonsOnly ? View.GONE : View.VISIBLE;
+        titleText.setVisibility(v);
+        searchField.setVisibility(v);
     }
 
     /**
@@ -175,23 +210,24 @@ public class FloatingTitlebar extends LinearLayout {
      * @param toggleActive
      */
     public void setToggleActive(boolean toggleActive) {
-        this.toggleActive = toggleActive;
+        leftButton.setToggleModeOn(toggleActive);
+        rightButton.setToggleModeOn(toggleActive);
     }
 
     /**
-     * If true toggle icon will not be shown
-     * @param leftToggleOff
+     * If false button will not toggle
+     * @param leftToggleOn
      */
-    public void setLeftToggleOff(boolean leftToggleOff) {
-        this.leftToggleOff = leftToggleOff;
+    public void setLeftToggleOn(boolean leftToggleOn) {
+        leftButton.setToggleModeOn(leftToggleOn);
     }
 
     /**
-     * If true toggle icon will not be shown
-     * @param rightToggleOff
+     * If false toggle icon will not be shown
+     * @param rightToggleOn
      */
-    public void setRightToggleOff(boolean rightToggleOff) {
-        this.rightToggleOff = rightToggleOff;
+    public void setRightToggleOn(boolean rightToggleOn) {
+        rightButton.setToggleModeOn(rightToggleOn);
     }
 
     /**
@@ -227,37 +263,43 @@ public class FloatingTitlebar extends LinearLayout {
     }
 
     /**
-     * Set left button drawable programmatically
+     * Set left toggle off icon drawable programmatically
      * @param drawable
      */
-    public void setLeftButtonIcon(int drawable) {
-        leftButtonIcon = drawable;
-        leftButton.setImageResource(drawable);
+    public void setLeftToggleOffIcon(int drawable) {
+        leftButton.setToggleOffIcon(drawable);
     }
 
     /**
-     * Set left toggle button drawable programmatically
+     * Set left toggle on icon drawable programmatically
      * @param drawable
      */
-    public void setLeftToggleButtonIcon(int drawable) {
-        leftToggleIcon = drawable;
+    public void setLeftToggleOnIcon(int drawable) {
+        leftButton.setToggleOnIcon(drawable);
+    }
+
+    public void setLeftToggleIcons(int toggleOffIcon, int toggleOnIcon) {
+        leftButton.setToggleImages(toggleOffIcon, toggleOnIcon);
     }
 
     /**
-     * Set right button drawable programmatically
+     * Set right toggle off icon drawable programmatically
      * @param drawable
      */
-    public void setRightButtonIcon(int drawable) {
-        rightButtonIcon = drawable;
-        rightButton.setImageResource(drawable);
+    public void setRightToggleOffIcon(int drawable) {
+        rightButton.setToggleOffIcon(drawable);
     }
 
     /**
-     * Set right toggle button drawable programmatically
+     * Set right toggle off icon drawable programmatically
      * @param drawable
      */
-    public void setRightToggleIcon(int drawable) {
-        rightToggleIcon = drawable;
+    public void setRightToggleOnIcon(int drawable) {
+        rightButton.setToggleOnIcon(drawable);
+    }
+
+    public void setRightToggleIcons(int toggleOffIcon, int toggleOnIcon) {
+        rightButton.setToggleImages(toggleOffIcon, toggleOnIcon);
     }
 
 
@@ -270,19 +312,19 @@ public class FloatingTitlebar extends LinearLayout {
     }
 
     /**
-     * Get left button as ImageView
+     * Get left button as ToggleButton
      * @return
      */
-    public ImageView getLeftButton() {
+    public ToggleButton getLeftButton() {
         return leftButton;
     }
 
 
     /**
-     * Get right button as ImageView
+     * Get right button as ToggleButton
      * @return
      */
-    public ImageView getRightButton() {
+    public ToggleButton getRightButton() {
         return rightButton;
     }
 
@@ -292,6 +334,14 @@ public class FloatingTitlebar extends LinearLayout {
      */
     public EditText getSearchField() {
         return searchField;
+    }
+
+    /**
+     * Get Title Text as TextView
+     * @return
+     */
+    public TextView getTitleText() {
+        return titleText;
     }
 
 }

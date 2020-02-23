@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="FloatingTitlebar">
-        <attr name="leftDrawable" format="reference" />
-        <attr name="leftDrawableToggle" format="reference" />
-        <attr name="rightDrawable" format="reference" />
-        <attr name="rightDrawableToggle" format="reference" />
+        <attr name="leftToggleOffIcon" format="reference" />
+        <attr name="leftToggleOnIcon" format="reference" />
+        <attr name="rightToggleOffIcon" format="reference" />
+        <attr name="rightToggleOnIcon" format="reference" />
+
         <attr name="searchHint" format="string" />
+
         <attr name="setCornerRadius" format="float" />
         <attr name="setElevation" format="float" />
+
+        <attr name="titleText" format="string" />
+<!--        <attr name="titleTextColor" format="integer" />-->
+        <attr name="titleTextMinHeight" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="ToggleButton">
+        <attr name="toggleOffIcon" format="reference" />
+        <attr name="toggleOnIcon" format="reference" />
+        <attr name="toggleButtonWeight" format="float" />
+        <attr name="toggleMode" format="boolean" />
     </declare-styleable>
 </resources>
