@@ -144,4 +144,5 @@
     <string name="options"></string>
 <string name="google_maps"></string>
     <string name="resend"> Wyślij ponownie </string>
+    <string name="converions">Conversions</string>
 </resources>

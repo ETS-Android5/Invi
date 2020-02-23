@@ -37,16 +37,14 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.aluminati.inventory.HomeActivity;
-import com.aluminati.inventory.LogInActivity;
 import com.aluminati.inventory.MainActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.fragments.DeleteUser;
-import com.aluminati.inventory.login.authentication.VerificationStatus;
-import com.aluminati.inventory.login.authentication.VerifyUser;
 import com.aluminati.inventory.login.authentication.password.PassWordReset;
 import com.aluminati.inventory.login.authentication.phoneauthentication.PhoneAuthentication;
+import com.aluminati.inventory.login.authentication.verification.VerificationStatus;
 import com.aluminati.inventory.offline.ConnectivityCheck;
 import com.aluminati.inventory.users.User;
 import com.facebook.login.LoginManager;

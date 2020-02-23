@@ -3,20 +3,26 @@ package com.aluminati.inventory.userprofile;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.provider.OpenableColumns;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,13 +34,28 @@ import androidx.fragment.app.Fragment;
 
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.firestore.UserFetch;
+import com.aluminati.inventory.login.authentication.encryption.PhoneAESEncryption;
 import com.aluminati.inventory.users.User;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
@@ -59,6 +80,7 @@ public class UserPhoto extends Fragment implements View.OnClickListener {
         userImageChange = view.findViewById(R.id.user_image_change);
         userImageChange.setOnClickListener(this);
         userPhoto.setOnClickListener(this);
+        userPhoto.setDrawingCacheEnabled(true);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -75,15 +97,16 @@ public class UserPhoto extends Fragment implements View.OnClickListener {
             }
             try {
                 Log.i(TAG, "Picture found");
-
                 InputStream inputStream = getActivity().getContentResolver().openInputStream(data.getData());
                 if(inputStream != null){
                     Log.i(TAG, "Stream not null" + inputStream.toString());
                     Bitmap bitmap = BitmapFactory.decodeStream(new BufferedInputStream(inputStream));
                     userPhoto.setImageBitmap(bitmap);
+
+
                     if(hasImage(userPhoto)) {
                         userImageChange.setVisibility(View.INVISIBLE);
-                        UserFetch.update(firebaseAuth.getCurrentUser().getEmail(), "user_photo", encodeTobase64(bitmap));
+                        new FireBaseStorage(firebaseAuth.getCurrentUser()).uploadPhot(data.getData(),getContext(), bitmap);
                         Snackbar.make(userImageChange, getResources().getString(R.string.photo_changed), BaseTransientBottomBar.LENGTH_LONG);
                     }
                 }else Log.i(TAG, "Stream  null");
@@ -248,6 +271,66 @@ public class UserPhoto extends Fragment implements View.OnClickListener {
             profileImageViwe.setImageBitmap(result);
         }
 
+    }
 
+    class FireBaseStorage{
+
+        private final String USER_PHOTOS = "user_photos";
+        private final String TAG = FireBaseStorage.class.getName();
+        private FirebaseStorage firebaseStorage;
+        private StorageReference storageReference;
+        private FirebaseUser firebaseUser;
+
+
+        public FireBaseStorage(FirebaseUser firebaseUser){
+            this.firebaseStorage = FirebaseStorage.getInstance();
+            this.storageReference = firebaseStorage.getReference();
+            this.firebaseUser = firebaseUser;
+        }
+
+        private void uploadPhot(Uri file, Context context, Bitmap bitmap) {
+
+            Cursor returnCursor =
+                    context.getContentResolver().query(file, null, null, null, null);
+
+            int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+            String mimeType = context.getContentResolver().getType(file);
+
+            returnCursor.moveToFirst();
+
+            StorageReference userPhotoRef = storageReference
+                    .child(USER_PHOTOS.concat("/" + returnCursor.getString(nameIndex)));
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data = baos.toByteArray();
+
+            UploadTask uploadTask = userPhotoRef.putBytes(data);
+
+            uploadTask.addOnFailureListener(exception -> {
+                Log.w(TAG, "Failed to upload to Firebasestorgae successfully", exception);
+            }).addOnSuccessListener(taskSnapshot -> {
+                Log.i(TAG, "File uploaded to Firebasestorgae successfully " + new File(file.toString()).getName());
+            });
+
+
+            uploadTask.continueWithTask(task -> {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+
+                return userPhotoRef.getDownloadUrl();
+            }).addOnSuccessListener(result -> {
+                Log.i(TAG, "Url of file successfully got");
+                firebaseUser.updateProfile(new UserProfileChangeRequest.Builder().setPhotoUri(result).build())
+                        .addOnSuccessListener(updatePhoto -> Log.i(TAG, "Updated photo successfully"))
+                        .addOnFailureListener(updatePhoto -> Log.w(TAG, "Failed to update user photo", updatePhoto));
+                UserFetch.update(firebaseUser.getEmail(), "user_image", result.toString());
+            }).addOnFailureListener(result -> {
+                Log.w(TAG, "Failed to get url of file", result);
+            });
+
+
+        }
     }
 }
