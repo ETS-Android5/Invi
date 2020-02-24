@@ -11,16 +11,12 @@
         layout="@layout/content_main"
         android:background="@color/fragbg_lightgray" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <fragment
+        android:id="@+id/floating_action_button"
+        class="com.aluminati.inventory.widgets.CustomFloatingActionButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:hapticFeedbackEnabled="true"
-        android:scaleType="matrix"
-        app:backgroundTint="@color/colorPrimaryDark"
-        app:fabSize="normal"
-        app:srcCompat="@mipmap/ic_qr_white" />
+        />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

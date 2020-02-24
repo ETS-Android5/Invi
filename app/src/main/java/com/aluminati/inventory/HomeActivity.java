@@ -62,17 +62,6 @@ public class HomeActivity extends AppCompatActivity {
                         .concat(" " + getYear()).concat(" ®"));
 
 
-        fab = findViewById(R.id.fab);
-        fab.setOnClickListener(v -> {
-
-            if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-            {
-                requestCameraPermission();
-            } else {
-                loadFrag(fragMap.get(R.id.nav_scanner));
-            }
-
-        });
 
         /*
          * If you want to send data from a fragment use pass this handler
@@ -157,10 +146,11 @@ public class HomeActivity extends AppCompatActivity {
         loadFrag(fragMap.get(R.id.nav_home));//default nav
     }
 
-    private void loadFrag(Fragment frag) {
-        //Hide fab if scanner
-        fab.setVisibility(frag instanceof ScannerFragment ? View.GONE : View.VISIBLE);
 
+
+    public void loadFrag(Fragment frag) {
+        //Hide fab if scanner
+//        fab.setVisibility(frag instanceof ScannerFragment ? View.GONE : View.VISIBLE);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.nav_host_fragment, frag).commit();
         lastOpenFrag = frag;//catch back press when camera is open
@@ -169,36 +159,9 @@ public class HomeActivity extends AppCompatActivity {
         mDrawerLayout.closeDrawer(GravityCompat.START);
     }
 
-    private void requestCameraPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(new String[]{
-                    Manifest.permission.CAMERA}, Constants.CAMERA_REQUEST);
-        }
-    }
 
     private String getYear(){
         return Integer.toString(Calendar.getInstance().get(Calendar.YEAR));
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if(requestCode == Constants.CAMERA_REQUEST) {
-
-            Log.i(TAG, "Received response for Camera permission request.");
-
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.i(TAG, "CAMERA permission has now been granted. Showing preview.");
-                loadFrag(fragMap.get(R.id.nav_scanner));
-            } else {
-                Log.i(TAG, "CAMERA permission was NOT granted.");
-                Snackbar.make(getWindow().getDecorView().getRootView(),
-                        R.string.camera_permission_failed,
-                        Snackbar.LENGTH_LONG).setAction(R.string.try_again, e ->{
-                    requestCameraPermission();
-                }).show();
-            }
-        }
     }
 
 
