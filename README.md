@@ -24,5 +24,4 @@ Once the user registers using his/her social platform accounts Invi checks if th
 My article on Dynamic Links on Medium.com, saves time in explaining it again https://medium.com/@bmlynarkiewicz1996/android-firebase-dynamic-links-7f39cae910be
 
 Project Proposal Document
-
 https://docs.google.com/document/d/12KqbjledjD7QwJ3_BT8lJvygXheioMWwffLooOM4czQ/edit?usp=sharing
