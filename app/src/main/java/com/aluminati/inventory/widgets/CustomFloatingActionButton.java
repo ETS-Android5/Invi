@@ -25,7 +25,7 @@ import com.google.android.material.snackbar.Snackbar;
 public class CustomFloatingActionButton extends Fragment implements View.OnClickListener
 {
     private final static String TAG = CustomFloatingActionButton.class.getName();
-    private FloatingActionButton fab, fab1, fab2;
+    private FloatingActionButton fab, fab1, fab2, fab3;
     private Boolean isFABOpen = false;
     private ScannerFragment scannerFragment;
 
@@ -45,10 +45,12 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
         fab = view.findViewById(R.id.fab);
         fab1 = view.findViewById(R.id.fab1);
         fab2 = view.findViewById(R.id.fab2);
+        fab3 = view.findViewById(R.id.fab3);
 
         fab.setOnClickListener(this);
         fab1.setOnClickListener(this);
         fab2.setOnClickListener(this);
+        fab3.setOnClickListener(this);
 
         return view;
     }
@@ -57,23 +59,37 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
 
     private void showFABMenu(){
         isFABOpen=true;
-        openFAB(fab1, R.dimen.standard_55);
-        openFAB(fab2, R.dimen.standard_105);
+        openFABYAxis(fab1, R.dimen.standard_55);
+        openFABYAxis(fab2, R.dimen.standard_105);
+        openFABXaxis(fab3, R.dimen.standard_y_axis);
     }
 
     private void closeFABMenu(){
         isFABOpen=false;
-        closeFAB(fab1);
-        closeFAB(fab2);
+        closeFABYaxis(fab1);
+        closeFABYaxis(fab2);
+        closeFABXaxis(fab3);
     }
 
 
-    private void closeFAB(FloatingActionButton fab){
+    private void closeFABXaxis(FloatingActionButton fab){
+        fab.animate().setDuration(500L);
+        fab.animate().translationX(0);
+        fab.setVisibility(View.INVISIBLE);
+    }
+
+    private void openFABXaxis(FloatingActionButton fab, int id){
+        fab.animate().translationX(-getResources().getDimension(id));
+        fab.setVisibility(View.VISIBLE);
+    }
+
+    private void closeFABYaxis(FloatingActionButton fab){
+        fab.animate().setDuration(500L);
         fab.animate().translationY(0);
         fab.setVisibility(View.INVISIBLE);
     }
 
-    private void openFAB(FloatingActionButton fab, int id){
+    private void openFABYAxis(FloatingActionButton fab, int id){
         fab.animate().translationY(-getResources().getDimension(id));
         fab.setVisibility(View.VISIBLE);
     }
