@@ -5,6 +5,7 @@
         <attr name="leftToggleOnIcon" format="reference" />
         <attr name="rightToggleOffIcon" format="reference" />
         <attr name="rightToggleOnIcon" format="reference" />
+        <attr name="drawerReference" format="reference" />
 
         <attr name="searchHint" format="string" />
 

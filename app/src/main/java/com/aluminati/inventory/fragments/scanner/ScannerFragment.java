@@ -21,6 +21,7 @@ import com.aluminati.inventory.helpers.DialogHelper;
 import com.aluminati.inventory.model.RentalItem;
 import com.aluminati.inventory.fragments.recent.RecentFragment;
 import com.aluminati.inventory.utils.Toaster;
+import com.aluminati.inventory.widgets.ToggleButton;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,6 +41,7 @@ public class ScannerFragment extends Fragment {
     private DbHelper dbHelper;
     private Toaster toaster;
     private Switch switchPriceCheck;
+    private ToggleButton btnSound;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -47,6 +49,7 @@ public class ScannerFragment extends Fragment {
         dbHelper = DbHelper.getInstance();
         toaster = Toaster.getInstance(getActivity());
         switchPriceCheck = root.findViewById(R.id.price_check_switch);
+        btnSound = root.findViewById(R.id.toggleQRSound);
 
         try {
 
@@ -55,7 +58,10 @@ public class ScannerFragment extends Fragment {
                             mCodeScanner = new CodeScanner(getContext(), scannerView);
                             mCodeScanner.setDecodeCallback(result ->
                                     getActivity().runOnUiThread(() -> {
-                                        MediaPlayer.create(getActivity(), R.raw.scan).start();
+                                        if(!btnSound.isToggled()) {
+                                            MediaPlayer.create(getActivity(), R.raw.scan).start();
+                                        }
+
 
                                         if(switchPriceCheck.isChecked()){
                                             PriceCheck priceCheck = PriceCheck.newInstance("PriceCheck");
@@ -102,7 +108,7 @@ public class ScannerFragment extends Fragment {
             if(user != null && user.isEmailVerified()) {
                 scanResult.put("uid", user.getUid());
             } else {
-                scanResult.put("uid", "ng3v4taCYkR2TZ67uwThOCLJDUO2");
+                scanResult.put("uid", "ng3v4taCYkR2TZ67uwThOCLJDUO2");//test id
             }
 
 
