@@ -10,18 +10,20 @@
         android:id="@+id/scanner_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:autoFocusButtonColor="@color/colorPrimary"
+        app:autoFocusButtonColor="@color/colorAccent"
         app:autoFocusButtonVisible="true"
-        app:flashButtonColor="@color/colorPrimary"
+        app:flashButtonColor="@color/colorAccent"
         app:flashButtonVisible="true"
-        app:frameColor="@color/colorPrimary"
+        app:frameColor="@color/colorAccent"
         app:frameCornersSize="50dp"
         app:frameCornersRadius="0dp"
         app:frameAspectRatioWidth="1"
         app:frameAspectRatioHeight="1"
         app:frameSize="0.75"
-        app:frameThickness="2dp"
-        app:maskColor="#77000000"/>
+        app:frameThickness="5dp"
+        app:maskColor="#77000000">
+
+    </com.budiyev.android.codescanner.CodeScannerView>
 
     <Switch
         android:id="@+id/price_check_switch"
@@ -34,5 +36,14 @@
         android:textSize="15sp"
         android:layout_margin="30dp"
         />
+
+    <com.aluminati.inventory.widgets.ToggleButton
+        android:id="@+id/toggleQRSound"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        app:toggleOffIcon="@drawable/ic_toogle_sound_on_yellow"
+        app:toggleOnIcon="@drawable/ic_toogle_sound_off_yellow" />
 
 </FrameLayout>

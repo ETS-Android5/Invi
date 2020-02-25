@@ -1,6 +1,7 @@
 package com.aluminati.inventory.fragments.scanner;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -18,9 +19,11 @@ import com.aluminati.inventory.R;
 import com.aluminati.inventory.fragments.PriceCheck;
 import com.aluminati.inventory.helpers.DbHelper;
 import com.aluminati.inventory.helpers.DialogHelper;
+import com.aluminati.inventory.model.PurchaseItem;
 import com.aluminati.inventory.model.RentalItem;
 import com.aluminati.inventory.fragments.recent.RecentFragment;
 import com.aluminati.inventory.utils.Toaster;
+import com.aluminati.inventory.widgets.ToggleButton;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,18 +31,21 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.MalformedJsonException;
 
 import java.util.Calendar;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 public class ScannerFragment extends Fragment {
-
+    private static final String TAG = ScannerFragment.class.getSimpleName();
     private CodeScanner mCodeScanner;
     private FirebaseFirestore db;
     private DbHelper dbHelper;
     private Toaster toaster;
     private Switch switchPriceCheck;
+    private ToggleButton btnSound;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -47,6 +53,7 @@ public class ScannerFragment extends Fragment {
         dbHelper = DbHelper.getInstance();
         toaster = Toaster.getInstance(getActivity());
         switchPriceCheck = root.findViewById(R.id.price_check_switch);
+        btnSound = root.findViewById(R.id.toggleQRSound);
 
         try {
 
@@ -55,7 +62,10 @@ public class ScannerFragment extends Fragment {
                             mCodeScanner = new CodeScanner(getContext(), scannerView);
                             mCodeScanner.setDecodeCallback(result ->
                                     getActivity().runOnUiThread(() -> {
-                                        MediaPlayer.create(getActivity(), R.raw.scan).start();
+                                        if(!btnSound.isToggled()) {
+                                            MediaPlayer.create(getActivity(), R.raw.scan).start();
+                                        }
+
 
                                         if(switchPriceCheck.isChecked()){
                                             PriceCheck priceCheck = PriceCheck.newInstance("PriceCheck");
@@ -69,10 +79,9 @@ public class ScannerFragment extends Fragment {
             /*
             //TODO: remove after debug
              Test barcode QR code
-             {"sid":"Wcxb1fSbI0uz2RRaIaTl","iid":"tg4AccyV3uulNiVAa8jT","idx":"3"}
+             {"sid":"Wcxb1fSbI0uz2RRaIaTl","iid":"tg4AccyV3uulNiVAa8jT","idx":"3"} //rental item
+             {"sid":"Wcxb1fSbI0uz2RRaIaTl","iid":"yMjwSXjkyPLhOIjay8DI"}//purchase item item
              https://barcode.tec-it.com/en/QRCode?data=%7B%22sid%22%3A%22Wcxb1fSbI0uz2RRaIaTl%22%2C%22iid%22%3A%22tg4AccyV3uulNiVAa8jT%22%2C%22idx%22%3A%223%22%7D
-
-                //I could cast to ScanItem here but map is better because we can add more fields dynamically
 
                 */
 
@@ -91,28 +100,72 @@ public class ScannerFragment extends Fragment {
     }
 
     private void parseScanResult(String result){
-        if(result.contains("sid")){
+        if(result.contains("sid") && result.contains("iid")){ //basic check
             Gson gson = new GsonBuilder().create();
-
-            Map<String, Object> scanResult = gson.fromJson(result, Map.class);
-
-            //TODO: getCurrentUser().getUid() - wont work till auth is fixed
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            boolean isVerified = user != null && user.isEmailVerified();
+           if(isVerified) {
+               try {
+                   Map<String, Object> scanResult = gson.fromJson(result, Map.class);
+                   boolean isPurchase = scanResult.containsKey("sid") && scanResult.containsKey("iid");
+                   int size = scanResult.size();
+                   //scanResult.put("uid", user.getUid());
 
-            if(user != null && user.isEmailVerified()) {
-                scanResult.put("uid", user.getUid());
-            } else {
-                scanResult.put("uid", "ng3v4taCYkR2TZ67uwThOCLJDUO2");
-            }
+                   switch(size) {
+                       case 2:
+                           if(isPurchase) {
+                               //valid purchase item
+                               addToCart(scanResult);
+                           }
+                           break;
+                       case 3:
+                           if(isPurchase && scanResult.containsKey("idx")) {
+                               //valid rental item
+                               scanResult.put("uid", user.getUid());
+                               isRented(scanResult);
+                           }
+                           break;
+                   }
+               } catch (JsonSyntaxException ex) {
+                   toaster.toastShort("Un know barcode format");
+                   Log.e(TAG, "Un know barcode format: " +  ex.getMessage());
+               }
+           }
 
-
-            isRented(scanResult);
-
-        }else if(Pattern.compile("[0-9]+").matcher(result).matches()){
+        } /*else if(Pattern.compile("[0-9]+").matcher(result).matches()){
             toaster.toastShort(result);
-        }else{
+        }*/
+        else{
             toaster.toastShort("Un know barcode format");
         }
+    }
+
+    private void addToCart(Map<String, Object> scanResult) {
+        final String iid = scanResult.get("iid").toString();
+        final String uid = FirebaseAuth.getInstance().getUid();
+
+        dbHelper.getItem(Constants.FirestoreCollections.STORE_ITEMS, iid)
+                .addOnSuccessListener( task -> {
+                    //TODO: Do some error checking here
+                    PurchaseItem item = task.toObject(PurchaseItem.class);
+                    AlertDialog.Builder dialog = DialogHelper.getInstance(getActivity())
+                            .createDialog(item.getTitle(), "", item.getImgLink(), Color.GREEN);
+                    dialog.setMessage("Do you want to add to cart");
+                    dialog.setPositiveButton("Yes", (dialogInterface, i) -> {
+                        scanResult.put("uid", uid);
+                        scanResult.put("addDate", Calendar.getInstance().getTime());
+                        dbHelper.setItem(Constants.FirestoreCollections.LIVE_USER_CART, iid, scanResult)
+                                .addOnSuccessListener(setResult ->{
+                                    //TODO: Item is added
+                                    toaster.toastShort("Item added to cart");
+                                })
+                                .addOnFailureListener(setFail ->{});
+
+                        dialogInterface.dismiss();})
+                            .setNegativeButton("No", (dialogInterface, i) -> dialogInterface.dismiss());
+
+                    dialog.show();
+                });
     }
 
     private void isRented(Map<String, Object> scanResult) {
@@ -189,42 +242,6 @@ public class ScannerFragment extends Fragment {
     }
 
 
-    /* TODO: Remove in production
-
-    example of function call on server side
-
-    exports.rentItem = functions.https.onCall((data, context) => {
-
-        var result = new Object();
-        result.isRented = false;
-        result.message = "this is a message";
-
-        const db = admin.firestore();
-
-        var docName = data.iid + '_' + data.idx;
-
-        return db.collection('rentals').doc(docName).get()
-        .then((docSnapshot) => {
-          if (docSnapshot.exists) { //if the doc exits return it
-
-            result.isRented = true;
-            result.message = "Sorry this item is already out";
-            return result;
-          } else { //doc does not exist so return message
-            result.isRented = false;
-            result.message = "You can rent to item";
-            return result;
-          }
-        });
-     */
-//    private Task<Map<String, Object>> rentOrReturnItem(Map<String, Object> data) {
-//
-//        return firebaseFunctions
-//                .getHttpsCallable("rentItem")
-//                .call(data)
-//                .continueWith(task -> (Map<String, Object>) task.getResult().getData());
-//    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -250,6 +267,4 @@ public class ScannerFragment extends Fragment {
             mCodeScanner.releaseResources();
         }
     }
-
-
 }
