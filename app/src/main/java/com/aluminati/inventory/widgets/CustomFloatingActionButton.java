@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -28,11 +29,17 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
     private FloatingActionButton fab, fab1, fab2, fab3;
     private Boolean isFABOpen = false;
     private ScannerFragment scannerFragment;
+    private DrawerLayout drawerLayout;
 
 
     public CustomFloatingActionButton(){
 
     }
+
+    public void setDrawerLayout(DrawerLayout drawerLayout){
+        this.drawerLayout = drawerLayout;
+    }
+
 
     @Nullable
     @Override
@@ -52,8 +59,11 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
         fab2.setOnClickListener(this);
         fab3.setOnClickListener(this);
 
+
+
         return view;
     }
+
 
 
 
@@ -137,9 +147,9 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
                         if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                             requestCameraPermission();
                         } else {
-                            scannerFragment = new ScannerFragment();
+                            this.scannerFragment = new ScannerFragment();
                             FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                            fragmentTransaction.replace(R.id.nav_host_fragment, scannerFragment).commit();
+                            fragmentTransaction.add(R.id.nav_host_fragment, scannerFragment, "scanner_frag").addToBackStack("scanner_frag").commit();
                         }
                     }
                 }

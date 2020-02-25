@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.aluminati.inventory.fragments.MapsActivity;
@@ -29,6 +30,7 @@ import com.aluminati.inventory.fragments.tools.ToolsFragment;
 
 import com.aluminati.inventory.login.authentication.LogInActivity;
 import com.aluminati.inventory.utils.Toaster;
+import com.aluminati.inventory.widgets.CustomFloatingActionButton;
 import com.facebook.login.LoginManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -62,6 +64,9 @@ public class HomeActivity extends AppCompatActivity {
                         .concat(" " + getYear()).concat(" ®"));
 
 
+        CustomFloatingActionButton customFloatingActionButton = (CustomFloatingActionButton) getSupportFragmentManager()
+                                                                .findFragmentById(R.id.floating_action_button);
+
 
         /*
          * If you want to send data from a fragment use pass this handler
@@ -90,6 +95,9 @@ public class HomeActivity extends AppCompatActivity {
         mDrawerLayout = findViewById(R.id.drawer_layout);
         fragMap = new HashMap<Integer, Fragment>();
 
+        if(customFloatingActionButton != null){
+            customFloatingActionButton.setDrawerLayout(mDrawerLayout);
+        }
         /* Why go to all this trouble to have custom titlebar?
          * Gives a lot more options for functionality than the
          * standard titlebar and easier to code listeners
@@ -167,14 +175,10 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(lastOpenFrag != null && lastOpenFrag instanceof ScannerFragment) {
-            loadFrag(fragMap.get(R.id.nav_home));
-        } else {
-            super.onBackPressed();
-        }
+
+            getSupportFragmentManager().popBackStack("scanner_frag",  FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
     }
-
 
 
 }

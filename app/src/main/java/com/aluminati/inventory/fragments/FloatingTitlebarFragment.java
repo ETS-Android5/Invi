@@ -10,6 +10,7 @@ import com.aluminati.inventory.R;
 import com.aluminati.inventory.widgets.FloatingTitlebar;
 
 public abstract class FloatingTitlebarFragment extends Fragment implements FloatingTitlebar.ToggleListener,
+
         FloatingTitlebar.SearchTextChangeListener {
     protected FloatingTitlebar floatingTitlebar;
     protected DrawerLayout drawer;

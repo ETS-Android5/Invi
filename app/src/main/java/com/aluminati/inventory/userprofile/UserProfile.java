@@ -24,6 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.aluminati.inventory.fragments.fragmentListeners.socialAccounts.ReloadImageResponse;
 import com.aluminati.inventory.login.authentication.LogInActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
@@ -70,6 +71,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private String tmp;
     private ConnectivityCheck connection;
     private PopupMenu popup;
+    private ReloadImageResponse reloadImageResponse;
 
 
     @Override
@@ -101,6 +103,9 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         findViewById(R.id.delete_user).setOnClickListener(this);
         registerForContextMenu(settingButton);
 
+        UserPhoto userPhoto = (UserPhoto) getSupportFragmentManager().findFragmentById(R.id.user_photo);
+        bindFrag(userPhoto);
+
         connection = new ConnectivityCheck(displayNameChange);
 
 
@@ -127,13 +132,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         popup.getMenuInflater().inflate(R.menu.user_profile_menu, popup.getMenu());
         popup.show();
     }
-
-
-
-
-
-
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -311,6 +309,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             userName.setText(firebaseUser.getDisplayName());
             userEmail.setText(firebaseUser.getEmail());
             phoneNumber.setText(firebaseUser.getPhoneNumber());
+            reloadImageResponse.reload(3001);
 
             setVerificationLabels();
 
@@ -321,6 +320,23 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             Utils.makeSnackBarWithButtons("Failed to reload user", displayNameChange, this);
         });
     }
+
+    private void onReloaded(boolean reloaded){
+        if(reloaded){
+            Log.i(TAG, "Reloaded user photo successfully");
+        } else Log.w(TAG, "Failed to reload user");
+    }
+
+    private void bindFrag(Fragment fragment){
+        if(fragment instanceof UserPhoto){
+            ((UserPhoto)fragment).setReloadImage(this::onReloaded);
+        }
+    }
+
+    public  <T extends Fragment> void setReloadImageResponse(ReloadImageResponse reloadImageResponse) {
+        this.reloadImageResponse = reloadImageResponse;
+    }
+
 
     @Override
     protected void onStart() {
@@ -363,7 +379,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 if (LoginManager.getInstance() != null) {
                     LoginManager.getInstance().logOut();
                 }
-                //TODO: not good --> look for clear flags when creating intent HomeActivity.homeActivity.finish();
                 Intent logout = new Intent(UserProfile.this, LogInActivity.class);
                 logout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(logout);

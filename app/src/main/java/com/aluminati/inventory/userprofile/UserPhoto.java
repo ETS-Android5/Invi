@@ -3,7 +3,6 @@ package com.aluminati.inventory.userprofile;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,25 +21,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.firestore.UserFetch;
-import com.aluminati.inventory.login.authentication.encryption.PhoneAESEncryption;
+import com.aluminati.inventory.fragments.fragmentListeners.socialAccounts.ReloadImage;
+import com.aluminati.inventory.fragments.fragmentListeners.socialAccounts.ReloadImageResponse;
 import com.aluminati.inventory.users.User;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,12 +46,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import org.apache.commons.io.FilenameUtils;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
@@ -68,6 +61,8 @@ public class UserPhoto extends Fragment implements View.OnClickListener {
     private TextView userImageChange;
     private ImageView userPhoto;
     private FirebaseAuth firebaseAuth;
+    private ReloadImage reloadImageResponse;
+    private ProgressBar progressBar;
 
     @Nullable
     @Override
@@ -81,7 +76,9 @@ public class UserPhoto extends Fragment implements View.OnClickListener {
         userImageChange.setOnClickListener(this);
         userPhoto.setOnClickListener(this);
         userPhoto.setDrawingCacheEnabled(true);
+        progressBar = view.findViewById(R.id.photo_progress_loader);
 
+        bindActivity(getActivity());
         firebaseAuth = FirebaseAuth.getInstance();
 
         return view;
@@ -97,13 +94,11 @@ public class UserPhoto extends Fragment implements View.OnClickListener {
             }
             try {
                 Log.i(TAG, "Picture found");
+                progressBar.setVisibility(View.VISIBLE);
                 InputStream inputStream = getActivity().getContentResolver().openInputStream(data.getData());
                 if(inputStream != null){
                     Log.i(TAG, "Stream not null" + inputStream.toString());
                     Bitmap bitmap = BitmapFactory.decodeStream(new BufferedInputStream(inputStream));
-                    userPhoto.setImageBitmap(bitmap);
-
-
                     if(hasImage(userPhoto)) {
                         userImageChange.setVisibility(View.INVISIBLE);
                         new FireBaseStorage(firebaseAuth.getCurrentUser()).uploadPhot(data.getData(),getContext(), bitmap);
@@ -273,6 +268,25 @@ public class UserPhoto extends Fragment implements View.OnClickListener {
 
     }
 
+    private void setOnResponse(int code){
+        if(code == 3001){
+            if(firebaseAuth.getCurrentUser().getPhotoUrl() != null) {
+                new RemoteImage(userPhoto).execute(firebaseAuth.getCurrentUser().getPhotoUrl().toString());
+                reloadImageResponse.reloaded(true);
+            }
+        }
+    }
+
+    private void bindActivity(Activity appCompatActivity){
+        if(getActivity() instanceof UserProfile){
+            ((UserProfile)appCompatActivity).setReloadImageResponse(this::setOnResponse);
+        }
+    }
+
+    public <T extends AppCompatActivity> void setReloadImage(ReloadImage reloadImage){
+        this.reloadImageResponse = reloadImage;
+    }
+
     class FireBaseStorage{
 
         private final String USER_PHOTOS = "user_photos";
@@ -294,7 +308,6 @@ public class UserPhoto extends Fragment implements View.OnClickListener {
                     context.getContentResolver().query(file, null, null, null, null);
 
             int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-            String mimeType = context.getContentResolver().getType(file);
 
             returnCursor.moveToFirst();
 
@@ -323,7 +336,11 @@ public class UserPhoto extends Fragment implements View.OnClickListener {
             }).addOnSuccessListener(result -> {
                 Log.i(TAG, "Url of file successfully got");
                 firebaseUser.updateProfile(new UserProfileChangeRequest.Builder().setPhotoUri(result).build())
-                        .addOnSuccessListener(updatePhoto -> Log.i(TAG, "Updated photo successfully"))
+                        .addOnSuccessListener(updatePhoto -> {
+                            Log.i(TAG, "Updated photo successfully");
+                            new RemoteImage(userPhoto).execute(result.toString());
+                            progressBar.setVisibility(View.INVISIBLE);
+                        })
                         .addOnFailureListener(updatePhoto -> Log.w(TAG, "Failed to update user photo", updatePhoto));
                 UserFetch.update(firebaseUser.getEmail(), "user_image", result.toString());
             }).addOnFailureListener(result -> {
