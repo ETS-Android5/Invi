@@ -41,6 +41,9 @@ public class PhoneAESEncryption extends AsyncTask<String,String,String> {
         execute();
     }
 
+    public PhoneAESEncryption(){
+
+    }
 
     private static String encrypt(String phoneNumberToEncrypt) throws Exception{
 
@@ -51,7 +54,7 @@ public class PhoneAESEncryption extends AsyncTask<String,String,String> {
         return Base64.encodeToString(encrypted, Base64.DEFAULT);
     }
 
-    private static String decrypt(String phoneNumberToDecrypt) throws Exception{
+    public static String decrypt(String phoneNumberToDecrypt) throws Exception{
         byte[] encrypted_keys = Base64.decode(phoneNumberToDecrypt, Base64.DEFAULT);
         SecretKeySpec secretKeySpec = new SecretKeySpec(getRaw(phoneNumberToDecrypt,salt), "AES");
         Cipher cipher = Cipher.getInstance(cypInst);
