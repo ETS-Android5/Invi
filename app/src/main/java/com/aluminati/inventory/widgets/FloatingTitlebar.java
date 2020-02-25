@@ -14,6 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import androidx.cardview.widget.CardView;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.aluminati.inventory.R;
 import java.util.ArrayList;
 import java.util.List;

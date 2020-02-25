@@ -2,6 +2,7 @@ package com.aluminati.inventory.adapters.swipelisteners;
 
 
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.View;
 
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -9,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.aluminati.inventory.adapters.ItemAdapter;
 
-;
-
 public class ItemSwipe extends ItemTouchHelper.SimpleCallback {
+    private static final String TAG = ItemSwipe.class.getSimpleName();
+
     private ItemHelperListener listener;
     private RecyclerView recyclerView;
 
@@ -35,14 +36,17 @@ public class ItemSwipe extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
-        if (viewHolder != null) {
-            View foregroundView = null;
-            if( viewHolder instanceof ItemAdapter.ViewHolder) {
-                foregroundView = ((ItemAdapter.ViewHolder) viewHolder).viewForeground;
-                getDefaultUIUtil().onSelected(foregroundView);
-            }
+        onSelectUpdate(viewHolder);
+    }
 
+    private View  onSelectUpdate(RecyclerView.ViewHolder viewHolder) {
+        View fv = null;
+        if(viewHolder != null && viewHolder instanceof ItemAdapter.ViewHolder) {
+            fv = ((ItemAdapter.ViewHolder) viewHolder).getForeground();
+            getDefaultUIUtil().onSelected(fv);
         }
+
+        return fv;
     }
 
     @Override
@@ -52,43 +56,30 @@ public class ItemSwipe extends ItemTouchHelper.SimpleCallback {
     }
 
     @Override
-    public void onChildDrawOver(Canvas c, RecyclerView recyclerView,
-                                RecyclerView.ViewHolder viewHolder, float dX, float dY,
-                                int actionState, boolean isCurrentlyActive) {
-
-        View foregroundView = null;
-        if( viewHolder instanceof ItemAdapter.ViewHolder) {
-            foregroundView = ((ItemAdapter.ViewHolder) viewHolder).viewForeground;
-            getDefaultUIUtil().onSelected(foregroundView);
-        }
-
-        getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY,
-                actionState, isCurrentlyActive);
+    public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+        Log.d(TAG, "clearView ");
+        View fv = onSelectUpdate(viewHolder);
+        getDefaultUIUtil().clearView(fv);
     }
 
     @Override
-    public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-        View foregroundView = null;
-        if( viewHolder instanceof ItemAdapter.ViewHolder) {
-            foregroundView = ((ItemAdapter.ViewHolder) viewHolder).viewForeground;
-            getDefaultUIUtil().onSelected(foregroundView);
-        }
+    public void onChildDrawOver(Canvas c, RecyclerView recyclerView,
+                                RecyclerView.ViewHolder viewHolder, float dX, float dY,
+                                int state, boolean active) {
+        Log.d(TAG, "onChildDrawOver " + dX + " " + dY);
+        View fv = onSelectUpdate(viewHolder);
 
-        getDefaultUIUtil().clearView(foregroundView);
+        getDefaultUIUtil().onDrawOver(c, recyclerView, fv, dX, dY, state, active);
     }
 
     @Override
     public void onChildDraw(Canvas c, RecyclerView recyclerView,
                             RecyclerView.ViewHolder viewHolder, float dX, float dY,
-                            int actionState, boolean isCurrentlyActive) {
-        View foregroundView = null;
-        if( viewHolder instanceof ItemAdapter.ViewHolder) {
-            foregroundView = ((ItemAdapter.ViewHolder) viewHolder).viewForeground;
-            getDefaultUIUtil().onSelected(foregroundView);
-        }
+                            int state, boolean active) {
+        Log.d(TAG, "onChildDraw " + dX + " " + dY);
 
-        getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY,
-                actionState, isCurrentlyActive);
+        View fv = onSelectUpdate(viewHolder);
+        getDefaultUIUtil().onDraw(c, recyclerView, fv, dX, dY, state, active);
     }
 
     @Override

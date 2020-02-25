@@ -3,6 +3,7 @@ package com.aluminati.inventory.model;
 import java.util.List;
 
 public abstract class BaseItem {
+    protected String docID;
     protected String storeID;
     protected String storeCity;
     protected String storeCountry;
@@ -26,6 +27,14 @@ public abstract class BaseItem {
         this.price = price;
         this.imgLink = imgLink;
         this.tags = tags;
+    }
+
+    public String getDocID() {
+        return docID;
+    }
+
+    public void setDocID(String docID) {
+        this.docID = docID;
     }
 
     public String getStoreID() {
