@@ -115,7 +115,7 @@ public class ScannerFragment extends Fragment {
                        case 2:
                            if(isPurchase) {
                                //valid purchase item
-                               buyItem(scanResult);
+                               addToCart(scanResult);
                            }
                            break;
                        case 3:
@@ -140,16 +140,28 @@ public class ScannerFragment extends Fragment {
         }
     }
 
-    private void buyItem(Map<String, Object> scanResult) {
+    private void addToCart(Map<String, Object> scanResult) {
+        final String iid = scanResult.get("iid").toString();
+        final String uid = FirebaseAuth.getInstance().getUid();
 
-        dbHelper.getItem(Constants.FirestoreCollections.STORE_ITEMS, scanResult.get("iid").toString())
+        dbHelper.getItem(Constants.FirestoreCollections.STORE_ITEMS, iid)
                 .addOnSuccessListener( task -> {
                     //TODO: Do some error checking here
                     PurchaseItem item = task.toObject(PurchaseItem.class);
                     AlertDialog.Builder dialog = DialogHelper.getInstance(getActivity())
                             .createDialog(item.getTitle(), "", item.getImgLink(), Color.GREEN);
-                    dialog.setMessage("Do you want to buy this item");
-                    dialog.setPositiveButton("Yes", (dialogInterface, i) -> dialogInterface.dismiss())
+                    dialog.setMessage("Do you want to add to cart");
+                    dialog.setPositiveButton("Yes", (dialogInterface, i) -> {
+                        scanResult.put("uid", uid);
+                        scanResult.put("addDate", Calendar.getInstance().getTime());
+                        dbHelper.setItem(Constants.FirestoreCollections.LIVE_USER_CART, iid, scanResult)
+                                .addOnSuccessListener(setResult ->{
+                                    //TODO: Item is added
+                                    toaster.toastShort("Item added to cart");
+                                })
+                                .addOnFailureListener(setFail ->{});
+
+                        dialogInterface.dismiss();})
                             .setNegativeButton("No", (dialogInterface, i) -> dialogInterface.dismiss());
 
                     dialog.show();
