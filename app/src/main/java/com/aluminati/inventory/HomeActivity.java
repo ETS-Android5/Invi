@@ -29,8 +29,10 @@ import com.aluminati.inventory.fragments.search.SearchFragment;
 import com.aluminati.inventory.fragments.tools.ToolsFragment;
 
 import com.aluminati.inventory.login.authentication.LogInActivity;
+import com.aluminati.inventory.payments.ui.PaymentsFrag;
 import com.aluminati.inventory.utils.Toaster;
 import com.aluminati.inventory.widgets.CustomFloatingActionButton;
+import com.aluminati.inventory.widgets.ScannerFragContains;
 import com.facebook.login.LoginManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -50,6 +52,7 @@ public class HomeActivity extends AppCompatActivity {
     private Map<Integer, Fragment> fragMap;
     private Fragment lastOpenFrag;
     private FirebaseAuth firebaseAuth;
+    private ScannerFragContains scannerFragContains;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,9 +98,6 @@ public class HomeActivity extends AppCompatActivity {
         mDrawerLayout = findViewById(R.id.drawer_layout);
         fragMap = new HashMap<Integer, Fragment>();
 
-        if(customFloatingActionButton != null){
-            customFloatingActionButton.setDrawerLayout(mDrawerLayout);
-        }
         /* Why go to all this trouble to have custom titlebar?
          * Gives a lot more options for functionality than the
          * standard titlebar and easier to code listeners
@@ -120,6 +120,7 @@ public class HomeActivity extends AppCompatActivity {
         fragMap.put(R.id.maps, new MapsActivity());
         fragMap.put(R.id.nav_scanner, new ScannerFragment());
         fragMap.put(R.id.currency_converions, new CurrencyFrag());
+        fragMap.put(R.id.payments, new PaymentsFrag());
 
         NavigationView navigationView = findViewById(R.id.nav_view);
 
@@ -161,6 +162,9 @@ public class HomeActivity extends AppCompatActivity {
 //        fab.setVisibility(frag instanceof ScannerFragment ? View.GONE : View.VISIBLE);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.nav_host_fragment, frag).commit();
+        if(!(frag instanceof ScannerFragment)){
+            scannerFragContains.contiansScannerFrag(false);
+        }
         lastOpenFrag = frag;//catch back press when camera is open
     }
     public void closeDrawer() {
@@ -173,10 +177,16 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
+    public void setScannerFragContains(ScannerFragContains scannerFragContains){
+        this.scannerFragContains = scannerFragContains;
+    }
+
     @Override
     public void onBackPressed() {
 
             getSupportFragmentManager().popBackStack("scanner_frag",  FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        scannerFragContains.contiansScannerFrag(false);
+
 
     }
 

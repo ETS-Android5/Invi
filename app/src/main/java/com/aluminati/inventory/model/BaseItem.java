@@ -3,9 +3,11 @@ package com.aluminati.inventory.model;
 import java.util.List;
 
 public abstract class BaseItem {
+    protected String docID;
     protected String storeID;
     protected String storeCity;
     protected String storeCountry;
+    protected boolean isRestricted;
     protected String title;
     protected String description;
     protected double price;
@@ -17,7 +19,7 @@ public abstract class BaseItem {
     public BaseItem(String storeID, String storeCity,
                     String storeCountry, String title,
                     String description, double price,
-                    String imgLink, List<String> tags) {
+                    String imgLink, List<String> tags, boolean isRestricted) {
         this.storeID = storeID;
         this.storeCity = storeCity;
         this.storeCountry = storeCountry;
@@ -26,6 +28,23 @@ public abstract class BaseItem {
         this.price = price;
         this.imgLink = imgLink;
         this.tags = tags;
+        this.isRestricted = isRestricted;
+    }
+
+    public boolean isRestricted() {
+        return isRestricted;
+    }
+
+    public void setRestricted(boolean restricted) {
+        isRestricted = restricted;
+    }
+
+    public String getDocID() {
+        return docID;
+    }
+
+    public void setDocID(String docID) {
+        this.docID = docID;
     }
 
     public String getStoreID() {

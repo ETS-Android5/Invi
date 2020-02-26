@@ -4,37 +4,40 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TableLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.model.BaseItem;
-import com.aluminati.inventory.model.RentalItem;
-import com.bumptech.glide.Glide;
+import com.aluminati.inventory.binders.IBinder;
 
 import java.util.List;
 
-public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
-    private final OnItemClickListener listener;
-    private List<? extends BaseItem> items;
+/*
+ *  Generic Adapter to handle any model type
+ *  Please see Purchase Binder as an example of have how to implement
+ *  IBinder
+ */
+public class ItemAdapter<T> extends RecyclerView.Adapter<ItemAdapter<T>.ViewHolder> {
+    private final OnItemClickListener<T> listener;
+    private List<T> items;
     private Context context;
-    public ItemAdapter(List<? extends BaseItem> Items, OnItemClickListener listener, Context context) {
+    private IBinder<T> iBinder;
+    public ItemAdapter(List<T> Items, OnItemClickListener listener, IBinder<T> iBinder, Context context) {
         this.items = Items;
         this.listener = listener;
         this.context = context;
+        this.iBinder = iBinder;
     }
 
     @NonNull
     @Override
-    public ItemAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ItemAdapter<T>.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_item, parent, false);
 
-        return new ItemAdapter.ViewHolder(itemView);
+        return new ItemAdapter<T>.ViewHolder(itemView, iBinder);
     }
 
     @Override
@@ -48,16 +51,16 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         return items.size();
     }
 
-    public BaseItem getItem(int position) {
+    public T getItem(int position) {
         return items.get(position);
     }
 
 
-    public BaseItem removeItem(int position) {
+    public T removeItem(int position) {
         return removeItem(items.get(position));
     }
 
-    public BaseItem removeItem(BaseItem Item) {
+    public T removeItem(T Item) {
         items.remove(Item);
         notifyDataSetChanged();
         return Item;
@@ -69,56 +72,37 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        //TextView fields here
-        TextView itemTitle, itemDescription, itemPrice;
-        View itemView;
-        ImageView itemImg;
-        public TableLayout viewForeground, viewBackground;
+        private TableLayout viewForeground, viewBackground;
+        private IBinder<T> binder;
 
-        public ViewHolder(View view) {
+        public ViewHolder(View view, IBinder<T> binder) {
             super(view);
-            this.itemView = view;
-//            //init view here
-            itemTitle = view.findViewById(R.id.itemTitle);
-            itemDescription = view.findViewById(R.id.itemDescription);
-            itemPrice = view.findViewById(R.id.itemPrice);
-            itemImg = view.findViewById(R.id.itemImg);
-
-            viewForeground = view.findViewById(R.id.foreground_view);
-            viewBackground = view.findViewById(R.id.background_view);
+            this.binder = binder;
+            this.binder.initViews(view);
+            this.viewForeground = binder.getForeground();
+            this.viewBackground = binder.getBackground();
         }
 
-        public void bind(final BaseItem item, final OnItemClickListener listener){
-            //set data here
-
-            itemTitle.setText(item.getTitle());
-            itemDescription.setText(item.getDescription());
-            boolean isRental = item instanceof RentalItem;
-
-            itemPrice.setText(String.format("€%.2f ", item.getPrice())
-                    + (isRental
-                    ? "Per " + ((RentalItem) item).getUnitType()
-                    : ""));
-
-            Glide.with(context)
-                    .load(item.getImgLink())
-                    .into(itemImg);
-
+        public void bind(final T item, final OnItemClickListener<T> listener){
+            binder.bind(item, context);
             itemView.setOnClickListener(view -> listener.onItemClick(item));
         }
+
+        public View getForeground() {return viewForeground;}
+        public View getBackground() {return viewBackground;}
     }
 
     /**
      * Apply a filtered list - Used during search
      * @param Items
      */
-    public void applyFilter(List<BaseItem> Items) {
+    public void applyFilter(List<T> Items) {
         this.items = Items;
         //Collections.sort(this.Items);
         notifyDataSetChanged();
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(BaseItem item);
+    public interface OnItemClickListener<T> {
+        void onItemClick(T item);
     }
 }

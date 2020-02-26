@@ -143,7 +143,10 @@
     <string name="select_language"></string>
     <string name="options"></string>
 <string name="google_maps"></string>
-
     <string name="resend"> Wyślij ponownie </string>
     <string name="converions">Conversions</string>
+    <string name="payments" translatable="false">Payments</string>
+    <string name="no_items_in_cart">You have mo items in your cart</string>
+    <string name="error_purchase_cart_items">Something went wrong accessing cart please try again</string>
+    <string name="item_removed_from_cart">Item has been removed from cart</string>
 </resources>

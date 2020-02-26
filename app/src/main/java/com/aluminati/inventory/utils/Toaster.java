@@ -18,11 +18,28 @@ public class Toaster {
         return instance;
     }
 
-    public void toastShort(String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    public void toastShort(Object... message) {
+        toastShortPadding("", message);
     }
 
-    public void toastLong(String message) {
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+    public void toastShortPadding(String padding, Object... message) {
+        Toast.makeText(context, buildString(padding, message), Toast.LENGTH_SHORT).show();
+    }
+
+    public void toastLong(Object... message) {
+         toastLongPadding("", message);
+    }
+
+    public void toastLongPadding(String padding, Object... message) {
+        Toast.makeText(context, buildString(padding, message), Toast.LENGTH_LONG).show();
+    }
+
+    private String buildString(String padding, Object... message) {
+        StringBuilder sb = new StringBuilder();
+        for(Object o : message) {
+            sb.append(o + padding);
+        }
+
+        return sb.toString().trim();
     }
 }

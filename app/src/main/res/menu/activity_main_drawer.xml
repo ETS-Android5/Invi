@@ -23,6 +23,11 @@
             />
 
         <item
+            android:id="@+id/payments"
+            android:title="@string/payments"
+            android:icon="@drawable/payments"
+            />
+        <item
             android:id="@+id/currency_converions"
             android:title="@string/converions"
             android:icon="@drawable/converision"

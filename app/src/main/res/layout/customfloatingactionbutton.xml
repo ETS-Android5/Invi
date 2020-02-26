@@ -6,6 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab3"
         android:layout_width="100dp"
@@ -14,6 +16,7 @@
         android:layout_alignTop="@+id/fab"
         android:layout_alignEnd="@+id/fab"
         android:layout_alignBottom="@+id/fab"
+        android:layout_gravity="bottom"
         android:visibility="invisible"
         app:srcCompat="@drawable/home" />
 
@@ -54,5 +57,7 @@
         android:background="@color/facebook_blue"
         app:srcCompat="@drawable/qr_code"
         />
+
+
 
 </RelativeLayout>
