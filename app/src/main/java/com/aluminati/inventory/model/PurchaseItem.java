@@ -10,8 +10,8 @@ public class PurchaseItem extends BaseItem {
     public PurchaseItem(String storeID, String storeCity,
                         String storeCountry, String title,
                         String description, double price,
-                        String imgLink, List<String> tags, int quantity) {
-        super(storeID, storeCity, storeCountry, title, description, price, imgLink,tags);
+                        String imgLink, List<String> tags, boolean isRestricted, int quantity) {
+        super(storeID, storeCity, storeCountry, title, description, price, imgLink,tags, isRestricted);
         this.quantity = quantity;
     }
 

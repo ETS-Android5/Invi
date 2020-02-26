@@ -8,11 +8,15 @@ import com.aluminati.inventory.R;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MiscUtils {
 
     private MiscUtils() {}
+
 
     public static void setViewsState(List<View> views, int state) {
         for(View v : views) v.setVisibility(state);
@@ -30,4 +34,5 @@ public class MiscUtils {
         Snackbar snackbar = Snackbar.make(view, message, BaseTransientBottomBar.LENGTH_LONG);
         snackbar.show();
     }
+
 }
