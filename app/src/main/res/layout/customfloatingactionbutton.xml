@@ -16,8 +16,7 @@
         android:layout_alignTop="@+id/fab"
         android:layout_alignEnd="@+id/fab"
         android:layout_alignBottom="@+id/fab"
-        android:layout_marginTop="-20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_gravity="bottom"
         android:visibility="invisible"
         app:srcCompat="@drawable/home" />
 

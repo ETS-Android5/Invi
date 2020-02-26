@@ -79,9 +79,9 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
 
     private void showFABMenu(){
         isFABOpen=true;
-        openFABYAxis(fab1, R.dimen.standard_55);
-        openFABYAxis(fab2, R.dimen.standard_105);
-        openFABXaxis(fab3, R.dimen.standard_y_axis);
+        openFABAxis(fab1);
+        openFABAxis(fab2);
+        openFABAxis(fab3);
     }
 
     private void closeFABMenu(){
@@ -98,10 +98,7 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
         fab.setVisibility(View.INVISIBLE);
     }
 
-    private void openFABXaxis(FloatingActionButton fab, int id){
-        fab.animate().translationX(-getResources().getDimension(id));
-        fab.setVisibility(View.VISIBLE);
-    }
+
 
     private void closeFABYaxis(FloatingActionButton fab){
         fab.animate().setDuration(500L);
@@ -109,8 +106,25 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
         fab.setVisibility(View.INVISIBLE);
     }
 
-    private void openFABYAxis(FloatingActionButton fab, int id){
-        fab.animate().translationY(-getResources().getDimension(id));
+    private void openFABAxis(FloatingActionButton fab){
+        switch (fab.getId()){
+            case R.id.fab1:{
+                fab.animate().translationY(-getResources().getDimension(R.dimen.standard_55));
+                fab.animate().translationX(-getResources().getDimension(R.dimen.standard_55));
+                fab.setVisibility(View.VISIBLE);
+                break;
+            }
+            case R.id.fab2:{
+                fab.animate().translationY(-getResources().getDimension(R.dimen.standard_105));
+                fab.setVisibility(View.VISIBLE);
+                break;
+            }case R.id.fab3:{
+                fab.animate().translationX(-getResources().getDimension(R.dimen.standard_105));
+                fab.setVisibility(View.VISIBLE);
+                break;
+            }
+        }
+
         fab.setVisibility(View.VISIBLE);
     }
 
