@@ -130,7 +130,7 @@ public class UserPhoto extends Fragment implements View.OnClickListener {
                     Log.i(TAG, "Got user successfully");
                     User user = new User(resultImage);
                     if(user.getPhoto() != null){
-                        userPhoto.setImageBitmap(decodeBase64(user.getPhoto()));
+                        userPhoto.setImageURI(Uri.parse(user.getPhoto()));
                         userImageChange.setVisibility(View.INVISIBLE);
                     }
                 }).addOnFailureListener(resultImage -> {

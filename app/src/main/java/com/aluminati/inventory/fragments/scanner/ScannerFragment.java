@@ -254,6 +254,7 @@ public class ScannerFragment extends Fragment {
     @Override
     public void onPause() {
         if (mCodeScanner != null) {
+            mCodeScanner.stopPreview();
             mCodeScanner.releaseResources();
         }
 
@@ -264,6 +265,8 @@ public class ScannerFragment extends Fragment {
     public void onStop() {
         super.onStop();
         if (mCodeScanner != null) {
+            mCodeScanner.stopPreview();
+
             mCodeScanner.releaseResources();
         }
     }

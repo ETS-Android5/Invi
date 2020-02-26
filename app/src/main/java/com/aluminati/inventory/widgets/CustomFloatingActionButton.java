@@ -1,5 +1,6 @@
 package com.aluminati.inventory.widgets;
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,14 +10,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.aluminati.inventory.Constants;
 import com.aluminati.inventory.HomeActivity;
 import com.aluminati.inventory.R;
+import com.aluminati.inventory.fragments.FloatingTitlebarFragment;
 import com.aluminati.inventory.fragments.scanner.ScannerFragment;
 import com.aluminati.inventory.fragments.ui.currencyConverter.ui.CurrencyFrag;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -30,6 +34,7 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
     private Boolean isFABOpen = false;
     private ScannerFragment scannerFragment;
     private DrawerLayout drawerLayout;
+    private ScannerFragContains scannerFragContains;
 
 
     public CustomFloatingActionButton(){
@@ -41,12 +46,19 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
     }
 
 
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
         View view = inflater.inflate(getResources().getLayout(R.layout.customfloatingactionbutton),container,true);
+
+
+        if(getActivity() instanceof HomeActivity){
+            ((HomeActivity)getActivity()).setScannerFragContains(this::onContains);
+        }
 
 
         fab = view.findViewById(R.id.fab);
@@ -63,8 +75,6 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
 
         return view;
     }
-
-
 
 
     private void showFABMenu(){
@@ -144,6 +154,8 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
                             closeFABMenu();
                         }
                     } else {
+
+
                         if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                             requestCameraPermission();
                         } else {
@@ -165,4 +177,17 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
             }
         }
     }
+
+
+    public void onContains(boolean conatins){
+        if(!conatins){
+            closeFABMenu();
+        }
+    }
+
+
+
+
+
+
 }
