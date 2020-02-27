@@ -52,6 +52,7 @@ dependencies {
     implementation "androidx.camera:camera-view:1.0.0-alpha07"
     implementation "androidx.camera:camera-extensions:1.0.0-alpha07"
     implementation "androidx.camera:camera-lifecycle:${camerax_version}"
+    implementation 'com.github.pro100svitlo:creditCardNfcReader:1.0.3'
 
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'

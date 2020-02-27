@@ -18,7 +18,7 @@
         android:layout_alignBottom="@+id/fab"
         android:layout_gravity="bottom"
         android:visibility="invisible"
-        android:background="@drawable/home_button"
+        android:background="@drawable/scanner_button"
         />
 
     <Button
@@ -85,7 +85,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="22dp"
-        app:srcCompat="@drawable/qr_code"
+        app:srcCompat="@drawable/addpurchase"
         />
 
 

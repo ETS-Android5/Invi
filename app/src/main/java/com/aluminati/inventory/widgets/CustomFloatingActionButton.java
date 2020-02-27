@@ -155,32 +155,28 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.fab: {
-                if(getActivity() instanceof HomeActivity) {
-                    if (getActivity().getSupportFragmentManager().getFragments().contains(scannerFragment)) {
                         if (!isFABOpen) {
                             showFABMenu();
                         } else {
                             closeFABMenu();
                         }
-                    } else {
-
-
-                        if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                            requestCameraPermission();
-                        } else {
-
-                            this.scannerFragment = new ScannerFragment();
-                            FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                            fragmentTransaction.add(R.id.nav_host_fragment, scannerFragment, "scanner_frag").addToBackStack("scanner_frag").commit();
-                        }
-                    }
-                }
                 break;
             }case R.id.fab_copy_1:{
 
                 break;
             }case R.id.fab2:{
                 replaceFarg(R.id.nav_host_fragment, new CurrencyFrag());
+                break;
+            }
+            case R.id.fab3:{
+                if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    requestCameraPermission();
+                } else {
+
+                    this.scannerFragment = new ScannerFragment();
+                    FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.add(R.id.nav_host_fragment, scannerFragment, "scanner_frag").addToBackStack("scanner_frag").commit();
+                }
                 break;
             }
         }
@@ -193,8 +189,8 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
     }
 
 
-    public void onContains(boolean conatins){
-        if(!conatins){
+    public void onContains(Fragment fragment){
+        if(!(fragment instanceof ScannerFragment)){
             closeFABMenu();
         }
     }

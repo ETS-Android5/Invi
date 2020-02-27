@@ -25,13 +25,20 @@ import androidx.lifecycle.LifecycleOwner;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.media.Image;
+import android.nfc.NfcAdapter;
+import android.nfc.Tag;
+import android.nfc.tech.NfcA;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -44,6 +51,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.aluminati.inventory.R;
@@ -57,7 +65,10 @@ import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import com.google.firebase.ml.vision.text.RecognizedLanguage;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -68,7 +79,7 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
 
     private static final String TAG = PaymentsFrag.class.getName();
     private int REQUEST_CODE_PERMISSIONS = 101;
-    private final String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private final String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.NFC, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private View imgCapture;
     private TextureView textureView;
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
@@ -106,18 +117,9 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
         executor = Executors.newSingleThreadExecutor();
         previewView = view.findViewById(R.id.view_finder);
 
-        /*
-        if (allPermissionsGranted()) {
-            previewView.post(startCamera());
-        } else {
-            askForPermision();
-        }
 
-        textureView.addOnLayoutChangeListener((view1, i, i1, i2, i3, i4, i5, i6, i7) -> {
-            updateTransform();
-        });
 
-         */
+
 
         return view;
     }
@@ -174,6 +176,7 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
 
      */
 
+
     private void startCamera(){
 
         Preview preview =
@@ -210,11 +213,15 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
     @SuppressLint("UnsafeExperimentalUsageError")
     private void imageAnalysis(){
 
+
+
+
         imageAnalysis.setAnalyzer(executor, image -> {
             if (image == null || image.getImage() == null) {
                 return;
             }
             Image mediaImage = image.getImage();
+
             FirebaseVisionImage firebaseVisionImage =
                     FirebaseVisionImage.fromMediaImage(mediaImage, degreesToFirebaseRotation(image.getImageInfo().getRotationDegrees()));
 
@@ -244,6 +251,50 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
                             });
         });
 
+    }
+
+    public Bitmap imageToBitmap(Image image, float rotationDegrees) {
+
+        assert (image.getFormat() == ImageFormat.NV21);
+
+        // NV21 is a plane of 8 bit Y values followed by interleaved  Cb Cr
+        ByteBuffer ib = ByteBuffer.allocate(image.getHeight() * image.getWidth() * 2);
+
+        ByteBuffer y = image.getPlanes()[0].getBuffer();
+        ByteBuffer cr = image.getPlanes()[1].getBuffer();
+        ByteBuffer cb = image.getPlanes()[2].getBuffer();
+        ib.put(y);
+        ib.put(cb);
+        ib.put(cr);
+
+        YuvImage yuvImage = new YuvImage(ib.array(),
+                ImageFormat.NV21, image.getWidth(), image.getHeight(), null);
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        yuvImage.compressToJpeg(new Rect(0, 0,
+                image.getWidth(), image.getHeight()), 50, out);
+        byte[] imageBytes = out.toByteArray();
+        Bitmap bm = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+        Bitmap bitmap = bm;
+
+        // On android the camera rotation and the screen rotation
+        // are off by 90 degrees, so if you are capturing an image
+        // in "portrait" orientation, you'll need to rotate the image.
+        if (rotationDegrees != 0) {
+            Matrix matrix = new Matrix();
+            matrix.postRotate(rotationDegrees);
+            Bitmap scaledBitmap = Bitmap.createScaledBitmap(bm,
+                    bm.getWidth(), bm.getHeight(), true);
+            bitmap = Bitmap.createBitmap(scaledBitmap, 0, 0,
+                    scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+        }
+        return bitmap;
+    }
+
+    public byte[] getBytesFromBitmap(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
+        return stream.toByteArray();
     }
 
     private String extractText(FirebaseVisionText result){
@@ -300,7 +351,8 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
 
     public boolean allPermissionsGranted() {
         return ContextCompat.checkSelfPermission(getActivity(), REQUIRED_PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getActivity(), REQUIRED_PERMISSIONS[1]) == PackageManager.PERMISSION_GRANTED;
+                ContextCompat.checkSelfPermission(getActivity(), REQUIRED_PERMISSIONS[1]) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getActivity(), REQUIRED_PERMISSIONS[2]) == PackageManager.PERMISSION_GRANTED;
     }
 
     private void dispatchTakePictureIntent() {
@@ -324,7 +376,7 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.imgCapture) {
-           imageAnalysis();
+                imageAnalysis();
         }
     }
 

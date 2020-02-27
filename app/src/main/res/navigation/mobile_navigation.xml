@@ -67,4 +67,5 @@
         android:label="@string/card"
         tools:layout="@layout/add_card"
         />
+
 </navigation>

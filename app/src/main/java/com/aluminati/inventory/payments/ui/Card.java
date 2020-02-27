@@ -5,25 +5,32 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.aluminati.inventory.HomeActivity;
 import com.aluminati.inventory.R;
 
 import org.w3c.dom.Text;
 
+import java.io.Serializable;
 import java.util.regex.Pattern;
 
 public class Card extends Fragment {
 
-    private TextView cardName;
-    private TextView cardNumber;
-    private TextView cardExpiryDate;
+    private EditText cardNumber;
+    private EditText cardExpiryDate;
     private ImageView cardImage;
+
+    public interface cardDetails<T extends AppCompatActivity> extends Serializable{
+        public void cardDeatilsString(String card_dets);
+    }
 
     @Nullable
     @Override
@@ -34,13 +41,15 @@ public class Card extends Fragment {
 
         Log.i("Heloo", "Dedledplde");
 
-        cardName = view.findViewById(R.id.card_name);
         cardNumber = view.findViewById(R.id.card_number);
         cardExpiryDate = view.findViewById(R.id.card_expiry_date);
         cardImage = view.findViewById(R.id.card_logo);
 
-        String spilt = getArguments().getString("card_result");
-        fillFiled(spilt);
+        if(getActivity() instanceof HomeActivity){
+            bindActivity((HomeActivity)getActivity());
+        }
+
+
 
         return view;
     }
@@ -59,12 +68,17 @@ public class Card extends Fragment {
                 Log.i("Heloo", "Dedledplde");
             }
 
-            if(splits.toLowerCase().matches("mastercard")){
+            if(splits.toLowerCase().contains("mastercard")){
                 cardImage.setImageDrawable(getResources().getDrawable(R.drawable.master_card));
-            }else if(splits.toLowerCase().matches("visa")){
+            }else if(splits.toLowerCase().contains("visa")){
                 cardImage.setImageDrawable(getResources().getDrawable(R.drawable.visa));
             }
         }
     }
 
+    private void bindActivity(AppCompatActivity appCompatActivity){
+        if(appCompatActivity instanceof HomeActivity){
+            ((HomeActivity)appCompatActivity).setCardDetails(this::fillFiled);
+        }
+    }
 }
