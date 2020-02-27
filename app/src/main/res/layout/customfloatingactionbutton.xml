@@ -8,56 +8,85 @@
 
 
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <Button
         android:id="@+id/fab3"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_alignStart="@+id/fab"
         android:layout_alignTop="@+id/fab"
         android:layout_alignEnd="@+id/fab"
         android:layout_alignBottom="@+id/fab"
         android:layout_gravity="bottom"
         android:visibility="invisible"
-        app:srcCompat="@drawable/home" />
+        android:background="@drawable/home_button"
+        />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <Button
         android:id="@+id/fab2"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
-        android:layout_alignStart="@+id/fab1"
-        android:layout_alignTop="@+id/fab1"
-        android:layout_alignEnd="@+id/fab1"
-        android:layout_alignBottom="@+id/fab1"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignEnd="@+id/fab_copy_1"
+        android:layout_alignBottom="@+id/fab_copy_1"
         android:layout_marginTop="-20dp"
         android:layout_marginBottom="20dp"
         android:visibility="invisible"
-        app:srcCompat="@drawable/converision" />
+        android:background="@drawable/conversions_button" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab1"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
-        android:layout_alignStart="@+id/fab"
-        android:layout_alignTop="@+id/fab"
+    <RelativeLayout
+        android:id="@+id/fab_copy_1"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:layout_alignBottom="@id/fab"
         android:layout_alignEnd="@+id/fab"
-        android:layout_alignBottom="@+id/fab"
-        android:layout_marginTop="-20dp"
-        android:layout_marginBottom="20dp"
+        android:clickable="true"
+        android:focusable="true"
         android:visibility="invisible"
-        app:srcCompat="@drawable/cart" />
+        >
+
+        <Button
+            android:id="@+id/fab1"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            app:srcCompat="@drawable/cart"
+            android:enabled="false"
+            android:background="@drawable/cart_button"
+            />
+
+        <Button
+            android:id="@+id/cart_count"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="-10dp"
+            android:layout_marginStart="-5dp"
+            android:layout_alignTop="@id/fab1"
+            android:layout_alignStart="@+id/fab1"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:textAlignment="center"
+            android:textColor="@color/white_text"
+            android:textSize="12sp"
+            android:enabled="false"
+            android:visibility="invisible"
+            android:background="@drawable/cart_count"
+            />
+
+    </RelativeLayout>
+
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="20dp"
-        android:layout_marginEnd="20dp"
         android:layout_marginStart="20dp"
-        android:background="@color/facebook_blue"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="22dp"
         app:srcCompat="@drawable/qr_code"
         />
-
 
 
 </RelativeLayout>

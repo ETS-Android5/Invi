@@ -8,6 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.RelativeLayout;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,21 +33,12 @@ import com.google.android.material.snackbar.Snackbar;
 public class CustomFloatingActionButton extends Fragment implements View.OnClickListener
 {
     private final static String TAG = CustomFloatingActionButton.class.getName();
-    private FloatingActionButton fab, fab1, fab2, fab3;
+    private FloatingActionButton fab;
+    private Button fab2, fab3;
     private Boolean isFABOpen = false;
     private ScannerFragment scannerFragment;
-    private DrawerLayout drawerLayout;
-    private ScannerFragContains scannerFragContains;
-
-
-    public CustomFloatingActionButton(){
-
-    }
-
-    public void setDrawerLayout(DrawerLayout drawerLayout){
-        this.drawerLayout = drawerLayout;
-    }
-
+    private RelativeLayout relativeLayout;
+    private View view;
 
 
 
@@ -53,7 +47,8 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View view = inflater.inflate(getResources().getLayout(R.layout.customfloatingactionbutton),container,true);
+        view = inflater.inflate(getResources().getLayout(R.layout.customfloatingactionbutton),container,true);
+
 
 
         if(getActivity() instanceof HomeActivity){
@@ -62,12 +57,12 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
 
 
         fab = view.findViewById(R.id.fab);
-        fab1 = view.findViewById(R.id.fab1);
         fab2 = view.findViewById(R.id.fab2);
         fab3 = view.findViewById(R.id.fab3);
+        relativeLayout = view.findViewById(R.id.fab_copy_1);
 
         fab.setOnClickListener(this);
-        fab1.setOnClickListener(this);
+//        fab1.setOnClickListener(this);
         fab2.setOnClickListener(this);
         fab3.setOnClickListener(this);
 
@@ -79,48 +74,48 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
 
     private void showFABMenu(){
         isFABOpen=true;
-        openFABAxis(fab1);
-        openFABAxis(fab2);
-        openFABAxis(fab3);
+        openFABAxis(R.id.fab_copy_1);
+        openFABAxis(R.id.fab2);
+        openFABAxis(R.id.fab3);
     }
 
     private void closeFABMenu(){
         isFABOpen=false;
-        closeFABYaxis(fab1);
+        closeFABYaxis(relativeLayout);
         closeFABYaxis(fab2);
         closeFABXaxis(fab3);
     }
 
 
-    private void closeFABXaxis(FloatingActionButton fab){
-        fab.animate().setDuration(500L);
-        fab.animate().translationX(0);
-        fab.setVisibility(View.INVISIBLE);
+    private void closeFABXaxis(View view){
+        view.animate().setDuration(500L);
+        view.animate().translationX(0);
+        view.setVisibility(View.INVISIBLE);
     }
 
 
 
-    private void closeFABYaxis(FloatingActionButton fab){
-        fab.animate().setDuration(500L);
-        fab.animate().translationY(0);
-        fab.setVisibility(View.INVISIBLE);
+    private void closeFABYaxis(View view){
+        view.animate().setDuration(500L);
+        view.animate().translationY(0);
+        view.setVisibility(View.INVISIBLE);
     }
 
-    private void openFABAxis(FloatingActionButton fab){
-        switch (fab.getId()){
-            case R.id.fab1:{
-                fab.animate().translationY(-getResources().getDimension(R.dimen.standard_55));
-                fab.animate().translationX(-getResources().getDimension(R.dimen.standard_55));
-                fab.setVisibility(View.VISIBLE);
+    private void openFABAxis(int id){
+        switch (id){
+            case R.id.fab_copy_1:{
+                relativeLayout.animate().translationY(-getResources().getDimension(R.dimen.standard_55));
+                relativeLayout.animate().translationX(-getResources().getDimension(R.dimen.standard_55));
+                relativeLayout.setVisibility(View.VISIBLE);
                 break;
             }
             case R.id.fab2:{
-                fab.animate().translationY(-getResources().getDimension(R.dimen.standard_105));
-                fab.setVisibility(View.VISIBLE);
+                fab2.animate().translationY(-getResources().getDimension(R.dimen.standard_105));
+                fab2.setVisibility(View.VISIBLE);
                 break;
             }case R.id.fab3:{
-                fab.animate().translationX(-getResources().getDimension(R.dimen.standard_105));
-                fab.setVisibility(View.VISIBLE);
+                fab3.animate().translationX(-getResources().getDimension(R.dimen.standard_105));
+                fab3.setVisibility(View.VISIBLE);
                 break;
             }
         }
@@ -173,6 +168,7 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
                         if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                             requestCameraPermission();
                         } else {
+
                             this.scannerFragment = new ScannerFragment();
                             FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                             fragmentTransaction.add(R.id.nav_host_fragment, scannerFragment, "scanner_frag").addToBackStack("scanner_frag").commit();
@@ -180,16 +176,20 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
                     }
                 }
                 break;
-            }case R.id.fab1:{
+            }case R.id.fab_copy_1:{
 
                 break;
             }case R.id.fab2:{
-                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.nav_host_fragment, new CurrencyFrag()).commit();
-                closeFABMenu();
+                replaceFarg(R.id.nav_host_fragment, new CurrencyFrag());
                 break;
             }
         }
+    }
+
+    private void replaceFarg(int id, Fragment fragment){
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(id, fragment).commit();
+        closeFABMenu();
     }
 
 
@@ -198,10 +198,4 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
             closeFABMenu();
         }
     }
-
-
-
-
-
-
 }

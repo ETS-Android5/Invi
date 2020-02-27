@@ -60,4 +60,11 @@
         android:label="@string/converions"
         tools:layout="@layout/currencies"
         />
+
+    <fragment
+        android:id="@+id/payments_frag"
+        android:name="com.aluminati.inventory.payments.ui.Card"
+        android:label="@string/card"
+        tools:layout="@layout/add_card"
+        />
 </navigation>
