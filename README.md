@@ -20,7 +20,7 @@ Once the user registers using his/her social platform accounts Invi checks if th
 
 Latest signed APK
 
-![alt text](https://github.com/Bartekm1996/Inventory/app-release.apk)
+https://github.com/Bartekm1996/Inventory/app-release.apk
 
 My article on Dynamic Links on Medium.com, saves time in explaining it again 
 
