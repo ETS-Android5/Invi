@@ -30,16 +30,17 @@
                 android:layout_weight=".8"
                 android:gravity="right|center"
                 android:text="Return"
-                android:textColor="#fff"
-                android:textSize="30sp" />
+                android:textColor="#090909"
+                android:textStyle="bold|italic"
+                android:textSize="35sp" />
 
             <ImageView
                 android:id="@+id/delete_icon"
                 android:layout_width="0dp"
                 android:layout_height="64dp"
                 android:layout_alignParentTop="true"
-                android:layout_weight=".3"
-                android:src="@drawable/delete" />
+                android:layout_weight=".5"
+                android:src="@drawable/back_arrow" />
 
         </TableRow>
     </TableLayout>
