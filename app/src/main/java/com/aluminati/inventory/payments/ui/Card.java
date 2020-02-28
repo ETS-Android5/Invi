@@ -93,6 +93,11 @@ public class Card extends Fragment {
                                 , cardName, cardExpiryDate.getText().toString()));
                         encryptPayments(payments, FirebaseAuth.getInstance().getCurrentUser());
                     }
+                }else {
+                    ArrayList<Payment> payments = new ArrayList<>();
+                    payments.add(new Payment(cardNumber.getText().toString()
+                            , cardName, cardExpiryDate.getText().toString()));
+                    encryptPayments(payments, FirebaseAuth.getInstance().getCurrentUser());
                 }
 
 
