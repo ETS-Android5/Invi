@@ -65,7 +65,8 @@ public class Card extends Fragment {
             Bundle bundle = new Bundle();
                    bundle.putString("card_details", "");
             getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.nav_host_fragment, PaymentsFrag.class, bundle,"payments_frag")
+                    .add(R.id.nav_host_fragment, PaymentsFrag.class, bundle,"payments_frag")
+                    .addToBackStack("payments_frag")
                     .commit();
         });
 
@@ -151,7 +152,7 @@ public class Card extends Fragment {
         boolean isEmpty = false;
         if(editText.getText().toString().isEmpty()){
             isEmpty = true;
-            editText.setText("Please fill in cardNumber");
+            editText.setHint("Please fill in cardNumber");
         }
 
         return isEmpty;

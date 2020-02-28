@@ -232,7 +232,13 @@ public class HomeActivity extends AppCompatActivity implements CardNfcAsyncTask.
     @Override
     public void onBackPressed() {
 
-        getSupportFragmentManager().popBackStack("scanner_frag",  FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        if(getSupportFragmentManager().getFragments().get(getSupportFragmentManager().getFragments().size()-1) instanceof PaymentsFrag){
+            getSupportFragmentManager().popBackStack("payments_frag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }else if(getSupportFragmentManager().getFragments().get(getSupportFragmentManager().getFragments().size()-1) instanceof Card) {
+            getSupportFragmentManager().popBackStack("card", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+
+       // getSupportFragmentManager().popBackStack("scanner_frag",  FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     @Override
@@ -250,6 +256,7 @@ public class HomeActivity extends AppCompatActivity implements CardNfcAsyncTask.
             }
         }
     }
+
 
 
 

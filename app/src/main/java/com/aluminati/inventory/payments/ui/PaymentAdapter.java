@@ -1,5 +1,6 @@
 package com.aluminati.inventory.payments.ui;
 
+import android.graphics.EmbossMaskFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,9 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.Payments
         ImageView cardIcon = holder.cardLogo;
         cardNumber.setText(formatString(dataSet.get(position).getNumber()));
         cardExpiry.setText(dataSet.get(position).getExpiryDate());
+
+        setEmbos(cardNumber);
+        setEmbos(cardExpiry);
         cardIcon.setImageDrawable(dataSet.get(position).getName().equals("visa")
                 ? view.getResources().getDrawable(R.drawable.visa)
                 : view.getResources().getDrawable(R.drawable.master_card) );
@@ -76,6 +80,21 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.Payments
     @Override
     public void onClick(View view) {
 
+    }
+
+    private void setEmbos(TextView view){
+        EmbossMaskFilter filter = new EmbossMaskFilter(
+                new float[]{ 0f, 1f, -0.5f }, // direction of the light source
+                0.8f, // ambient light between 0 to 1
+                15, // specular highlights
+                7.0f // blur before applying lighting
+        );
+
+        // Set the TextView layer type to software
+        view.setLayerType(View.LAYER_TYPE_SOFTWARE,null);
+
+        // Finally, make the TextView text effect deboss.
+        view.getPaint().setMaskFilter(filter);
     }
 
 

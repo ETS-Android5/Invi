@@ -50,7 +50,7 @@ public class Payments extends Fragment {
             bundle.putString("dec_string", decCrypt);
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.nav_host_fragment, Card.class ,bundle ,"card")
+                    .add(R.id.nav_host_fragment, Card.class ,bundle ,"card")
                     .addToBackStack("card")
                     .commit();
         });
