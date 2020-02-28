@@ -246,6 +246,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 firebaseAuth.getCurrentUser().linkWithCredential(credential).addOnSuccessListener(task -> {
                     Log.d(TAG, "linkWithCredential:success");
                     VerifyUser.verifyUser(user);
+                    VerifyUser.verifyEmail().addOnSuccessListener(result -> {
+                        Log.i(TAG, "Verification email sent");
+                    }).addOnFailureListener(result -> {
+                        Log.w(TAG, "Failed to send verification email", result);
+                    });
                     startActivity(new Intent(RegisterActivity.this, AuthenticationActivity.class));
                     finish();
                 }).addOnFailureListener(result -> {
@@ -261,6 +266,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 if (!name.getText().toString().isEmpty() && !surName.getText().toString().isEmpty()) {
                     VerifyUser.updateFireBaseUser(firebaseAuth.getCurrentUser(), name.getText().toString() + " " + surName.getText().toString());
                 }
+                VerifyUser.verifyEmail().addOnSuccessListener(result -> {
+                    Log.i(TAG, "Verification email sent");
+                }).addOnFailureListener(result -> {
+                    Log.w(TAG, "Failed to send verification email", result);
+                });
                 VerifyUser.isUserVerified(user, RegisterActivity.this, true);
             }).addOnFailureListener(result -> {
                 Log.w(TAG, "Creating Account Failed", result);

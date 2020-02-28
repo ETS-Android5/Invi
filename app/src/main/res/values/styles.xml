@@ -14,7 +14,6 @@
         <item name="windowNoTitle">true</item>
         <item name="popupMenuStyle">@style/MyPopupMenu</item>
         <item name="android:itemTextAppearance">@style/itemTextStyle.AppTheme</item>
-        <item name="android:listDivider">@android:color/transparent</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

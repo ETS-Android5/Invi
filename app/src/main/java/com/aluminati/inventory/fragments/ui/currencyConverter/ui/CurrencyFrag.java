@@ -22,6 +22,7 @@ import com.aluminati.inventory.R;
 import com.aluminati.inventory.fragments.ui.currencyConverter.Currency;
 import com.aluminati.inventory.fragments.ui.currencyConverter.converterApi.CurrencyConverter;
 import com.aluminati.inventory.fragments.ui.currencyConverter.CurrencyResult;
+import com.aluminati.inventory.login.authentication.verification.VerificationStatus;
 
 import java.util.ArrayList;
 
@@ -95,7 +96,7 @@ public class CurrencyFrag extends Fragment{
 
                     @Override
                     public void onSuccess(CurrencyResult currencyResult) {
-                        data = currencyConverter.toCurrencyArray(currencyResult);
+                        data = currencyConverter.toCurrencyArray(currencyResult, VerificationStatus.CURRENCY_FLAGS_FILTER);
                         adapter = new CurrencyAdapter(currencyResult.getBase(),data, getActivity());
                         recyclerView.setAdapter(adapter);
                         dateOfConversion.setText("Conversion on " + currencyResult.getDate());

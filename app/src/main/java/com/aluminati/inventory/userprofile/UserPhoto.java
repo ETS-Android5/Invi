@@ -100,7 +100,6 @@ public class UserPhoto extends Fragment implements View.OnClickListener {
                     Log.i(TAG, "Stream not null" + inputStream.toString());
                     Bitmap bitmap = BitmapFactory.decodeStream(new BufferedInputStream(inputStream));
                     if(hasImage(userPhoto)) {
-                        userImageChange.setVisibility(View.INVISIBLE);
                         new FireBaseStorage(firebaseAuth.getCurrentUser()).uploadPhot(data.getData(),getContext(), bitmap);
                         Snackbar.make(userImageChange, getResources().getString(R.string.photo_changed), BaseTransientBottomBar.LENGTH_LONG);
                     }
@@ -115,11 +114,6 @@ public class UserPhoto extends Fragment implements View.OnClickListener {
     public void onStart() {
         super.onStart();
 
-        if (!hasImage(userPhoto)) {
-            userImageChange.setVisibility(View.VISIBLE);
-            userImageChange.setText(getResources().getString(R.string.upload_user_image));
-        }
-
 
         if(firebaseAuth.getCurrentUser() != null){
             try {
@@ -131,7 +125,6 @@ public class UserPhoto extends Fragment implements View.OnClickListener {
                     User user = new User(resultImage);
                     if(user.getPhoto() != null){
                         userPhoto.setImageURI(Uri.parse(user.getPhoto()));
-                        userImageChange.setVisibility(View.INVISIBLE);
                     }
                 }).addOnFailureListener(resultImage -> {
                     Log.w(TAG, "Failed to get user successfully", resultImage);
@@ -164,7 +157,7 @@ public class UserPhoto extends Fragment implements View.OnClickListener {
 
             @Override
             public void onFinish() {
-                userImageChange.setVisibility(View.INVISIBLE);
+
             }
         }.start();
     }

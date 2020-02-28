@@ -68,4 +68,11 @@
         tools:layout="@layout/add_card"
         />
 
+    <fragment
+        android:id="@+id/social_platforms_frag"
+        android:name="com.aluminati.inventory.userprofile.SocialPlatforms"
+        android:label="@string/social_platforms"
+        tools:layout="@layout/social_platforms"
+        />
+
 </navigation>

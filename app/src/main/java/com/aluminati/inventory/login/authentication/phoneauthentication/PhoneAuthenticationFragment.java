@@ -1,6 +1,7 @@
 package com.aluminati.inventory.login.authentication.phoneauthentication;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,8 +40,9 @@ public class PhoneAuthenticationFragment extends Fragment {
     private String getPhoneNumber(){
         String phoneNumber = this.phoneNumber.getText().toString();
         String countryPrefix = this.countryCodePicker.getSelectedCountryCode();
-        return phoneNumber.startsWith("0") ? "+".concat(countryPrefix.concat("+" + phoneNumber.substring(1, phoneNumber.length()-1)))
+        return phoneNumber.startsWith("0") ? "+".concat(countryPrefix.concat(phoneNumber.substring(1).replace(" ", "")))
                 : "+".concat(countryPrefix.concat(phoneNumber).replace(" ", ""));
+
     }
 
 
@@ -53,6 +55,7 @@ public class PhoneAuthenticationFragment extends Fragment {
 
     private void onCodeReceived(int code){
         if (code == 4001) {
+            Log.i(TAG, getPhoneNumber());
             phoneVerificationSender.onPhoneNumberSend(getPhoneNumber());
         }
     }

@@ -60,8 +60,6 @@ import java.util.concurrent.Executors;
 public class PaymentsFrag extends Fragment implements View.OnClickListener, LifecycleOwner, CameraXConfig.Provider {
 
     private static final String TAG = PaymentsFrag.class.getName();
-    private int REQUEST_CODE_PERMISSIONS = 101;
-    private final String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.NFC, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private View imgCapture;
     private TextureView textureView;
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
@@ -79,9 +77,21 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        Log.i(TAG, "Hellow");
         View view = inflater.inflate(getResources().getLayout(R.layout.scan_card), container, false);
 
+
+
+
+        picImage = view.findViewById(R.id.imgCapture);
+        picImage.setOnClickListener(this);
+
+        executor = Executors.newSingleThreadExecutor();
+        previewView = view.findViewById(R.id.view_finder);
+
+        return view;
+    }
+
+    private void setCamera(){
         cameraProviderFuture = ProcessCameraProvider.getInstance(getContext());
 
         cameraProviderFuture.addListener(() -> {
@@ -94,19 +104,9 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
             }
         }, ContextCompat.getMainExecutor(getContext()));
 
-        picImage = view.findViewById(R.id.imgCapture);
-        picImage.setOnClickListener(this);
-        //imageCapture();
 
-        executor = Executors.newSingleThreadExecutor();
-        previewView = view.findViewById(R.id.view_finder);
-
-        return view;
     }
 
-    public void setCardDetails(Card.cardDetails cardDetails){
-        this.cardDetails = cardDetails;
-    }
 
     void bindPreview(@NonNull ProcessCameraProvider cameraProvider) {
         cameraProvider.unbindAll();
@@ -133,50 +133,6 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
 
 
 
-    /*
-    val previewConfig =
-
-
-    // Build the viewfinder use case
-    val preview = Preview(previewConfig)
-
-    // Every time the viewfinder is updated, recompute layout
-    preview.setOnPreviewOutputUpdateListener {
-
-        // To update the SurfaceTexture, we have to remove it and re-add it
-        val parent = viewFinder.parent as ViewGroup
-        parent.removeView(viewFinder)
-        parent.addView(viewFinder, 0)
-
-        viewFinder.surfaceTexture = it.surfaceTexture
-        updateTransform()
-    }
-
-    // Bind use cases to lifecycle
-    // If Android Studio complains about "this" being not a LifecycleOwner
-    // try rebuilding the project or updating the appcompat dependency to
-    // version 1.1.0 or higher.
-    CameraX.bindToLifecycle(this, preview)
-
-     */
-
-
-    private void startCamera(){
-
-        Preview preview =
-                new Preview.Builder()
-                        .setTargetRotation(getActivity().getWindowManager().getDefaultDisplay().getRotation())
-                        .setTargetResolution(new Size(640, 480))
-                        .build();
-
-        preview.setSurfaceProvider(previewView.getPreviewSurfaceProvider());
-
-
-    }
-
-    private void updateTransform(){
-
-    }
 
     private int degreesToFirebaseRotation(int degrees) {
         switch (degrees) {
@@ -238,50 +194,6 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
 
     }
 
-    public Bitmap imageToBitmap(Image image, float rotationDegrees) {
-
-        assert (image.getFormat() == ImageFormat.NV21);
-
-        // NV21 is a plane of 8 bit Y values followed by interleaved  Cb Cr
-        ByteBuffer ib = ByteBuffer.allocate(image.getHeight() * image.getWidth() * 2);
-
-        ByteBuffer y = image.getPlanes()[0].getBuffer();
-        ByteBuffer cr = image.getPlanes()[1].getBuffer();
-        ByteBuffer cb = image.getPlanes()[2].getBuffer();
-        ib.put(y);
-        ib.put(cb);
-        ib.put(cr);
-
-        YuvImage yuvImage = new YuvImage(ib.array(),
-                ImageFormat.NV21, image.getWidth(), image.getHeight(), null);
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        yuvImage.compressToJpeg(new Rect(0, 0,
-                image.getWidth(), image.getHeight()), 50, out);
-        byte[] imageBytes = out.toByteArray();
-        Bitmap bm = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-        Bitmap bitmap = bm;
-
-        // On android the camera rotation and the screen rotation
-        // are off by 90 degrees, so if you are capturing an image
-        // in "portrait" orientation, you'll need to rotate the image.
-        if (rotationDegrees != 0) {
-            Matrix matrix = new Matrix();
-            matrix.postRotate(rotationDegrees);
-            Bitmap scaledBitmap = Bitmap.createScaledBitmap(bm,
-                    bm.getWidth(), bm.getHeight(), true);
-            bitmap = Bitmap.createBitmap(scaledBitmap, 0, 0,
-                    scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-        }
-        return bitmap;
-    }
-
-    public byte[] getBytesFromBitmap(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
-        return stream.toByteArray();
-    }
-
     private String extractText(FirebaseVisionText result){
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -317,46 +229,8 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
 
 
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (allPermissionsGranted()) {
-                imageAnalysis();
-            } else {
-                Toast.makeText(getContext(), "Permissions not granted by the user.", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 
 
-    private void askForPermision(){
-        ActivityCompat.requestPermissions(getActivity(), REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
-    }
-
-    public boolean allPermissionsGranted() {
-        return ContextCompat.checkSelfPermission(getActivity(), REQUIRED_PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getActivity(), REQUIRED_PERMISSIONS[1]) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getActivity(), REQUIRED_PERMISSIONS[2]) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-    }
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            //imageView.setImageBitmap(imageBitmap);
-            //analyze(imageBitmap);
-        }
-    }
 
     @Override
     public void onClick(View view) {
@@ -364,85 +238,6 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
                 imageAnalysis();
         }
     }
-
-    /*
-
-    private void takePhoto(){
-
-
-        /*
-        File filechild =
-                new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
-                        ,"IMG_"+System.currentTimeMillis()+".jpg");
-
-
-        if(filechild.exists()){
-            try{
-                if(filechild.createNewFile())Log.i("PayFrag", "Created file");
-            }catch (IOException e){
-                Log.w("PayFrag", "Failed to create file", e);
-            }
-        }
-
-        ImageCapture.OutputFileOptions outputFileOptions =
-                new ImageCapture.OutputFileOptions.Builder(filechild).build();
-
-
-        imageCapture.takePicture(outputFileOptions, Runnable::run, new OnImageSavedCallback() {
-            @Override
-            public void onImageSaved(@NonNull OutputFileResults outputFileResults)
-            {
-                Log.i("Pictur ", "Picture Taken ");
-            }
-
-
-
-            @Override
-            public void onError(@NonNull ImageCaptureException exception) {
-                Log.w("Pictur ", "Picture Taken", exception);
-            }
-
-        });
-
-
-
-       imageCapture.takePicture(Runnable::run, new ImageCapture.OnImageCapturedCallback() {
-           @Override
-           public void onCaptureSuccess(@NonNull ImageProxy imageProxy){
-
-                new CardImageAnalyzer().analyze(imageProxy);
-           }
-       });
-    }
-
-    public void checkPermission(String permission, int requestCode) {
-        if (ContextCompat.checkSelfPermission(getActivity(), permission) == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{permission}, requestCode);
-        } else {
-            Snackbar.make(picImage, " Permission already granted", BaseTransientBottomBar.LENGTH_LONG).show();
-            takePhoto();
-        }
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == STORAGE_PERMISSION_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Snackbar.make(picImage, "Storage Permission Granted", BaseTransientBottomBar.LENGTH_LONG).show();
-                takePhoto();
-            } else {
-                Snackbar.make(picImage, "Storage Permission Denied", BaseTransientBottomBar.LENGTH_LONG).show();
-            }
-        }
-    }
-
-
-*/
-
-
 
     @NonNull
     @Override

@@ -4,6 +4,8 @@ import android.graphics.EmbossMaskFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -47,9 +49,11 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.Payments
 
     @Override
     public void onBindViewHolder(@NonNull PaymentsViewHolder holder, int position) {
-        TextView cardNumber = holder.cardNumber;
-        TextView cardExpiry = holder.cardExpiry;
+        EditText cardNumber = holder.cardNumber;
+        EditText cardExpiry = holder.cardExpiry;
         ImageView cardIcon = holder.cardLogo;
+        Button editCardButton = holder.editButton;
+        editCardButton.setOnClickListener(click -> editCard(cardNumber, cardExpiry, editCardButton));
         cardNumber.setText(formatString(dataSet.get(position).getNumber()));
         cardExpiry.setText(dataSet.get(position).getExpiryDate());
 
@@ -62,6 +66,19 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.Payments
 
         });
     }
+
+    private void editCard(EditText number, EditText expiryDate, Button editCardButton){
+        if(!number.isEnabled() && !expiryDate.isEnabled()){
+            number.setEnabled(true);
+            expiryDate.setEnabled(true);
+            editCardButton.setText(view.getResources().getString(R.string.edit_card));
+        }else {
+            number.setEnabled(false);
+            number.setEnabled(false);
+            editCardButton.setText(view.getResources().getString(R.string.save_card));
+        }
+    }
+
 
     private String formatString(String string){
         StringBuilder stringBuilder = new StringBuilder();
@@ -100,8 +117,9 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.Payments
 
     static class PaymentsViewHolder extends RecyclerView.ViewHolder {
 
-        TextView cardNumber;
-        TextView cardExpiry;
+        EditText cardNumber;
+        EditText cardExpiry;
+        Button editButton;
         ImageView cardLogo;
 
         PaymentsViewHolder(View itemView) {
@@ -109,6 +127,7 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.Payments
             this.cardNumber =  itemView.findViewById(R.id.card_number);
             this.cardExpiry = itemView.findViewById(R.id.card_expiry_date);
             this.cardLogo =  itemView.findViewById(R.id.card_logo);
+            this.editButton = itemView.findViewById(R.id.add_card_button);
         }
     }
 

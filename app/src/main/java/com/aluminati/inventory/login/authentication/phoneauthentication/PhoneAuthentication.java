@@ -25,6 +25,8 @@ import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.fragments.fragmentListeners.phone.PhoneVerificationReciever;
 import com.aluminati.inventory.login.authentication.verification.VerificationStatus;
 import com.aluminati.inventory.login.authentication.encryption.PhoneAESEncryption;
+import com.aluminati.inventory.users.User;
+import com.bumptech.glide.util.Util;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseException;
@@ -34,6 +36,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -156,7 +160,6 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
         @Override
         protected void onStart() {
             super.onStart();
-
         }
 
 
@@ -167,8 +170,15 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
                     Log.i(TAG, "Result Successfully " + result);
                     UserFetch.searchUser().whereEqualTo("phone_number", result).get().addOnSuccessListener(returnedResult -> {
                         if (!returnedResult.isEmpty()) {
-                            Log.i(TAG, "Phone number registered ");
-                            Utils.makeSnackBar(getResources().getString(R.string.phone_already_registered), verifyPhoneNumberButton, this);
+                            returnedResult.getDocuments();
+                            if(checkIfNumberIsVerified(returnedResult, email, result)){
+                                Log.i(TAG, "Phone number not verified");
+                                updateUserPhoneNumber(email, result);
+                                replaceFragment(linearLayout, verifyPhoneNumber);
+                                startPhoneVerifiation(phoneNumber);
+                            }else {
+                                Utils.makeSnackBar(getResources().getString(R.string.phone_already_registered), verifyPhoneNumberButton, this);
+                            }
                         } else {
                             Log.i(TAG, "Phone number not registered");
                             updateUserPhoneNumber(email, result);
@@ -182,6 +192,19 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
 
         private void updateUserPhoneNumber(String email,String phoneNumber){
             UserFetch.update(email,"phone_number",phoneNumber);
+        }
+
+        private boolean checkIfNumberIsVerified(QuerySnapshot queryDocumentSnapshots, String email, String result){
+            boolean verified = false;
+            for(DocumentSnapshot documentSnapshot :queryDocumentSnapshots.getDocuments()){
+                if(documentSnapshot.get("user_email").equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                    User user = new User(documentSnapshot);
+                    if(!user.isPhoneVerified()){
+                        verified = true;
+                    }
+                }
+            }
+            return verified;
         }
 
 
@@ -216,6 +239,7 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
                     callbacks
             );
             this.countDownTimer.start();
+            Utils.makeSnackBarWithButtons("Code Sent", verifyPhoneNumberButton, this);
             Log.i(TAG, "Verification started " + phoneNumber);
         }
 

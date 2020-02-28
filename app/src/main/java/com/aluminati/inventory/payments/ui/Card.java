@@ -1,5 +1,7 @@
 package com.aluminati.inventory.payments.ui;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -10,10 +12,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -43,6 +48,9 @@ public class Card extends Fragment {
     private EditText cardExpiryDate;
     private ImageView cardImage;
     private String cardName;
+    private final String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.NFC, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private int REQUEST_CODE_PERMISSIONS = 101;
+
 
     public interface cardDetails extends Serializable{
         public void cardDeatilsString(String card_dets);
@@ -55,7 +63,10 @@ public class Card extends Fragment {
 
         View view = inflater.inflate(R.layout.add_card, container, false);
 
-        Log.i("Heloo", "Dedledplde");
+        if(!allPermissionsGranted()){
+            askForPermision();
+        }
+
 
         cardNumber = view.findViewById(R.id.card_number);
         cardExpiryDate = view.findViewById(R.id.card_expiry_date);
@@ -85,14 +96,16 @@ public class Card extends Fragment {
 
                 if(getArguments() != null){
                     String dec = getArguments().getString("dec_string");
-                    ArrayList<Payment> payments = Payment.stringToList(dec);
+                    if(dec != null && !dec.isEmpty()) {
+                        ArrayList<Payment> payments = Payment.stringToList(dec);
 
-                    if(contains(payments)){
-                        Snackbar.make(cardNumber, "Card All ready Linked", BaseTransientBottomBar.LENGTH_INDEFINITE).show();
-                    }else {
-                        payments.add(new Payment(cardNumber.getText().toString()
-                                , cardName, cardExpiryDate.getText().toString()));
-                        encryptPayments(payments, FirebaseAuth.getInstance().getCurrentUser());
+                        if (contains(payments)) {
+                            Snackbar.make(cardNumber, "Card All ready Linked", BaseTransientBottomBar.LENGTH_INDEFINITE).show();
+                        } else {
+                            payments.add(new Payment(cardNumber.getText().toString()
+                                    , cardName, cardExpiryDate.getText().toString()));
+                            encryptPayments(payments, FirebaseAuth.getInstance().getCurrentUser());
+                        }
                     }
                 }else {
                     ArrayList<Payment> payments = new ArrayList<>();
@@ -110,6 +123,29 @@ public class Card extends Fragment {
 
         return view;
     }
+
+    private void askForPermision(){
+        ActivityCompat.requestPermissions(getActivity(), REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
+    }
+
+    public boolean allPermissionsGranted() {
+        return ContextCompat.checkSelfPermission(getActivity(), REQUIRED_PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getActivity(), REQUIRED_PERMISSIONS[1]) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getActivity(), REQUIRED_PERMISSIONS[2]) == PackageManager.PERMISSION_GRANTED;
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (!allPermissionsGranted()) {
+                Toast.makeText(getContext(), "Permissions not granted by the user.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
 
     private boolean contains(ArrayList<Payment> payments){
         boolean contains = false;
@@ -133,10 +169,8 @@ public class Card extends Fragment {
             }
         });
 
-        getActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.nav_host_fragment, new Payments(),"payments")
-                .commit();
+        getActivity().getSupportFragmentManager().popBackStack("card", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
     }
 
     private String appendToDec(String toAppend){

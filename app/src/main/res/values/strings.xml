@@ -41,7 +41,7 @@
     <string name="forgot_password">Reset Password</string>
     <string name="password_info">Password Info</string>
     <string name="password_generate">Password Generate</string>
-    <string name="send_code">Send</string>
+    <string name="send_code">Send Code</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="show_password">Show Password</string>
     <string name="hide_password">Hide Password</string>
@@ -140,9 +140,8 @@
     <string name="user_name">Imię użytkownika</string>
     <string name="user_email">Address email</string>
     <string name="title_activity_maps"></string>
-    <string name="select_language"></string>
-    <string name="options"></string>
-<string name="google_maps"></string>
+    <string name="options">Options</string>
+    <string name="google_maps">Maps</string>
     <string name="resend"> Wyślij ponownie </string>
     <string name="converions">Conversions</string>
     <string name="payments" translatable="false">Payments</string>
@@ -151,4 +150,18 @@
     <string name="item_removed_from_cart">Item has been removed from cart</string>
     <string name="card">Card</string>
     <string name="card_logo">Card logo</string>
+    <string name="account_info">Account Info</string>
+    <string name="account_settings">Account Settings</string>
+    <string name="user_buttons">User buttons</string>
+    <string name="click_to_change_password">Click to change password</string>
+    <string name="change_language">Change Language</string>
+    <string name="change_currency">Change Currency</string>
+    <string name="verify_identity">Verify Identity</string>
+    <string name="current_currency">Current Currency</string>
+    <string name="scan_card">Click to Scan Card</string>
+    <string name="edit_card">Edit Card</string>
+    <string name="add_card">Add Card</string>
+    <string name="save_card">Save Card</string>
+    <string name="empty_recycler">Click Add Card to Add your first payment</string>
+
 </resources>

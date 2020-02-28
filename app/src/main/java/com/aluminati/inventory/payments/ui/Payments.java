@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,6 +34,7 @@ public class Payments extends Fragment {
     private static ArrayList<Payment> data;
     private static RecyclerView.Adapter adapter;
     private static String decCrypt;
+    private TextView emptyView;
 
 
 
@@ -44,6 +46,7 @@ public class Payments extends Fragment {
         View view = inflater.inflate(getResources().getLayout(R.layout.card_views), container, false);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
 
+        emptyView = view.findViewById(R.id.empty_recyler_view);
 
         view.findViewById(R.id.add_card).setOnClickListener(click -> {
             Bundle bundle = new Bundle();
@@ -54,6 +57,8 @@ public class Payments extends Fragment {
                     .addToBackStack("card")
                     .commit();
         });
+
+
 
         recyclerView = view.findViewById(R.id.card_view_recycler);
         recyclerView.setHasFixedSize(true);
@@ -81,6 +86,11 @@ public class Payments extends Fragment {
                                     if(dec != null){
                                         decCrypt = dec;
                                         data = Payment.stringToList(dec);
+
+                                        if(!data.isEmpty()){
+                                            emptyView.setVisibility(View.INVISIBLE);
+                                        }
+
                                         adapter = new PaymentAdapter(data, getActivity());
                                         recyclerView.setAdapter(adapter);
                                     }
