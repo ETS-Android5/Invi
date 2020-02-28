@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         listenForDynamicLink();
 
-
     }
 
     private void listenForDynamicLink(){

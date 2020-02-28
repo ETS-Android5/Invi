@@ -2,30 +2,23 @@ package com.aluminati.inventory.payments.ui;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.camera2.Camera2Config;
 import androidx.camera.core.CameraSelector;
-import androidx.camera.core.CameraX;
 import androidx.camera.core.CameraXConfig;
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageCapture;
-import androidx.camera.core.ImageProxy;
-import androidx.camera.core.impl.ImageCaptureConfig;
 import androidx.camera.core.Preview;
-import androidx.camera.core.impl.PreviewConfig;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LifecycleOwner;
 
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -36,27 +29,18 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.media.Image;
-import android.nfc.NfcAdapter;
-import android.nfc.Tag;
-import android.nfc.tech.NfcA;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.util.Rational;
 import android.util.Size;
 import android.view.LayoutInflater;
-import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.aluminati.inventory.R;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
@@ -66,8 +50,6 @@ import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import com.google.firebase.ml.vision.text.RecognizedLanguage;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -89,6 +71,7 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
     private PreviewView previewView;
     private final int STORAGE_PERMISSION_CODE = 2001;
     static final int REQUEST_IMAGE_CAPTURE = 1;
+    private Card.cardDetails cardDetails;
     private Executor executor;
 
     @Nullable
@@ -96,7 +79,8 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View view = inflater.inflate(getResources().getLayout(R.layout.payments), container, false);
+        Log.i(TAG, "Hellow");
+        View view = inflater.inflate(getResources().getLayout(R.layout.scan_card), container, false);
 
         cameraProviderFuture = ProcessCameraProvider.getInstance(getContext());
 
@@ -117,11 +101,11 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
         executor = Executors.newSingleThreadExecutor();
         previewView = view.findViewById(R.id.view_finder);
 
-
-
-
-
         return view;
+    }
+
+    public void setCardDetails(Card.cardDetails cardDetails){
+        this.cardDetails = cardDetails;
     }
 
     void bindPreview(@NonNull ProcessCameraProvider cameraProvider) {
@@ -232,16 +216,17 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
                     .addOnSuccessListener(firebaseVisionText -> {
                         Log.i(TAG, "Image analyzing");
 
+                        String det = getArguments().getString("card_details");
+
+                        det = det + extractText(firebaseVisionText);
+
                         Bundle bundle = new Bundle();
-                        bundle.putString("card_result", extractText(firebaseVisionText));
+                        bundle.putString("card_details", det);
 
-                        Card card = new Card();
-                             card.setArguments(bundle);
-                        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.nav_host_fragment,card, "scanner_frag")
-                                .addToBackStack("card_frag")
+
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.nav_host_fragment, Card.class, bundle,"card_frag")
                                 .commit();
-
 
                     })
                     .addOnFailureListener(

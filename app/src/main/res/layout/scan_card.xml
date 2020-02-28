@@ -13,6 +13,7 @@
         android:layout_width="350dp"
         android:layout_height="250dp"
         android:background="@drawable/card"
+        android:padding="5dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

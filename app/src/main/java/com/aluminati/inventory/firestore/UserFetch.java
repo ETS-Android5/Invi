@@ -43,7 +43,6 @@ public class UserFetch {
 
     public static Task<DocumentSnapshot> getUser(String email){
         return FirebaseFirestore.getInstance().collection("users").document(email).get();
-
     }
 
     public static CollectionReference searchUser(){

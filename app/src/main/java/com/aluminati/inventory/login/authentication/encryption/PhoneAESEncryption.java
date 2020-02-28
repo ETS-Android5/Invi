@@ -5,6 +5,9 @@ import android.util.Base64;
 import android.util.Log;
 
 
+import com.aluminati.inventory.firestore.UserFetch;
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -41,26 +44,18 @@ public class PhoneAESEncryption extends AsyncTask<String,String,String> {
         execute();
     }
 
-    public PhoneAESEncryption(){
-
-    }
 
     private static String encrypt(String phoneNumberToEncrypt) throws Exception{
-
         SecretKeySpec secretKeySpec = new SecretKeySpec(getRaw(phoneNumberToEncrypt, salt), "AES");
         Cipher cipher = Cipher.getInstance(cypInst);
         cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, new IvParameterSpec(initVec.getBytes()));
         byte[] encrypted = cipher.doFinal(phoneNumberToEncrypt.getBytes());
-        return Base64.encodeToString(encrypted, Base64.DEFAULT);
-    }
 
-    public static String decrypt(String phoneNumberToDecrypt) throws Exception{
-        byte[] encrypted_keys = Base64.decode(phoneNumberToDecrypt, Base64.DEFAULT);
-        SecretKeySpec secretKeySpec = new SecretKeySpec(getRaw(phoneNumberToDecrypt,salt), "AES");
-        Cipher cipher = Cipher.getInstance(cypInst);
-        cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, new IvParameterSpec(initVec.getBytes()));
-        byte[] decrypted = cipher.doFinal(encrypted_keys);
-        return new String(decrypted, StandardCharsets.UTF_8);
+
+        String base64 = Base64.encodeToString(secretKeySpec.getEncoded(), Base64.URL_SAFE);
+        UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(), "pid", base64+"#"+secretKeySpec.getAlgorithm());
+
+        return Base64.encodeToString(encrypted, Base64.DEFAULT);
     }
 
     private static byte[] getRaw(String phoneNumberToEncrypt, String salt){

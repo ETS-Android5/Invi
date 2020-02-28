@@ -79,7 +79,6 @@ public class CurrencyFrag extends Fragment{
         removedItems = new ArrayList<>();
 
 
-
         return view;
     }
 

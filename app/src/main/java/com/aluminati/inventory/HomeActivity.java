@@ -36,6 +36,7 @@ import com.aluminati.inventory.fragments.tools.ToolsFragment;
 
 import com.aluminati.inventory.login.authentication.LogInActivity;
 import com.aluminati.inventory.payments.ui.Card;
+import com.aluminati.inventory.payments.ui.Payments;
 import com.aluminati.inventory.payments.ui.PaymentsFrag;
 import com.aluminati.inventory.utils.Toaster;
 import com.aluminati.inventory.widgets.CustomFloatingActionButton;
@@ -146,7 +147,7 @@ public class HomeActivity extends AppCompatActivity implements CardNfcAsyncTask.
         fragMap.put(R.id.maps, new MapsActivity());
         fragMap.put(R.id.nav_scanner, new ScannerFragment());
         fragMap.put(R.id.currency_converions, new CurrencyFrag());
-        fragMap.put(R.id.payments, new Card());
+        fragMap.put(R.id.payments, new Payments());
 
         NavigationView navigationView = findViewById(R.id.nav_view);
 
@@ -272,23 +273,23 @@ public class HomeActivity extends AppCompatActivity implements CardNfcAsyncTask.
 
     @Override
     public void doNotMoveCardSoFast() {
-
+        Toast.makeText(this, "Card moved to fast", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void unknownEmvCard() {
-
+        Toast.makeText(this, "Unknown card protocol", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void cardWithLockedNfc() {
-
+        Toast.makeText(this, "Card locked", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void finishNfcReadCard() {
         Log.i(TAG, "Card read successfully");
-        Toast.makeText(this, "Card read successfully, let go", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Card read successfully", Toast.LENGTH_LONG).show();
 
     }
 }
