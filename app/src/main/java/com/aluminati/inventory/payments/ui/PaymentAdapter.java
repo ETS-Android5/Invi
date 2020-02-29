@@ -31,6 +31,7 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.Payments
     private View view;
     private PaymentsViewHolder currencyViewHolder;
     private FragmentActivity activity;
+    private Payments.SelectedCard selectedCard;
 
 
 
@@ -47,6 +48,8 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.Payments
         return currencyViewHolder;
     }
 
+
+
     @Override
     public void onBindViewHolder(@NonNull PaymentsViewHolder holder, int position) {
         EditText cardNumber = holder.cardNumber;
@@ -62,8 +65,10 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.Payments
         cardIcon.setImageDrawable(dataSet.get(position).getName().equals("visa")
                 ? view.getResources().getDrawable(R.drawable.visa)
                 : view.getResources().getDrawable(R.drawable.master_card) );
-        view.setOnClickListener(click -> {
 
+
+        view.setOnClickListener(click -> {
+            selectedCard.selectedCard(new Payment(cardNumber.getText().toString(),dataSet.get(position).getName(),cardExpiry.getText().toString()), position);
         });
     }
 
@@ -71,11 +76,11 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.Payments
         if(!number.isEnabled() && !expiryDate.isEnabled()){
             number.setEnabled(true);
             expiryDate.setEnabled(true);
-            editCardButton.setText(view.getResources().getString(R.string.edit_card));
+            editCardButton.setText(view.getResources().getString(R.string.save_card));
         }else {
             number.setEnabled(false);
             number.setEnabled(false);
-            editCardButton.setText(view.getResources().getString(R.string.save_card));
+            editCardButton.setText(view.getResources().getString(R.string.edit_card));
         }
     }
 
@@ -114,6 +119,9 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.Payments
         view.getPaint().setMaskFilter(filter);
     }
 
+    public void setSelectedCard(Payments.SelectedCard selectedCard){
+        this.selectedCard = selectedCard;
+    }
 
     static class PaymentsViewHolder extends RecyclerView.ViewHolder {
 
@@ -127,7 +135,7 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.Payments
             this.cardNumber =  itemView.findViewById(R.id.card_number);
             this.cardExpiry = itemView.findViewById(R.id.card_expiry_date);
             this.cardLogo =  itemView.findViewById(R.id.card_logo);
-            this.editButton = itemView.findViewById(R.id.add_card_button);
+            this.editButton = itemView.findViewById(R.id.edit_card);
         }
     }
 

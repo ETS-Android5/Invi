@@ -1,5 +1,6 @@
 package com.aluminati.inventory.userprofile;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +12,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.aluminati.inventory.R;
+import com.aluminati.inventory.login.authentication.LogInActivity;
+import com.facebook.login.LoginManager;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class UserProfileButton extends Fragment implements View.OnClickListener{
 
@@ -24,6 +28,7 @@ public class UserProfileButton extends Fragment implements View.OnClickListener{
         view.findViewById(R.id.account_settings).setOnClickListener(this);
         view.findViewById(R.id.social_platforms).setOnClickListener(this);
         view.findViewById(R.id.account_info).setOnClickListener(this);
+        view.findViewById(R.id.log_out).setOnClickListener(this);
 
 
         return view;
@@ -51,6 +56,17 @@ public class UserProfileButton extends Fragment implements View.OnClickListener{
                         .replace(R.id.user_profile,new SocialPlatforms(), "social_platforms")
                         .addToBackStack("social_platforms")
                         .commit();
+                break;
+            }
+            case R.id.log_out:{
+                FirebaseAuth.getInstance().signOut();
+                if (LoginManager.getInstance() != null) {
+                    LoginManager.getInstance().logOut();
+                }
+                Intent logout = new Intent(getActivity(),  LogInActivity.class);
+                logout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(logout);
+                getActivity().finish();
                 break;
             }
         }

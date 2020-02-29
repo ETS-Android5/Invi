@@ -78,6 +78,13 @@ public class UserPhoto extends Fragment implements View.OnClickListener {
         userPhoto.setDrawingCacheEnabled(true);
         progressBar = view.findViewById(R.id.photo_progress_loader);
 
+
+        userPhoto.addOnLayoutChangeListener((view1, i, i1, i2, i3, i4, i5, i6, i7) -> {
+            if(hasImage((ImageView)view1)){
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+        });
+
         bindActivity(getActivity());
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -113,24 +120,8 @@ public class UserPhoto extends Fragment implements View.OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
-
-
         if(firebaseAuth.getCurrentUser() != null){
-            try {
-                new RemoteImage(userPhoto).execute(firebaseAuth.getCurrentUser().getPhotoUrl().toString());
-            } catch (NullPointerException e) {
-                Log.w(TAG, "User photo null", e);
-                UserFetch.getUser(firebaseAuth.getCurrentUser().getEmail()).addOnSuccessListener(resultImage -> {
-                    Log.i(TAG, "Got user successfully");
-                    User user = new User(resultImage);
-                    if(user.getPhoto() != null){
-                        userPhoto.setImageURI(Uri.parse(user.getPhoto()));
-                    }
-                }).addOnFailureListener(resultImage -> {
-                    Log.w(TAG, "Failed to get user successfully", resultImage);
-                });
-            }
-
+            userPhoto.setImageURI(firebaseAuth.getCurrentUser().getPhotoUrl());
         }
 
     }

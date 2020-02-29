@@ -51,6 +51,7 @@ import com.pro100svitlo.creditCardNfcReader.model.EmvCard;
 import com.pro100svitlo.creditCardNfcReader.utils.CardNfcUtils;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,6 +72,7 @@ public class HomeActivity extends AppCompatActivity implements CardNfcAsyncTask.
     private PendingIntent mPendingIntent;
     private boolean mIntentFromCreate;
     private CardNfcAsyncTask mCardNfcAsyncTask;
+    private Card.scanNfc scanNfc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -246,6 +248,12 @@ public class HomeActivity extends AppCompatActivity implements CardNfcAsyncTask.
         super.onNewIntent(intent);
         Log.i(TAG,"Card numbe detected");
 
+        for(Fragment fragment : getSupportFragmentManager().getFragments()){
+            if(fragment instanceof Card){
+                bindFrag(fragment);
+            }
+        }
+
         if(intent != null && (NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction()) || NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction()))){
             if (mAdapter != null && mAdapter.isEnabled()) {
                 Log.i(TAG,"Card numbe detected");
@@ -258,11 +266,21 @@ public class HomeActivity extends AppCompatActivity implements CardNfcAsyncTask.
     }
 
 
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(getIntent().getExtras() != null){
+            if(getIntent().getExtras().containsKey("add_card")){
+                loadFrag(fragMap.get(R.id.payments));
+                Utils.makeSnackBarWithButtons("Card added successfully", mDrawerLayout, this);
+            }
+        }
+    }
 
     @Override
     public void startNfcReadCard() {
         Toast.makeText(this, "Keep holding card", Toast.LENGTH_LONG).show();
+        scanNfc.nfcScan(true);
         Log.i(TAG, "Card detected");
     }
 
@@ -296,7 +314,26 @@ public class HomeActivity extends AppCompatActivity implements CardNfcAsyncTask.
     @Override
     public void finishNfcReadCard() {
         Log.i(TAG, "Card read successfully");
-        Toast.makeText(this, "Card read successfully", Toast.LENGTH_LONG).show();
+    }
 
+    private void cardResult(boolean result){
+        if(result){
+            Toast.makeText(this, "Card read successfully", Toast.LENGTH_LONG).show();
+        }else Toast.makeText(this, "Failed to read card successfully", Toast.LENGTH_LONG).show();
+
+    }
+
+    private void bindFrag(Fragment fragment){
+        if(fragment instanceof Card){
+            ((Card)fragment).setNfcCardScan(this::cardResult);
+        }
+    }
+
+    public void setScanNfc(Card.scanNfc scanNfc){
+        this.scanNfc = scanNfc;
+    }
+
+    public interface nfcCardScan extends Serializable{
+        void cardScanned(boolean scanned);
     }
 }

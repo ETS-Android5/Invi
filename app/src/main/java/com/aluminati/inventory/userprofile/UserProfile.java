@@ -58,6 +58,8 @@ public class UserProfile extends AppCompatActivity{
     private ConnectivityCheck connection;
     private ReloadImageResponse reloadImageResponse;
     private LinearLayout baseLayOut;
+    private AlertDialog alertDialog;
+    private static final int ACTION_SETTINGS = 0;
 
 
 
@@ -66,6 +68,7 @@ public class UserProfile extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_profile);
 
+        connetionInfo();
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -77,12 +80,27 @@ public class UserProfile extends AppCompatActivity{
         UserPhoto userPhoto = (UserPhoto) getSupportFragmentManager().findFragmentById(R.id.user_photo);
         bindFrag(userPhoto);
 
-        connection = new ConnectivityCheck(baseLayOut);
+        connection = new ConnectivityCheck(baseLayOut, alertDialog);
 
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.user_profile, new UserProfileButton())
                 .commit();
 
+
+    }
+
+    private void connetionInfo(){
+        this.alertDialog = new AlertDialog.Builder(this)
+                .setTitle("No Internet Connection")
+                .setMessage("INVI Needs an Active Internet Connection\n\nCheck your Internet Settings")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setCancelable(true)
+                .setPositiveButton("Ok", (dialog, i) -> {
+                            dialog.dismiss();
+                        }
+                ).setNegativeButton("Settings", (dialog, i) -> {
+                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), ACTION_SETTINGS);
+                }).create();
 
     }
 
@@ -152,27 +170,6 @@ public class UserProfile extends AppCompatActivity{
     private String getYear(){
         return Integer.toString(Calendar.getInstance().get(Calendar.YEAR));
     }
-
-
-
-    /*
-
-            case R.id.logout: {
-                firebaseAuth.signOut();
-                if (LoginManager.getInstance() != null) {
-                    LoginManager.getInstance().logOut();
-                }
-                Intent logout = new Intent(UserProfile.this, LogInActivity.class);
-                logout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(logout);
-                finish();
-                break;
-            }
-        }
-        return false;
-    }
-
-     */
 
     @Override
     public void onBackPressed() {

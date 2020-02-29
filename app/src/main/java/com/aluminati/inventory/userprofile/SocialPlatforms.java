@@ -15,7 +15,6 @@ public class SocialPlatforms extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-
         return inflater.inflate(R.layout.social_platforms, container, false);
     }
 

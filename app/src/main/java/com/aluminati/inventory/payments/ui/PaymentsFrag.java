@@ -88,6 +88,9 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
         executor = Executors.newSingleThreadExecutor();
         previewView = view.findViewById(R.id.view_finder);
 
+        setCamera();
+
+
         return view;
     }
 
@@ -197,41 +200,17 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
     private String extractText(FirebaseVisionText result){
 
         StringBuilder stringBuilder = new StringBuilder();
-        String resultText = result.getText();
         for (FirebaseVisionText.TextBlock block: result.getTextBlocks()) {
-            String blockText = block.getText();
-            Float blockConfidence = block.getConfidence();
-            List<RecognizedLanguage> blockLanguages = block.getRecognizedLanguages();
-            Point[] blockCornerPoints = block.getCornerPoints();
-            Rect blockFrame = block.getBoundingBox();
             for (FirebaseVisionText.Line line: block.getLines()) {
-                String lineText = line.getText();
-                Float lineConfidence = line.getConfidence();
-                List<RecognizedLanguage> lineLanguages = line.getRecognizedLanguages();
-                Point[] lineCornerPoints = line.getCornerPoints();
-                Rect lineFrame = line.getBoundingBox();
                 for (FirebaseVisionText.Element element: line.getElements()) {
                     String elementText = element.getText();
                     Log.i(TAG, elementText);
-                    Float elementConfidence = element.getConfidence();
-                    List<RecognizedLanguage> elementLanguages = element.getRecognizedLanguages();
-                    Point[] elementCornerPoints = element.getCornerPoints();
-                    Rect elementFrame = element.getBoundingBox();
                     stringBuilder.append("#" + elementText);
                 }
             }
         }
-
-
         return stringBuilder.toString();
-
     }
-
-
-
-
-
-
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.imgCapture) {

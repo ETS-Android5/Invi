@@ -164,5 +164,9 @@
     <string name="save_card">Save Card</string>
     <string name="empty_recycler">Click Add Card to Add your first payment</string>
     <string name="select_language">Select Langauge</string>
+    <string name="link_google">Link Google</string>
+    <string name="expiry_date">Expiry Date</string>
+    <string name="card_number">Card Number</string>
+    <string name="delete_card">Delete Card</string>
 
 </resources>

@@ -62,7 +62,14 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener, On
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        FacebookSdk.sdkInitialize(getApplicationContext());
+
+        View view = null;
+
+        if(getActivity() instanceof LogInActivity){
+            view = inflater.inflate(R.layout.facebook_signin, container, false);
+        }else if(getActivity() instanceof UserProfile){
+            view = inflater.inflate(R.layout.facebook_unlink, container, false);
+        }
 
         callbackManager = CallbackManager.Factory.create();
         loginManager = LoginManager.getInstance();
@@ -80,13 +87,28 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener, On
             }
         };
 
-        View view = null;
 
-        if(getActivity() instanceof LogInActivity){
-            view = inflater.inflate(R.layout.facebook_signin, container, false);
-        }else if(getActivity() instanceof UserProfile){
-            view = inflater.inflate(R.layout.facebook_unlink, container, false);
-        }
+        loginManager.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.i(TAG, "Login Successful :");
+                if(loginResult != null){
+                    Log.i(TAG, "Login Successful :" + loginResult.getAccessToken());
+                    handleFacebookAccessToken(loginResult.getAccessToken());
+                }else {
+                    Log.i(TAG, "Unable To Login");
+                }
+            }
+            @Override
+            public void onCancel() {
+                Log.i(TAG, "Login Canceled");
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Log.w(TAG, "Login Error", error);
+            }
+        });
 
 
         return view;
@@ -130,28 +152,6 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener, On
     @Override
     public void onStart() {
         super.onStart();
-
-        loginManager.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                if(loginResult != null){
-                    Log.i(TAG, "Login Successful :" + loginResult.getAccessToken());
-                    handleFacebookAccessToken(loginResult.getAccessToken());
-                }else {
-                    Log.i(TAG, "Unable To Login");
-                }
-            }
-            @Override
-            public void onCancel() {
-                Log.i(TAG, "Login Canceled");
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                Log.w(TAG, "Login Error", error);
-            }
-        });
-
         isFacebookLinked();
     }
 
@@ -168,6 +168,7 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener, On
         final AuthCredential authCredential = FacebookAuthProvider.getCredential(accessToken.getToken());
         if(firebaseAuth.getCurrentUser() != null){
             if(getContext() instanceof UserProfile){
+                Log.i(TAG, "Lonking Facebook");
                 linkAccounts(authCredential);
             }
         }else {
@@ -254,10 +255,18 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener, On
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.facebook_unlink_button){
+            Log.i(TAG, "Logging");
+
             if(facebookLogin.getText().equals(getResources().getString(R.string.unlink_facebook))){
+                Log.i(TAG, "Logging =");
+
                 unLinkConfirm();
             }else if(facebookLogin.getText().equals(getResources().getString(R.string.link_faebook))){
-                loginManager.logIn(getActivity(), permissions);
+                Log.i(TAG, "Logging +");
+                if(getActivity() == null){
+                    Log.i(TAG, "Activity is null");
+                }
+                loginManager.logIn(this, permissions);
             }
         }
     }
@@ -266,7 +275,7 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener, On
     @Override
     public void onStateChange(boolean active) {
         if(active){
-            loginManager.logIn(getActivity(), permissions);
+            loginManager.logIn(this, permissions);
         }
     }
 }

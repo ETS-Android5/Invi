@@ -9,10 +9,11 @@ import com.aluminati.inventory.users.User;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Payment {
+public class Payment implements Serializable {
 
     private final static String TAG = Payment.class.getName();
     private String number;

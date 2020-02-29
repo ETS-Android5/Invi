@@ -29,7 +29,7 @@
         android:layout_height="300dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="100dp"
         android:background="@android:color/white"
         android:orientation="horizontal" />
 
@@ -46,4 +46,91 @@
         android:textSize="15sp"
         android:textStyle="bold"
         />
+
+    <LinearLayout
+        android:id="@+id/card_details"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/card_view_recycler"
+        android:paddingEnd="10dp"
+        android:paddingStart="10dp"
+        android:paddingTop="20dp"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reg_name"
+            android:textSize="15sp"
+         />
+
+        <EditText
+            android:id="@+id/card_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:rowCount="2"
+            android:columnCount="2"
+            android:layout_marginTop="50dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/card_number"
+                android:textSize="15sp"
+                android:layout_row="0"
+                android:layout_column="0"
+                />
+
+            <EditText
+                android:id="@+id/card_number"
+                android:layout_width="275dp"
+                android:layout_height="wrap_content"
+                android:layout_row="1"
+                android:layout_column="0"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/expiry_date"
+                android:textSize="15sp"
+                android:layout_row="0"
+                android:layout_gravity="center_horizontal"
+                android:layout_column="1"
+                android:layout_marginEnd="5dp"
+                />
+
+            <EditText
+                android:id="@+id/card_expiry"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_row="1"
+                android:layout_column="1"
+                />
+
+
+        </GridLayout>
+
+        <Button
+            android:id="@+id/delete_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/buttonegative"
+            android:layout_marginTop="20dp"
+            android:text="@string/delete_card"
+            />
+
+
+
+
+
+    </LinearLayout>
 </RelativeLayout>

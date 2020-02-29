@@ -1,5 +1,6 @@
 package com.aluminati.inventory.offline;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -27,12 +28,13 @@ public class ConnectivityCheck extends BroadcastReceiver {
         private static final String TAG = ConnectivityCheck.class.getName();
         public static Snackbar snackbar;
         private View view;
+        private AlertDialog alertDialog;
 
 
 
-        public ConnectivityCheck(View view){
+        public ConnectivityCheck(View view, AlertDialog alertDialog){
             this.view = view;
-
+            this.alertDialog = alertDialog;
             createSnackBar();
         }
 
@@ -44,7 +46,7 @@ public class ConnectivityCheck extends BroadcastReceiver {
                    button.setText("Info");
                    button.setId(View.generateViewId());
                    button.setBackgroundColor(Color.TRANSPARENT);
-                   button.setOnClickListener(result -> LogInActivity.alertDialog.show());
+                   button.setOnClickListener(result -> alertDialog.show());
                    button.setTextColor(Color.YELLOW);
 
 

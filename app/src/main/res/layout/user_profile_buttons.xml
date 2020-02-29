@@ -54,4 +54,16 @@
             />
 
 
+    <Button
+        android:id="@+id/log_out"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/logout_button"
+        android:background="@android:color/white"
+        android:textAlignment="viewStart"
+        android:textColor="@color/text_color"
+        android:drawableEnd="@drawable/arrow"
+        />
+
+
     </LinearLayout>
