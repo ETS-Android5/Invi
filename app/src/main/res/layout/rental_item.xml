@@ -30,8 +30,9 @@
                 android:layout_weight=".8"
                 android:gravity="right|center"
                 android:text="Return"
-                android:textColor="#fff"
-                android:textSize="30sp" />
+                android:textColor="#090909"
+                android:textStyle="bold|italic"
+                android:textSize="35sp" />
 
             <ImageView
                 android:id="@+id/delete_icon"

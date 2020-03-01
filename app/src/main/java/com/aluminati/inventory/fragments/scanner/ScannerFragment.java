@@ -148,6 +148,7 @@ public class ScannerFragment extends Fragment {
         dbHelper.getItem(Constants.FirestoreCollections.STORE_ITEMS, iid)
                 .addOnSuccessListener( task -> {
                     //TODO: Do some error checking here
+
                     PurchaseItem item = task.toObject(PurchaseItem.class);
                     AlertDialog.Builder dialog = DialogHelper.getInstance(getActivity())
                             .createDialog(item.getTitle(), "", item.getImgLink(), Color.GREEN);
@@ -270,6 +271,7 @@ public class ScannerFragment extends Fragment {
     @Override
     public void onPause() {
         if (mCodeScanner != null) {
+            mCodeScanner.stopPreview();
             mCodeScanner.releaseResources();
         }
 
@@ -280,6 +282,7 @@ public class ScannerFragment extends Fragment {
     public void onStop() {
         super.onStop();
         if (mCodeScanner != null) {
+            mCodeScanner.stopPreview();
             mCodeScanner.releaseResources();
         }
     }

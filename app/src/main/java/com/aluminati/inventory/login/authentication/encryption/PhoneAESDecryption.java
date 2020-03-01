@@ -26,6 +26,7 @@ public class PhoneAESDecryption extends AsyncTask<String,String,String> {
     private static final String TAG = PhoneAESDecryption.class.getName();
     private String result;
     private String phoneNumber;
+    private static SecretKeySpec secretKeySpec;
 
     private Consumer consumer;
 
@@ -33,16 +34,22 @@ public class PhoneAESDecryption extends AsyncTask<String,String,String> {
         void accept(String internet);
     }
 
-    public PhoneAESDecryption(String phoneNumber, Consumer consumer){
+    public PhoneAESDecryption(String phoneNumber, String secret, Consumer consumer){
         Log.i(TAG, phoneNumber);
         this.consumer = consumer;
         this.phoneNumber = phoneNumber;
+        secretKeySpec = split(secret);
         execute();
+    }
+
+    private SecretKeySpec split(String split){
+        String[] splits = split.split("#");
+        byte[] bytes = Base64.decode(splits[0], Base64.URL_SAFE);
+        return new SecretKeySpec(bytes, splits[1]);
     }
 
     public static String decrypt(String phoneNumberToDecrypt) throws Exception{
         byte[] encrypted_keys = Base64.decode(phoneNumberToDecrypt, Base64.DEFAULT);
-        SecretKeySpec secretKeySpec = new SecretKeySpec(getRaw(phoneNumberToDecrypt,salt), "AES");
         Cipher cipher = Cipher.getInstance(cypInst);
         cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, new IvParameterSpec(initVec.getBytes()));
         byte[] decrypted = cipher.doFinal(encrypted_keys);

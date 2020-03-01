@@ -7,11 +7,11 @@
 
     <Button
         android:id="@+id/google_button"
-        android:layout_width="350dp"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_gravity="center"
         android:layout_marginTop="5dp"
-        android:text="@string/login_google"
+        android:text="@string/link_google"
         android:background="@color/google_red"
         android:textSize="20sp"
         android:textColor="@color/white_text"

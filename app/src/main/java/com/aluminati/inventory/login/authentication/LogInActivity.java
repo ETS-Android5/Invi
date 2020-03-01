@@ -47,7 +47,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
          logInActivity = this;
             connetionInfo();
 
-         connection = new ConnectivityCheck(registerButton);
+         connection = new ConnectivityCheck(registerButton, alertDialog);
          registerReceiver(connection, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
          firebaseAuth = FirebaseAuth.getInstance();

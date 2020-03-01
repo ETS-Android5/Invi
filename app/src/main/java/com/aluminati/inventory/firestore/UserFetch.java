@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 public class UserFetch {
 
-    private static final String TAG = "UserFetch";
+    private static final String TAG = UserFetch.class.getName();
 
     public static void addNewUser(User user) {
         FirebaseFirestore.getInstance().collection("users").document(user.getEmail())
@@ -43,7 +43,6 @@ public class UserFetch {
 
     public static Task<DocumentSnapshot> getUser(String email){
         return FirebaseFirestore.getInstance().collection("users").document(email).get();
-
     }
 
     public static CollectionReference searchUser(){

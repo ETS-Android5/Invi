@@ -207,7 +207,7 @@ public class GoogleSignIn extends Fragment implements View.OnClickListener, OnSt
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.google_button) {
-            if (googleButton.getText().toString().equals(getResources().getString(R.string.login_google))) {
+            if (googleButton.getText().toString().equals(getResources().getString(R.string.link_google))) {
                 signIn();
             } else if (googleButton.getText().toString().equals(getResources().getString(R.string.unlink_google))) {
                 alertDialog("Unlink Google", "Are you sure to unlink your Google Account ?")

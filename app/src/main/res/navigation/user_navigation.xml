@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/user_navigation"
+    app:startDestination="@id/user_buttons"
+    >
+
+
+    <fragment
+        android:id="@+id/user_buttons"
+        android:name="com.aluminati.inventory.userprofile.UserProfileButton"
+        android:label="@string/user_buttons"
+        tools:layout="@layout/user_profile_buttons"
+        >
+        <action
+            android:id="@+id/action_user_buttons_to_user_account_info"
+            app:destination="@id/user_account_info" />
+        <action
+            android:id="@+id/action_user_buttons_to_social_platforms"
+            app:destination="@id/social_platforms" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/user_account_info"
+        android:name="com.aluminati.inventory.userprofile.UserDetails"
+        android:label="@string/account_info"
+        tools:layout="@layout/user_details"
+        />
+
+    <fragment
+        android:id="@+id/social_platforms"
+        android:name="com.aluminati.inventory.userprofile.SocialPlatforms"
+        android:label="@string/social_platforms"
+        tools:layout="@layout/social_platforms"
+        />
+
+
+</navigation>

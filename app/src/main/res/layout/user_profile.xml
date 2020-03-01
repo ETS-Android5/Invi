@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    android:id="@+id/base_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,299 +8,57 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="20dp"
+    android:scrollbars="horizontal"
+    android:background="@android:color/white"
     tools:context=".userprofile.UserProfile"
     >
 
-    <GridLayout
+
+    <fragment
+        android:id="@+id/user_photo"
+        class="com.aluminati.inventory.userprofile.UserPhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp" />
+
+    <TextView
+        android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        >
+        android:layout_marginTop="15dp"
+        android:textAlignment="center"
+        />
 
-        <fragment
-            android:id="@+id/user_photo"
-            class="com.aluminati.inventory.userprofile.UserPhoto"
-            android:layout_row="0"
-            android:layout_rowSpan="4"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
-            />
-
-
-
-
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_row="0"
-            android:layout_column="2"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:text="@string/reg_name"
-            android:textSize="20sp" />
-
-        <ImageButton
-            android:id="@+id/profile_settings_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/settings"
-            android:background="@android:color/transparent"
-            android:layout_row="0"
-            android:layout_column="4"
-            />
-
-        <TextView
-            android:id="@+id/name_field"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_row="1"
-            android:layout_column="2"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:textSize="15sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_row="2"
-            android:layout_column="2"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:text="@string/reg_surname"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/surname_field"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_row="3"
-            android:layout_column="2"
-            android:layout_marginStart="20dp"
-            android:layout_gravity="bottom"
-            android:textSize="15sp" />
-
-    </GridLayout>
-
-    <GridLayout
+    <TextView
+        android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/display_name"
-            android:layout_row="0"
-            android:layout_column="0"
-            android:textSize="15sp"
-            android:layout_marginTop="20dp"
-            android:textColor="@color/text_color"
-            />
-
-        <TextView
-            android:id="@+id/display_name_change"
-            style="@style/userProfileChangeButton"
-            android:text="@string/change"
-            android:layout_row="0"
-            android:layout_column="1"
-            android:layout_gravity="end"
-            />
-
-        <EditText
-            android:id="@+id/display_name_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_row="1"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
-            android:padding="15dp"
-            android:enabled="false"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/text_color"
-            android:textColorHint="@color/text_color"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_row="2"
-            android:layout_column="0"
-            android:text="@string/reg_email"
-            android:textSize="15sp"
-            android:textColor="@color/text_color"
-            android:layout_marginTop="20dp"
-            />
-
-
-        <TextView
-            android:id="@+id/email_verified"
-            style="@style/userProfileChangeButton"
-            android:layout_row="3"
-            android:layout_column="1"
-            android:layout_marginTop="10dp"
-            android:gravity="end"
-            android:text="@string/not_verified"
-            android:textSize="12sp"
-            android:textColor="@color/google_red"
-            />
-
-        <EditText
-            android:id="@+id/email_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_row="3"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
-            android:padding="15dp"
-            android:enabled="false"
-            android:singleLine="true"
-            android:paddingEnd="100dp"
-            android:textColor="@color/text_color"
-            android:textColorHint="@color/text_color"
-            />
-
-        <TextView
-            android:id="@+id/change_email"
-            style="@style/userProfileChangeButton"
-            android:layout_row="2"
-            android:layout_column="1"
-            android:text="@string/change"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_row="4"
-            android:layout_column="0"
-            android:text="@string/reg_phone"
-            android:textSize="15sp"
-            android:layout_marginTop="20dp"
-            android:textColor="@color/text_color"
-            />
-
-        <TextView
-            android:id="@+id/phone_number_change"
-            style="@style/userProfileChangeButton"
-            android:layout_row="4"
-            android:layout_column="1"
-            android:text="@string/change"
-            />
-
-
-
-
-            <EditText
-                android:id="@+id/phone_number_field"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:enabled="false"
-                android:padding="15dp"
-                android:layout_row="5"
-                android:layout_column="0"
-                android:layout_columnSpan="2"
-                android:paddingEnd="100dp"
-                android:singleLine="true"
-                android:textColor="@color/text_color"
-                android:textColorHint="@color/text_color" />
-
-
-        <TextView
-            android:id="@+id/phone_number_verified"
-            style="@style/userProfileChangeButton"
-            android:layout_row="5"
-            android:layout_column="1"
-            android:layout_marginTop="10dp"
-            android:gravity="end"
-            android:text="@string/not_verified"
-            android:textSize="12sp"
-            android:textColor="@color/google_red"
-            />
-
-
-    </GridLayout>
-
-
-
-
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/social_platforms"
-        android:textSize="20sp"
-        android:gravity="center_horizontal"
-        android:layout_marginTop="25dp"
-        android:textColor="@color/text_color"
+        android:textSize="15sp"
+        android:textAlignment="center"
+        android:textStyle="bold"
         />
 
-    <GridLayout
+
+    <View
+        android:id="@+id/divider3"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_height="2dp"
+        android:layout_marginTop="30dp"
+        android:background="?android:attr/listDivider"
+        />
+
+    <RelativeLayout
+        android:id="@+id/user_profile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         >
 
-        <fragment
-            class="com.aluminati.inventory.login.authentication.google.GoogleSignIn"
-            android:id="@+id/google_unlink"
-            android:layout_height="match_parent"
-            android:layout_width="wrap_content"
-            android:layout_row="0"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
-            android:layout_gravity="center"
-            />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_row="1"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
-            android:orientation="horizontal"
-            android:gravity="center"
-            >
-            <fragment
-                class="com.aluminati.inventory.login.authentication.facebook.FaceBookSignIn"
-                android:id="@+id/facebook_unlink"
-                android:layout_height="match_parent"
-                android:layout_width="150dp"
-                android:layout_marginEnd="25dp"
-                />
+    </RelativeLayout>
 
 
-            <fragment
-                class="com.aluminati.inventory.login.authentication.twitter.TwitterSignIn"
-                android:id="@+id/twitter_unlink_frag"
-                android:layout_height="match_parent"
-                android:layout_width="150dp"
-                android:layout_marginStart="25dp"
-                />
-
-        </LinearLayout>
-
-
-
-
-
-
-    </GridLayout>
-
-    <Button
-        android:id="@+id/delete_user"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/buttonegative"
-        android:layout_gravity="bottom"
-        android:layout_marginTop="5dp"
-        android:text="@string/delete_account"
-        android:textColor="@color/white_text"
-        android:textSize="20sp"
-        />
 
 
 </LinearLayout>

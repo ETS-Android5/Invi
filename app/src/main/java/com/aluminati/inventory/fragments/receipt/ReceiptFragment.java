@@ -24,6 +24,9 @@ public class ReceiptFragment extends FloatingTitlebarFragment {
         return root;
     }
 
+    private void setDrawer(){
+    }
+
     @Override
     public void onTextChanged(String searchText) {
 

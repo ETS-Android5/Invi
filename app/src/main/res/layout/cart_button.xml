@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="100dp"
+    android:layout_height="100dp"
+    android:gravity="center"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <Button
+        android:id="@+id/fab1"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:srcCompat="@drawable/cart"
+        android:background="@drawable/cart_button"
+        />
+
+    <Button
+        android:id="@+id/cart_count"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="-10dp"
+        android:layout_marginStart="-5dp"
+        android:layout_alignTop="@id/fab1"
+        android:layout_alignStart="@+id/fab1"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:textAlignment="center"
+        android:textColor="@color/white_text"
+        android:textSize="12sp"
+        android:background="@drawable/cart_count"
+        />
+
+</RelativeLayout>

@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.util.Log;
 
 import com.aluminati.inventory.fragments.ui.currencyConverter.CurrencyResult;
+import com.aluminati.inventory.login.authentication.verification.VerificationStatus;
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.ArrayList;
@@ -43,17 +44,25 @@ public class CurrencyConverter{
                 .build();
     }
 
+    public CurrencyConverter(Activity activity){
+        this.activity = activity;
+        this.retrofit = new Retrofit.Builder()
+                .baseUrl(API_URL).addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .build();
+    }
+
     public Single<CurrencyResult> getData() {
         CurrencyConverterApi apiService = retrofit.create(CurrencyConverterApi.class);
         return apiService.getLatestConversionRates(getBase());
     }
 
-    public ArrayList<com.aluminati.inventory.fragments.ui.currencyConverter.Currency> toCurrencyArray(CurrencyResult currencyResultSingle){
+    public ArrayList<com.aluminati.inventory.fragments.ui.currencyConverter.Currency> toCurrencyArray(CurrencyResult currencyResultSingle, int filterType){
         LinkedTreeMap<String, Float> currencies = (LinkedTreeMap<String, Float>) currencyResultSingle.getCurrencyRates();
-        return locale(new ArrayList<>(currencies.keySet()), currencies, currencyResultSingle);
+        return filter(locale(new ArrayList<>(currencies.keySet()), currencies), currencyResultSingle, filterType);
     }
 
-    private ArrayList<com.aluminati.inventory.fragments.ui.currencyConverter.Currency> locale(List<String> currenciesSymbols, LinkedTreeMap<String, Float> curren, CurrencyResult currencyResult){
+    private HashSet<com.aluminati.inventory.fragments.ui.currencyConverter.Currency> locale(List<String> currenciesSymbols, LinkedTreeMap<String, Float> curren){
         HashSet<com.aluminati.inventory.fragments.ui.currencyConverter.Currency> currencies = new HashSet<>();
         Locale[] locales = Locale.getAvailableLocales();
         for(Locale locale : locales){
@@ -85,13 +94,34 @@ public class CurrencyConverter{
         }
 
 
-        Map<Integer, com.aluminati.inventory.fragments.ui.currencyConverter.Currency> map = new LinkedHashMap<>();
 
-        for (com.aluminati.inventory.fragments.ui.currencyConverter.Currency ays : currencies) {
-            if(!ays.getCurrencyCCode().equals(currencyResult.getBase())) {
-                map.put(ays.getImage(), ays);
+        return currencies;
+    }
+
+    private ArrayList<com.aluminati.inventory.fragments.ui.currencyConverter.Currency> filter(HashSet<com.aluminati.inventory.fragments.ui.currencyConverter.Currency> currencies
+            , com.aluminati.inventory.fragments.ui.currencyConverter.CurrencyResult currencyResult, int filterType){
+
+        LinkedHashMap map = new LinkedHashMap<>();
+
+        switch (filterType){
+            case VerificationStatus.CURRENCY_FLAGS_FILTER:{
+                for (com.aluminati.inventory.fragments.ui.currencyConverter.Currency ays : currencies) {
+                    if(!ays.getCurrencyCCode().equals(currencyResult.getBase())) {
+                        map.put(ays.getImage(), ays);
+                    }
+                }
+                break;
+            }case VerificationStatus.CURRENCY_SIGN_FILTER:{
+                for (com.aluminati.inventory.fragments.ui.currencyConverter.Currency ays : currencies) {
+                    if(!ays.getCurrencySymbol().equals(currencyResult.getBase())) {
+                        map.put(ays.getCurrencySymbol(), ays);
+                    }
+                }
+                break;
             }
         }
+
+
         currencies.clear();
         currencies.addAll(map.values());
 
@@ -107,6 +137,7 @@ public class CurrencyConverter{
                 return false;
             }
         });
+
         return arrayList;
     }
 

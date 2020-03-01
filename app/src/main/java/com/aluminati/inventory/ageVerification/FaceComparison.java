@@ -1,5 +1,6 @@
 package com.aluminati.inventory.ageVerification;
 
+import android.annotation.SuppressLint;
 import android.media.Image;
 
 import androidx.annotation.NonNull;
@@ -53,14 +54,15 @@ public class FaceComparison {
             }
         }
 
+        @SuppressLint("UnsafeExperimentalUsageError")
         @Override
-        public void analyze(ImageProxy imageProxy, int degrees) {
+        public void analyze(ImageProxy imageProxy) {
             if (imageProxy == null || imageProxy.getImage() == null) {
                 return;
             }
             Image mediaImage = imageProxy.getImage();
-            int rotation = degreesToFirebaseRotation(degrees);
-            FirebaseVisionImage image = FirebaseVisionImage.fromMediaImage(mediaImage, rotation);
+            //int rotation = degreesToFirebaseRotation(degrees);
+            FirebaseVisionImage image = FirebaseVisionImage.fromMediaImage(mediaImage, 10);
             FirebaseVisionFaceDetector detector = FirebaseVision.getInstance()
                     .getVisionFaceDetector(firebaseVisionFaceDetectorOptions);
 
@@ -76,5 +78,6 @@ public class FaceComparison {
                                         // ...
                                     });
         }
+
     }
 }

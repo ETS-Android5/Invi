@@ -48,9 +48,31 @@
         tools:layout="@layout/fragment_scanner" />
 
     <fragment
+        android:id="@+id/nav_payments"
+        android:name="com.aluminati.inventory.payments.ui.PaymentsFrag"
+        android:label="@string/payments"
+        tools:layout="@layout/scan_card"
+        />
+
+    <fragment
         android:id="@+id/nav_conversions"
         android:name="com.aluminati.inventory.fragments.ui.currencyConverter.ui.CurrencyFrag"
         android:label="@string/converions"
         tools:layout="@layout/currencies"
         />
+
+    <fragment
+        android:id="@+id/payments_frag"
+        android:name="com.aluminati.inventory.payments.ui.Card"
+        android:label="@string/card"
+        tools:layout="@layout/add_card"
+        />
+
+    <fragment
+        android:id="@+id/social_platforms_frag"
+        android:name="com.aluminati.inventory.userprofile.SocialPlatforms"
+        android:label="@string/social_platforms"
+        tools:layout="@layout/social_platforms"
+        />
+
 </navigation>
