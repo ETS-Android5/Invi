@@ -2,67 +2,102 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@android:color/transparent">
 
-        <androidx.cardview.widget.CardView
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="match_parent">
 
-            <TableLayout
+            <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/dialogTitle"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="#ff00"
-                        android:gravity="center_horizontal|center_vertical"
-                        android:lines="2"
-                        android:maxLines="2"
-                        android:minLines="2"
-                        android:text="TextView"
-                        android:textColor="#fff"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/dialogTitle"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal|center_vertical">
+                    android:layout_weight="1"
+                    android:background="#ff00"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:lines="2"
+                    android:maxLines="2"
+                    android:minLines="2"
+                    android:text="TextView"
+                    android:textColor="#fff"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+            </TableRow>
 
-                    <ImageView
-                        android:id="@+id/dialogImageHolder"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight=".5"
-                        app:srcCompat="@drawable/flag_argentina" />
-                </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal|center_vertical">
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/dialogImageHolder"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".5"
+                    android:maxHeight="30dp"
+                    app:srcCompat="@drawable/flag_argentina" />
+            </TableRow>
 
-                    <TextView
-                        android:id="@+id/dialogMessage"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:text="this is some random text" />
-                </TableRow>
+            <TableRow
+                android:id="@+id/tableRowCartQuantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp">
+
+                <ImageView
+                    android:id="@+id/btnCartLess"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".1"
+                    android:background="@mipmap/ic_cart_less"
+                    android:text="-" />
+
+                <TextView
+                    android:id="@+id/tvCartItemCount"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".1"
+                    android:fontFamily="@font/alfa_slab_one"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="1"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:id="@+id/btnCartMore"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".1"
+                    android:background="@mipmap/ic_cart_more"
+                    android:text="+" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/dialogMessage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="this is some random text" />
+            </TableRow>
 
 
-            </TableLayout>
+        </TableLayout>
 
-        </androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

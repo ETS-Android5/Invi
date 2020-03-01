@@ -152,17 +152,18 @@ public class ScannerFragment extends Fragment {
                     AlertDialog.Builder dialog = DialogHelper.getInstance(getActivity())
                             .createDialog(item.getTitle(), "", item.getImgLink(), Color.GREEN);
 
-                    dialog.setMessage("Do you want to add to cart");
+                    dialog.setMessage(getResources().getString(R.string.add_to_cart));
 
-                    dialog.setPositiveButton("Yes", (dialogInterface, i) -> {
+                    dialog.setPositiveButton("Add", (dialogInterface, i) -> {
                         scanResult.put("uid", uid);
                         scanResult.put("addDate", Calendar.getInstance().getTime());
 
                         //addToCart(scanResult, uid);
                         addToCart(item, uid);
 
+
                         dialogInterface.dismiss();})
-                            .setNegativeButton("No", (dialogInterface, i) -> dialogInterface.dismiss());
+                            .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss());
 
                     dialog.show();
                 });
