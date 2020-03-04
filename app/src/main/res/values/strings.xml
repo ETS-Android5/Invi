@@ -168,5 +168,6 @@
     <string name="expiry_date">Expiry Date</string>
     <string name="card_number">Card Number</string>
     <string name="delete_card">Delete Card</string>
+    <string name="error_getting_searchitems">Error searching for items</string>
 
 </resources>

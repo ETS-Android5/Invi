@@ -1,10 +1,12 @@
 package com.aluminati.inventory.helpers;
 
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
 import java.util.List;
@@ -27,6 +29,11 @@ public class DbHelper {
         }
 
         return instance;
+    }
+
+
+    public CollectionReference getCollection(String collectionName) {
+        return db.collection(collectionName);
     }
 
     public Task<DocumentSnapshot> getItem(String collectionName, String docId) {

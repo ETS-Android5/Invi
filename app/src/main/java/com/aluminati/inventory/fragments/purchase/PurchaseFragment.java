@@ -84,9 +84,10 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
             toaster.toastShort("You clicked" + item.getTitle());
         };
 
-        firestore.collection(String.format(Constants.FirestoreCollections.LIVE_USER_CART,
+        dbHelper.getCollection(String.format(Constants.FirestoreCollections.LIVE_USER_CART,
                 FirebaseAuth.getInstance().getUid()))
-                .get().addOnSuccessListener(snapshot -> {
+                .get()
+                .addOnSuccessListener(snapshot -> {
                     toaster.toastLong(snapshot.size());
                     if (snapshot.isEmpty()) {
                         Log.d(TAG, "onSuccess: no items");
@@ -129,7 +130,7 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
         return pItems;
     }
     private void loadPurchaseItems(List<PurchaseItem> purchaseItems) {
-        recViewPurchase.setAdapter(new ItemAdapter<>(purchaseItems,
+        recViewPurchase.setAdapter(new ItemAdapter<PurchaseItem>(purchaseItems,
                 itemClickListener,
                 purchaseBinder,
                 getActivity()));
@@ -148,7 +149,9 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
             if(itemAdapter != null) {
                 PurchaseItem p = itemAdapter.getItem(position);
 
-                recViewPurchase.getAdapter().notifyItemChanged(position);
+                recViewPurchase
+                        .getAdapter()
+                        .notifyItemChanged(position);
                     dbHelper.deleteItem(String.format(Constants.FirestoreCollections.LIVE_USER_CART,
                             FirebaseAuth.getInstance().getUid()), p.getDocID())
                             .addOnSuccessListener(task ->{
