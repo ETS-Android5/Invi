@@ -29,7 +29,7 @@
             android:id="@+id/social_platforms"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/social_platforms"
+            android:text="@string/linked_social_platforms"
             android:background="@android:color/white"
             android:textAlignment="viewStart"
             android:drawableEnd="@drawable/arrow"

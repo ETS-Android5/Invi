@@ -2,6 +2,7 @@ package com.aluminati.inventory.payments.ui;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.camera2.Camera2Config;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.CameraXConfig;
@@ -40,7 +41,9 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.aluminati.inventory.HomeActivity;
 import com.aluminati.inventory.R;
+import com.aluminati.inventory.ageVerification.FaceComparison;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
@@ -50,6 +53,7 @@ import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import com.google.firebase.ml.vision.text.RecognizedLanguage;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -71,6 +75,8 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private Card.cardDetails cardDetails;
     private Executor executor;
+    private sendBackResult sendBackResult;
+
 
     @Nullable
     @Override
@@ -175,17 +181,17 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
                     .addOnSuccessListener(firebaseVisionText -> {
                         Log.i(TAG, "Image analyzing");
 
-                        String det = getArguments().getString("card_details");
+                        if(getActivity() instanceof HomeActivity) {
+                            String det = getArguments().getString("card_details");
 
-                        det = det + extractText(firebaseVisionText);
-
-                        Bundle bundle = new Bundle();
-                        bundle.putString("card_details", det);
-
-
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.nav_host_fragment, Card.class, bundle,"card_frag")
-                                .commit();
+                            det = det + extractText(firebaseVisionText);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("card_details", det);
+                            getActivity().getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.nav_host_fragment, Card.class, bundle, "card_frag")
+                                    .commit();
+                        }else if(getActivity() instanceof FaceComparison){
+                        }
 
                     })
                     .addOnFailureListener(
@@ -204,11 +210,11 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
             for (FirebaseVisionText.Line line: block.getLines()) {
                 for (FirebaseVisionText.Element element: line.getElements()) {
                     String elementText = element.getText();
-                    Log.i(TAG, elementText);
                     stringBuilder.append("#" + elementText);
                 }
             }
         }
+        Log.i(TAG, stringBuilder.toString());
         return stringBuilder.toString();
     }
     @Override
@@ -216,6 +222,14 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
         if(view.getId() == R.id.imgCapture) {
                 imageAnalysis();
         }
+    }
+
+    public interface sendBackResult<T extends AppCompatActivity> extends Serializable{
+        void sendResult(String result);
+    }
+
+    public void setSendBackResult(sendBackResult sendBackResult){
+        this.sendBackResult = sendBackResult;
     }
 
     @NonNull

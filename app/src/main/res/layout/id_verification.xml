@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/verify_id_layout"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_centerVertical="true"
+        android:padding="20dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/enter_dob"
+            android:textSize="20sp"
+            android:textColor="@color/text_color"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            >
+
+            <EditText
+                android:id="@+id/day"
+                android:layout_width="75dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/dob_day"
+                android:textAlignment="center"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="/"
+                />
+
+            <EditText
+                android:id="@+id/month"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/dob_month"
+                android:textAlignment="center"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="/"
+                />
+
+            <EditText
+                android:id="@+id/year"
+                android:layout_width="75dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/dob_year"
+                android:textAlignment="center"
+                />
+
+
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/verify_identity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/buttonpositive"
+            android:layout_marginTop="100dp"
+            android:text="@string/verify_identity"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            />
+    </LinearLayout>
+
+</RelativeLayout>
