@@ -40,6 +40,7 @@ public abstract class FloatingTitlebarFragment extends Fragment implements Float
     protected  void setView(View root){
         floatingTitlebar = root.findViewById(R.id.floatingTitlebar);
         floatingTitlebar.setOnToggleListener(this);
+        floatingTitlebar.setOnSearchTextChangeListener(this);
     }
 
     @Override

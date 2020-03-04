@@ -168,6 +168,8 @@
     <string name="expiry_date">Expiry Date</string>
     <string name="card_number">Card Number</string>
     <string name="delete_card">Delete Card</string>
+    <string name="error_getting_searchitems">Error searching for items</string>
+
     <string name="linked_social_platforms">Linked Social Accounts</string>
     <string name="enter_dob">Enter Date of Birth</string>
     <string name="dob_day">Day</string>
