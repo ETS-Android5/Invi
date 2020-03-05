@@ -14,35 +14,81 @@
         android:id="@+id/background_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/button_red"
         android:gravity="center_vertical|center_horizontal"
         android:visibility="visible">
 
-        <TableRow
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
             android:layout_height="match_parent"
-            android:gravity="center_vertical|center_horizontal|end">
+            >
 
-            <TextView
-                android:layout_width="match_parent"
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_weight="0.5"
                 android:layout_height="match_parent"
-                android:layout_centerVertical="true"
-                android:layout_weight=".8"
-                android:gravity="right|center"
-                android:text="Return"
-                android:textColor="#090909"
-                android:textStyle="bold|italic"
-                android:textSize="35sp" />
 
-            <ImageView
-                android:id="@+id/delete_icon"
-                android:layout_width="0dp"
-                android:layout_height="64dp"
-                android:layout_alignParentTop="true"
-                android:layout_weight=".5"
-                android:src="@drawable/back_arrow" />
+                android:background="@android:color/holo_green_light"
+                android:gravity="center_vertical|center_horizontal|end">
 
-        </TableRow>
+
+                <ImageView
+                    android:id="@+id/map_icon"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_weight=".5"
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/google_maps" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".8"
+                    android:gravity="end|center"
+                    android:layout_marginEnd="10dp"
+                    android:textAlignment="center"
+                    android:text="Maps"
+                    android:textColor="#090909"
+                    android:textStyle="bold|italic"
+                    android:textSize="35sp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_weight="0.5"
+                android:layout_height="match_parent"
+                android:background="@android:color/holo_red_light"
+                android:gravity="center_vertical|center_horizontal|end">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".8"
+                    android:gravity="start|center"
+                    android:layout_marginStart="10dp"
+                    android:textAlignment="center"
+                    android:text="Return"
+                    android:textColor="#090909"
+                    android:textStyle="bold|italic"
+                    android:textSize="35sp" />
+
+                <ImageView
+                    android:id="@+id/delete_icon"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_weight=".5"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/back_arrow" />
+
+            </TableRow>
+
+
+        </LinearLayout>
+
+
     </TableLayout>
 
     <TableLayout

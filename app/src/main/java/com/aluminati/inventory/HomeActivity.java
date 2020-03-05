@@ -99,8 +99,6 @@ public class HomeActivity extends AppCompatActivity implements CardNfcAsyncTask.
                         .concat(" " + getYear()).concat(" ®"));
 
 
-        CustomFloatingActionButton customFloatingActionButton = (CustomFloatingActionButton) getSupportFragmentManager()
-                                                                .findFragmentById(R.id.floating_action_button);
 
         mAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mAdapter == null){

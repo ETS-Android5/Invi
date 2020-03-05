@@ -20,6 +20,7 @@ import com.aluminati.inventory.adapters.swipelisteners.ItemSwipe;
 import com.aluminati.inventory.binders.BaseBinder;
 import com.aluminati.inventory.binders.PurchaseBinder;
 import com.aluminati.inventory.fragments.FloatingTitlebarFragment;
+import com.aluminati.inventory.fragments.MapsActivity;
 import com.aluminati.inventory.fragments.purchase.PurchaseFragment;
 import com.aluminati.inventory.helpers.DbHelper;
 import com.aluminati.inventory.model.BaseItem;
@@ -72,8 +73,9 @@ public class RecentFragment extends FloatingTitlebarFragment {
             toaster.toastShort("You clicked" + item.getTitle());
         };
 
-        setTrackerSwipe();
 
+        setLeftTrackerSwipe();
+        setRightTrackerSwipe();
         return root;
     }
 
@@ -97,19 +99,38 @@ public class RecentFragment extends FloatingTitlebarFragment {
         });
     }
 
-    private void setTrackerSwipe() {
-        ItemSwipe.ItemHelperListener leftSwipe = (viewHolder, direction, position) -> {
-            Log.d(TAG, "leftSwipe position: " + position);
+    private void setLeftTrackerSwipe() {
+        ItemSwipe.ItemHelperListener swipe = (viewHolder, direction, position) -> {
+            Log.d(TAG, "Swipe position: " + position);
+            ItemAdapter<BaseItem> itemAdapter = (ItemAdapter<BaseItem>) recViewRecent.getAdapter();
+                if (itemAdapter != null) {
+                    itemAdapter.notifyItemChanged(position);
+                }
 
-            ItemAdapter<BaseItem> itemAdapter = (ItemAdapter<BaseItem>)recViewRecent.getAdapter();
-            if(itemAdapter != null) {
-
-                itemAdapter.notifyItemChanged(position);
-            }
         };
 
 
-        ItemTouchHelper.SimpleCallback touchHelper = new ItemSwipe(0, ItemTouchHelper.LEFT,leftSwipe);
+        ItemTouchHelper.SimpleCallback touchHelper = new ItemSwipe(0, ItemTouchHelper.LEFT,swipe);
+
+        new ItemTouchHelper(touchHelper).attachToRecyclerView(recViewRecent);
+    }
+
+    private void setRightTrackerSwipe(){
+        ItemSwipe.ItemHelperListener swipe = (viewHolder, direction, position) -> {
+            Log.d(TAG, "Swipe position: " + position);
+            ItemAdapter<BaseItem> itemAdapter = (ItemAdapter<BaseItem>) recViewRecent.getAdapter();
+                if (itemAdapter != null) {
+                    Bundle bundle = new Bundle();
+                           bundle.putString("store_id", itemAdapter.getItem(position).getStoreID());
+                           getActivity().getSupportFragmentManager().beginTransaction()
+                                   .replace(R.id.nav_host_fragment, MapsActivity.class, bundle,"maps_frag")
+                                   .commit();
+                }
+        };
+
+
+        ItemTouchHelper.SimpleCallback touchHelper = new ItemSwipe(0, ItemTouchHelper.RIGHT,swipe);
+
 
         new ItemTouchHelper(touchHelper).attachToRecyclerView(recViewRecent);
     }

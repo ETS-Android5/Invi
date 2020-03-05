@@ -7,16 +7,28 @@
     android:orientation="horizontal"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/marker_image"
+    <RelativeLayout
+        android:id="@+id/marker_image_one"
         android:layout_width="136dp"
         android:layout_height="100dp"
-        android:layout_gravity="center"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        >
+        <ImageView
+            android:id="@+id/marker_image"
+            android:layout_width="136dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            />
 
-        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="No Photo" />
 
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -24,16 +36,18 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="10dp"
-        android:layout_toEndOf="@+id/marker_image"
+        android:layout_toEndOf="@+id/marker_image_one"
         android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
+            android:textStyle="bold"
             android:text="Shop Name" />
 
         <TextView
+            android:id="@+id/shop_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
@@ -44,9 +58,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:layout_marginTop="7.5dp"
+            android:textStyle="bold"
             android:text="Opening Times" />
 
         <TextView
+            android:id="@+id/shop_opening_times"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
@@ -60,10 +76,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:orientation="horizontal"
-        android:layout_below="@+id/marker_image"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/marker_image_one"
         >
 
         <ImageButton
+            android:id="@+id/location_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
@@ -72,6 +90,7 @@
             />
 
         <ImageButton
+            android:id="@+id/website_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
@@ -80,6 +99,7 @@
             />
 
         <ImageButton
+            android:id="@+id/phone_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"

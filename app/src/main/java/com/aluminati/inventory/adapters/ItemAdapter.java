@@ -92,6 +92,7 @@ public class ItemAdapter<T> extends RecyclerView.Adapter<ItemAdapter<T>.ViewHold
         public View getBackground() {return viewBackground;}
     }
 
+
     /**
      * Apply a filtered list - Used during search
      * @param Items

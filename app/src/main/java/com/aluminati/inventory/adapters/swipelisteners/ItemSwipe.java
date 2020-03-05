@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -90,6 +91,16 @@ public class ItemSwipe extends ItemTouchHelper.SimpleCallback {
     @Override
     public int convertToAbsoluteDirection(int flags, int layoutDirection) {
         return super.convertToAbsoluteDirection(flags, layoutDirection);
+    }
+
+    @Override
+    public float getSwipeThreshold(@NonNull RecyclerView.ViewHolder viewHolder) {
+        return 0.25f;
+    }
+
+    @Override
+    public float getSwipeEscapeVelocity(float defaultValue) {
+        return 0.25f;
     }
 
     public interface ItemHelperListener {
