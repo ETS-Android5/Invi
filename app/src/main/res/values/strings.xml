@@ -175,4 +175,6 @@
     <string name="dob_day">Day</string>
     <string name="dob_month">Month</string>
     <string name="dob_year">Year</string>
+    <string name="offline">Offline</string>
+    <string name="offline_message">Invi Needs an Active Internet Connection\nCheck your Internet Settings</string>
 </resources>

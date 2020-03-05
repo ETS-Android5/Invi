@@ -1,9 +1,12 @@
 package com.aluminati.inventory;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.NfcA;
@@ -12,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +39,7 @@ import com.aluminati.inventory.fragments.search.SearchFragment;
 import com.aluminati.inventory.fragments.tools.ToolsFragment;
 
 import com.aluminati.inventory.login.authentication.LogInActivity;
+import com.aluminati.inventory.offline.ConnectivityCheck;
 import com.aluminati.inventory.payments.ui.Card;
 import com.aluminati.inventory.payments.ui.Payments;
 import com.aluminati.inventory.payments.ui.PaymentsFrag;
@@ -73,6 +78,10 @@ public class HomeActivity extends AppCompatActivity implements CardNfcAsyncTask.
     private boolean mIntentFromCreate;
     private CardNfcAsyncTask mCardNfcAsyncTask;
     private Card.scanNfc scanNfc;
+    private ConnectivityCheck connectivityCheck;
+    public static AlertDialog alertDialog;
+    private static final int ACTION_SETTINGS = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +89,9 @@ public class HomeActivity extends AppCompatActivity implements CardNfcAsyncTask.
         setContentView(R.layout.activity_home);
 
         firebaseAuth = FirebaseAuth.getInstance();
+        connetionInfo();
+        connectivityCheck = new ConnectivityCheck(findViewById(R.id.invi_nfo), alertDialog);
+        connectivityCheck.setConnected(this::onConnected);
 
         ((TextView)findViewById(R.id.invi_rights_reserved))
                 .setText("| ".concat(getResources()
@@ -184,6 +196,29 @@ public class HomeActivity extends AppCompatActivity implements CardNfcAsyncTask.
         loadFrag(fragMap.get(R.id.nav_home));//default nav
     }
 
+    private void connetionInfo(){
+        alertDialog = new AlertDialog.Builder(this)
+                .setView(R.layout.offline_dialog)
+                .setCancelable(false)
+                .setPositiveButton("Settings", (dialog, i) -> {
+                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), ACTION_SETTINGS);
+                }).create();
+
+        alertDialog.setCanceledOnTouchOutside(false);
+
+    }
+
+    private void onConnected(boolean connected){
+        if(connected) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            alertDialog.dismiss();
+        }else{
+            alertDialog.show();
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -265,10 +300,17 @@ public class HomeActivity extends AppCompatActivity implements CardNfcAsyncTask.
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(connectivityCheck);
+    }
 
     @Override
     protected void onStart() {
         super.onStart();
+        registerReceiver(connectivityCheck, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
         if(getIntent().getExtras() != null){
             if(getIntent().getExtras().containsKey("add_card")){
                 loadFrag(fragMap.get(R.id.payments));

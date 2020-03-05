@@ -80,7 +80,10 @@ public class UserProfile extends AppCompatActivity{
         UserPhoto userPhoto = (UserPhoto) getSupportFragmentManager().findFragmentById(R.id.user_photo);
         bindFrag(userPhoto);
 
+
         connection = new ConnectivityCheck(baseLayOut, alertDialog);
+        connection.setConnected(this::onConnected);
+
 
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.user_profile, new UserProfileButton())
@@ -88,6 +91,11 @@ public class UserProfile extends AppCompatActivity{
 
 
     }
+
+    private void onConnected(boolean connected){
+
+    }
+
 
     private void connetionInfo(){
         this.alertDialog = new AlertDialog.Builder(this)

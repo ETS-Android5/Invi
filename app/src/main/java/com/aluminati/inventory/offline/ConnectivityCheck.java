@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
@@ -20,6 +21,7 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
@@ -29,6 +31,7 @@ public class ConnectivityCheck extends BroadcastReceiver {
         public static Snackbar snackbar;
         private View view;
         private AlertDialog alertDialog;
+        private Connected connected;
 
 
 
@@ -75,22 +78,26 @@ public class ConnectivityCheck extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+
             if(snackbar == null){
                 createSnackBar();
             }
             if(isConnected(context)){
                 new InternetCheck(result -> {
                     if(result) {
+                        connected.connected(true);
                         snackbar.setText("Connected");
                         snackbar.dismiss();
                         Log.i("ConnectionActivity", "Connected");
                     }else{
+                        connected.connected(false);
                         snackbar.setText("Online : No Internet Access");
                         snackbar.show();
                         Log.i("ConnectionActivity", "Disconnected");
                     }
                 });
             }else {
+                connected.connected(false);
                 snackbar.setText("Offline");
                 snackbar.show();
                 Log.i("ConnectionActivity", "Network disconnected");
@@ -109,6 +116,14 @@ public class ConnectivityCheck extends BroadcastReceiver {
 
         public static boolean isSnacBarVisible(){
             return snackbar.isShown();
+        }
+
+        public interface Connected<T extends AppCompatActivity> extends Serializable{
+            void connected(boolean con);
+        }
+
+        public void setConnected(Connected connected){
+            this.connected = connected;
         }
 
 

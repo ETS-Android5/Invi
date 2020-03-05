@@ -22,4 +22,19 @@
         qwerjk:strokeWidth="1sp"
         />
 
+    <TextView
+        android:id="@+id/offile_text"
+        android:layout_below="@+id/invi_i"
+        android:text="@string/offline"
+        android:drawableStart="@android:drawable/ic_dialog_alert"
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:drawablePadding="20dp"
+        android:textSize="20sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        />
+
 </RelativeLayout>
