@@ -84,11 +84,12 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
             toaster.toastShort("You clicked" + item.getTitle());
         };
 
+        //Load items
         dbHelper.getCollection(String.format(Constants.FirestoreCollections.LIVE_USER_CART,
                 FirebaseAuth.getInstance().getUid()))
                 .get()
                 .addOnSuccessListener(snapshot -> {
-                    toaster.toastLong(snapshot.size());
+
                     if (snapshot.isEmpty()) {
                         Log.d(TAG, "onSuccess: no items");
                         toaster.toastShort(getResources().getString(R.string.no_items_in_cart));

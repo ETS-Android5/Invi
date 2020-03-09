@@ -69,7 +69,9 @@ public class FloatingTitlebar extends LinearLayout {
         leftButton = new ToggleButton(context, attrs);
         rightButton = new ToggleButton(context, attrs);
         searchField = new EditText(context);
+        searchField.setMaxLines(1);
         titleText = new TextView(context);
+        titleText.setMaxLines(1);
 
         ViewGroup.LayoutParams btnW = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.1f);
         ViewGroup.LayoutParams editW = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.8f);

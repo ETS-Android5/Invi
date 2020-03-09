@@ -80,6 +80,11 @@ public class RecentFragment extends FloatingTitlebarFragment {
 
     @Override
     public void onTextChanged(String searchText) {
+        /*
+            Firebase doesn't have search by case sensitivity. Another flaw in this
+            framework. Downloading every item to search isn't practical so we have
+            to make tags lower case.
+         */
         dbHelper.getCollection(Constants.FirestoreCollections.STORE_ITEMS)
                 .whereArrayContains("tags", searchText.toLowerCase().trim())
                 .orderBy("title")
