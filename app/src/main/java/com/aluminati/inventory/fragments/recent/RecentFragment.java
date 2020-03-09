@@ -74,15 +74,14 @@ public class RecentFragment extends FloatingTitlebarFragment {
         };
 
 
-        setLeftTrackerSwipe();
-        setRightTrackerSwipe();
+        setSwipeListeners();
         return root;
     }
 
     @Override
     public void onTextChanged(String searchText) {
         dbHelper.getCollection(Constants.FirestoreCollections.STORE_ITEMS)
-                .whereArrayContains("tags", searchText)
+                .whereArrayContains("tags", searchText.toLowerCase().trim())
                 .orderBy("title")
                 .get()
                 .addOnSuccessListener(snapshot -> {
@@ -99,38 +98,30 @@ public class RecentFragment extends FloatingTitlebarFragment {
         });
     }
 
-    private void setLeftTrackerSwipe() {
+    private void setSwipeListeners() {
         ItemSwipe.ItemHelperListener swipe = (viewHolder, direction, position) -> {
             Log.d(TAG, "Swipe position: " + position);
             ItemAdapter<BaseItem> itemAdapter = (ItemAdapter<BaseItem>) recViewRecent.getAdapter();
                 if (itemAdapter != null) {
-                    itemAdapter.notifyItemChanged(position);
-                }
-
-        };
-
-
-        ItemTouchHelper.SimpleCallback touchHelper = new ItemSwipe(0, ItemTouchHelper.LEFT,swipe);
-
-        new ItemTouchHelper(touchHelper).attachToRecyclerView(recViewRecent);
-    }
-
-    private void setRightTrackerSwipe(){
-        ItemSwipe.ItemHelperListener swipe = (viewHolder, direction, position) -> {
-            Log.d(TAG, "Swipe position: " + position);
-            ItemAdapter<BaseItem> itemAdapter = (ItemAdapter<BaseItem>) recViewRecent.getAdapter();
-                if (itemAdapter != null) {
-                    Bundle bundle = new Bundle();
-                           bundle.putString("store_id", itemAdapter.getItem(position).getStoreID());
-                           getActivity().getSupportFragmentManager().beginTransaction()
+                    switch (direction) {
+                        case ItemTouchHelper.LEFT:
+                            itemAdapter.notifyItemChanged(position);
+                            break;
+                            case ItemTouchHelper.RIGHT:
+                                Bundle bundle = new Bundle();
+                                bundle.putString("store_id", itemAdapter.getItem(position).getStoreID());
+                                getActivity().getSupportFragmentManager().beginTransaction()
                                    .replace(R.id.nav_host_fragment, MapsActivity.class, bundle,"maps_frag")
                                    .commit();
+                                break;
+                    }
+
                 }
+
         };
 
 
-        ItemTouchHelper.SimpleCallback touchHelper = new ItemSwipe(0, ItemTouchHelper.RIGHT,swipe);
-
+        ItemTouchHelper.SimpleCallback touchHelper = new ItemSwipe(0, ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT,swipe);
 
         new ItemTouchHelper(touchHelper).attachToRecyclerView(recViewRecent);
     }

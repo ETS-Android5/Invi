@@ -177,4 +177,6 @@
     <string name="dob_year">Year</string>
     <string name="offline">Offline</string>
     <string name="offline_message">Invi Needs an Active Internet Connection\nCheck your Internet Settings</string>
+    <string name="menu_cart">Cart</string>
+    <string name="menu_search">Search</string>
 </resources>
