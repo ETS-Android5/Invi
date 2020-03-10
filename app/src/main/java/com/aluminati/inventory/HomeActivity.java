@@ -153,7 +153,7 @@ public class HomeActivity extends AppCompatActivity implements CardNfcAsyncTask.
         fragMap.put(R.id.nav_gallery, new PurchaseFragment(mDrawerLayout, homeHandler));
         fragMap.put(R.id.nav_home, new RecentFragment(mDrawerLayout));
         fragMap.put(R.id.receipts, new ReceiptFragment(mDrawerLayout));
-        fragMap.put(R.id.nav_share, new RentalFragment(mDrawerLayout));
+        fragMap.put(R.id.nav_rental, new RentalFragment(mDrawerLayout));
         fragMap.put(R.id.nav_slideshow, new SearchFragment(mDrawerLayout));
         fragMap.put(R.id.nav_tools, new ToolsFragment(mDrawerLayout));
         fragMap.put(R.id.maps, new MapsActivity());

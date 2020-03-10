@@ -154,14 +154,7 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.fab: {
-                        if (!isFABOpen) {
-                            showFABMenu();
-                        } else {
-                            closeFABMenu();
-                        }
-                break;
-            }case R.id.fab_copy_1:{
+           case R.id.fab_copy_1:{
 
                 break;
             }case R.id.fab2:{
@@ -179,6 +172,16 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
                 }
                 break;
             }
+            case R.id.fab: {
+
+            }
+
+
+        }
+        if (!isFABOpen) {
+            showFABMenu();
+        } else {
+            closeFABMenu();
         }
     }
 

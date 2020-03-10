@@ -18,6 +18,7 @@ public class Constants {
         public static final String STORES = "stores";
         public static final String STORE_ITEMS = "storeItem";
         public static final String LIVE_USER_CART = "liveUserCart/%s/items";
+        public static final String USER_RENTALS = "userRentals/%s/items";
         public static final String USERS = "users";
     }
 }

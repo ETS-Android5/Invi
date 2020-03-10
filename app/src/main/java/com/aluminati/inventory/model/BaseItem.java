@@ -1,8 +1,10 @@
 package com.aluminati.inventory.model;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public abstract class BaseItem {
+public abstract class BaseItem implements IMapper {
     protected String docID;
     protected String storeID;
     protected String storeCity;
@@ -109,5 +111,21 @@ public abstract class BaseItem {
 
     public void setTags(List<String> tags) {
         this.tags = tags;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("title", title);
+        map.put("tags", tags);
+        map.put("imgLink", imgLink);
+        map.put("description", description);
+        map.put("storeCity", storeCity);
+        map.put("docID", docID);
+        map.put("storeID", storeID);
+        map.put("price", price);
+        map.put("isRestricted", isRestricted);
+
+        return map;
     }
 }

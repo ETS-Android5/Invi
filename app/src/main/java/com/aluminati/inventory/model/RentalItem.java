@@ -1,6 +1,7 @@
 package com.aluminati.inventory.model;
 
 import java.util.List;
+import java.util.Map;
 
 public class RentalItem extends BaseItem {
     private String unitType;//price per hour, day, week, month
@@ -24,4 +25,10 @@ public class RentalItem extends BaseItem {
     }
 
 
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = super.toMap();
+        map.put("unitType", unitType);
+
+        return map;
+    }
 }

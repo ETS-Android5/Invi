@@ -66,10 +66,10 @@ public class ScannerFragment extends Fragment {
                                             MediaPlayer.create(getActivity(), R.raw.scan).start();
                                         }
 
-
                                         if(switchPriceCheck.isChecked()){
                                             PriceCheck priceCheck = PriceCheck.newInstance("PriceCheck");
-                                            priceCheck.show(getActivity().getSupportFragmentManager(), "price_check_frag");
+                                            priceCheck.show(getActivity().getSupportFragmentManager(),
+                                                    "price_check_frag");
                                         }else{
                                             parseScanResult(result.getText());
                                         }
@@ -92,7 +92,7 @@ public class ScannerFragment extends Fragment {
 
         } catch (Exception ex) {
             toaster.toastLong("Error opening camera. Make sure permission is set");
-            Log.e(RecentFragment.class.getSimpleName(), ex.toString());
+            Log.e(ScannerFragment.class.getSimpleName(), ex.toString());
 
         }
 
@@ -109,7 +109,6 @@ public class ScannerFragment extends Fragment {
                    Map<String, Object> scanResult = gson.fromJson(result, Map.class);
                    boolean isPurchase = scanResult.containsKey("sid") && scanResult.containsKey("iid");
                    int size = scanResult.size();
-                   //scanResult.put("uid", user.getUid());
 
                    switch(size) {
                        case 2:
@@ -170,10 +169,6 @@ public class ScannerFragment extends Fragment {
                 });
     }
 
-    /*
-        Add item to database
-     */
-   // private void addToCart(Map scanResult, String uid) {
     private void addToCart(PurchaseItem item, String uid) {
         dbHelper.addItem(String.format(Constants.FirestoreCollections.LIVE_USER_CART, uid), item)
                 .addOnSuccessListener(setResult ->{
@@ -191,7 +186,6 @@ public class ScannerFragment extends Fragment {
         dbHelper.getItem(Constants.FirestoreCollections.RENTALS,docId)
                 .addOnSuccessListener( res -> {
                    // String msg = res.exists() ? "Sorry this item is already rented" :"You can rent this item";
-
 
                     final String uid = res.getString("uid");
 
@@ -214,11 +208,12 @@ public class ScannerFragment extends Fragment {
                                     dialog.setPositiveButton("Rent Item",
                                             (dialogInterface, i) -> {
                                                 scanResult.put("checkedOutDate", Calendar.getInstance().getTime());
+                                                scanResult.putAll(item.toMap());
                                                 rentItem(scanResult);
                                                 dialogInterface.dismiss();
                                             });
                                 } else {
-                                    //The item is in rentals so is it ours
+                                    //The item is in rentals - check that we own it
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if(uid != null && user != null) {
                                         if(uid.equals(user.getUid())) {
@@ -250,6 +245,7 @@ public class ScannerFragment extends Fragment {
 
     private void rentItem(Map<String, Object> scanResult) {
         String docId = String.format("%s_%s", scanResult.get("iid"), scanResult.get("idx"));
+
         dbHelper.setItem(Constants.FirestoreCollections.RENTALS,docId, scanResult)
                 .addOnSuccessListener(setResult ->{
                     //TODO: Item is added
@@ -257,7 +253,6 @@ public class ScannerFragment extends Fragment {
                 })
                 .addOnFailureListener(setFail ->{});
     }
-
 
     @Override
     public void onResume() {

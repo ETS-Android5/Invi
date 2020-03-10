@@ -1,6 +1,7 @@
 package com.aluminati.inventory.model;
 
 import java.util.List;
+import java.util.Map;
 
 public class PurchaseItem extends BaseItem {
     private int quantity;
@@ -23,4 +24,10 @@ public class PurchaseItem extends BaseItem {
         this.quantity = quantity;
     }
 
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = super.toMap();
+        map.put("quantity", quantity);
+
+        return map;
+    }
 }

@@ -33,19 +33,23 @@ public class RentalFragment extends FloatingTitlebarFragment {
     private static final String TAG = RentalFragment.class.getSimpleName();
     private FirebaseFirestore firestore;
     private FirebaseAuth auth;
-    private RecyclerView recViewPurchase;
+    private RecyclerView recViewRental;
     private ItemAdapter itemAdapter;
     private ItemAdapter.OnItemClickListener itemClickListener;
     private Toaster toaster;
     private DbHelper dbHelper;
     private RentalBinder rentalBinder;
+
     public RentalFragment(DrawerLayout drawer) {
         super(drawer);
     }
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_purchase, container, false);
+        View root = inflater.inflate(R.layout.fragment_rental, container, false);
+
         super.setView(root);
+
+        auth = FirebaseAuth.getInstance();
 
         floatingTitlebar.setLeftToggleOn(false);//dont change icon on toggle
         dbHelper = DbHelper.getInstance();
@@ -56,21 +60,23 @@ public class RentalFragment extends FloatingTitlebarFragment {
         floatingTitlebar.setToggleActive(true);
 
         firestore = FirebaseFirestore.getInstance();
-        auth = FirebaseAuth.getInstance();
-        toaster = Toaster.getInstance(getActivity());
 
-        recViewPurchase = root.findViewById(R.id.recViewPurchase);
+        toaster = Toaster.getInstance(getActivity());
+        toaster.toastLong("Working....");
+
+        recViewRental = root.findViewById(R.id.recViewRental);
+        
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false);
-        recViewPurchase.setLayoutManager(layoutManager);
+
+        recViewRental.setLayoutManager(layoutManager);
         itemClickListener = (ItemAdapter.OnItemClickListener<RentalItem>) item -> {
             toaster.toastShort("You clicked" + item.getTitle());
         };
 
-        dbHelper.getCollection(String.format(Constants.FirestoreCollections.LIVE_USER_CART,
-                FirebaseAuth.getInstance().getUid()))
-                .get()
-                .addOnSuccessListener(snapshot -> {
+        dbHelper.getCollection(Constants.FirestoreCollections.RENTALS)
+                .whereEqualTo("uid", auth.getCurrentUser().getUid())
+                .get().addOnSuccessListener(snapshot -> {
 
                     if (snapshot.isEmpty()) {
                         Log.d(TAG, "onSuccess: no items");
@@ -98,8 +104,8 @@ public class RentalFragment extends FloatingTitlebarFragment {
 
         return pItems;
     }
-    private void loadRentalItems(List<RentalItem> purchaseItems) {
-        recViewPurchase.setAdapter(new ItemAdapter<RentalItem>(purchaseItems,
+    private void loadRentalItems(List<RentalItem> rentalItems) {
+        recViewRental.setAdapter(new ItemAdapter<RentalItem>(rentalItems,
                 itemClickListener,
                 rentalBinder,
                 getActivity()));
@@ -114,7 +120,7 @@ public class RentalFragment extends FloatingTitlebarFragment {
         ItemSwipe.ItemHelperListener leftSwipe = (viewHolder, direction, position) -> {
             Log.d(TAG, "leftSwipe position: " + position);
 
-            ItemAdapter<RentalItem> itemAdapter = (ItemAdapter<RentalItem>)recViewPurchase.getAdapter();
+            ItemAdapter<RentalItem> itemAdapter = (ItemAdapter<RentalItem>)recViewRental.getAdapter();
             if(itemAdapter != null) {
                 RentalItem p = itemAdapter.getItem(position);
                 //TODO: Do something here
@@ -125,7 +131,7 @@ public class RentalFragment extends FloatingTitlebarFragment {
 
         ItemTouchHelper.SimpleCallback touchHelper = new ItemSwipe(0, ItemTouchHelper.LEFT,leftSwipe);
 
-        new ItemTouchHelper(touchHelper).attachToRecyclerView(recViewPurchase);
+        new ItemTouchHelper(touchHelper).attachToRecyclerView(recViewRental);
     }
 
     @Override
