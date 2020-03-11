@@ -1,7 +1,6 @@
 package com.aluminati.inventory.fragments.scanner;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -19,9 +18,8 @@ import com.aluminati.inventory.R;
 import com.aluminati.inventory.fragments.PriceCheck;
 import com.aluminati.inventory.helpers.DbHelper;
 import com.aluminati.inventory.helpers.DialogHelper;
-import com.aluminati.inventory.model.PurchaseItem;
-import com.aluminati.inventory.model.RentalItem;
-import com.aluminati.inventory.fragments.recent.RecentFragment;
+import com.aluminati.inventory.fragments.purchase.PurchaseItem;
+import com.aluminati.inventory.fragments.rental.RentalItem;
 import com.aluminati.inventory.utils.Toaster;
 import com.aluminati.inventory.widgets.ToggleButton;
 import com.budiyev.android.codescanner.CodeScanner;
@@ -32,17 +30,17 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.MalformedJsonException;
 
 import java.util.Calendar;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class ScannerFragment extends Fragment {
     private static final String TAG = ScannerFragment.class.getSimpleName();
     private CodeScanner mCodeScanner;
     private FirebaseFirestore db;
     private DbHelper dbHelper;
+    private DialogHelper dialogHelper;
+
     private Toaster toaster;
     private Switch switchPriceCheck;
     private ToggleButton btnSound;
@@ -51,6 +49,7 @@ public class ScannerFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_scanner, container, false);
         dbHelper = DbHelper.getInstance();
+        DialogHelper.getInstance(getActivity());
         toaster = Toaster.getInstance(getActivity());
         switchPriceCheck = root.findViewById(R.id.price_check_switch);
         btnSound = root.findViewById(R.id.toggleQRSound);
@@ -149,8 +148,8 @@ public class ScannerFragment extends Fragment {
                     //TODO: Do some error checking here
 
                     PurchaseItem item = task.toObject(PurchaseItem.class);
-                    AlertDialog.Builder dialog = DialogHelper.getInstance(getActivity())
-                            .createDialog(item.getTitle(), "", item.getImgLink(), Color.GREEN);
+                    AlertDialog.Builder dialog = dialogHelper
+                            .createDialog(dialogHelper.buildPurchaseView(item.getTitle(), "", item.getImgLink(), Color.GREEN));
 
                     dialog.setMessage(getResources().getString(R.string.add_to_cart));
 
@@ -199,8 +198,8 @@ public class ScannerFragment extends Fragment {
 
                                 int color = res.exists() ? Color.RED : Color.GREEN;
 
-                                AlertDialog.Builder dialog = DialogHelper.getInstance(getActivity())
-                                        .createDialog(item.getTitle(), "", item.getImgLink(), color);
+                                AlertDialog.Builder dialog = dialogHelper
+                                        .createDialog(dialogHelper.buildRentalView(item.getTitle(), "", item.getImgLink(), color));
                                 dialog.setMessage("This item is all ready rented");
 
                                 if(!res.exists()) { //if item isn't in rentals we can rent it

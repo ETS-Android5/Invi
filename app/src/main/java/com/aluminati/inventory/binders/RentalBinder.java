@@ -1,21 +1,22 @@
 package com.aluminati.inventory.binders;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.model.PurchaseItem;
-import com.aluminati.inventory.model.RentalItem;
+import com.aluminati.inventory.Utils;
+import com.aluminati.inventory.fragments.rental.RentalItem;
 import com.bumptech.glide.Glide;
 
 /*
  * This class will be injected in ItemAdapter
  */
 public class RentalBinder implements IBinder<RentalItem> {
-    private TextView itemTitle, itemDescription, itemPrice;
+    private TextView itemTitle, itemDescription, itemPrice, itemCurrentRentalCost, tvRentalUnit;
     private View itemView;
     private ImageView itemImg;
     private TableLayout viewForeground, viewBackground;
@@ -26,6 +27,8 @@ public class RentalBinder implements IBinder<RentalItem> {
         itemDescription = itemView.findViewById(R.id.itemDescription);
         itemPrice = itemView.findViewById(R.id.itemPrice);
         itemImg = itemView.findViewById(R.id.itemImg);
+        tvRentalUnit = itemView.findViewById(R.id.tvRentalUnit);
+        itemCurrentRentalCost = itemView.findViewById(R.id.itemCurrentRentalCost);
 
         viewForeground = itemView.findViewById(R.id.foreground_view);
         viewBackground = itemView.findViewById(R.id.background_view);
@@ -36,8 +39,12 @@ public class RentalBinder implements IBinder<RentalItem> {
     public RentalItem bind(RentalItem item, Context context) {
         itemTitle.setText(item.getTitle());
         itemDescription.setText(item.getDescription());
+        tvRentalUnit.setText("Price Per " + item.getUnitType());
 
-        itemPrice.setText("" + item.getPrice());
+        itemPrice.setText(String.format("€%.2f", item.getPrice()));
+        double test = Utils.getRentalCharge(item);
+        itemCurrentRentalCost.setText(String.format("€%.2f",test ));
+        Log.d(RentalBinder.class.getSimpleName(), "Rental Cost:" + test);
 
         Glide.with(context)
                 .load(item.getImgLink())

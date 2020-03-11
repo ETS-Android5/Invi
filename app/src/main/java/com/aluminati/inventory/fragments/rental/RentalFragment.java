@@ -19,8 +19,7 @@ import com.aluminati.inventory.adapters.swipelisteners.ItemSwipe;
 import com.aluminati.inventory.binders.RentalBinder;
 import com.aluminati.inventory.fragments.FloatingTitlebarFragment;
 import com.aluminati.inventory.helpers.DbHelper;
-import com.aluminati.inventory.model.PurchaseItem;
-import com.aluminati.inventory.model.RentalItem;
+import com.aluminati.inventory.helpers.DialogHelper;
 import com.aluminati.inventory.utils.Toaster;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -39,7 +38,7 @@ public class RentalFragment extends FloatingTitlebarFragment {
     private Toaster toaster;
     private DbHelper dbHelper;
     private RentalBinder rentalBinder;
-
+    private DialogHelper dialogHelper;
     public RentalFragment(DrawerLayout drawer) {
         super(drawer);
     }
@@ -53,16 +52,16 @@ public class RentalFragment extends FloatingTitlebarFragment {
 
         floatingTitlebar.setLeftToggleOn(false);//dont change icon on toggle
         dbHelper = DbHelper.getInstance();
+        dialogHelper = DialogHelper.getInstance(root.getContext());
 
         rentalBinder = new RentalBinder();
         //How to programmatically set icons on floating action bar
-        floatingTitlebar.setRightToggleIcons(R.drawable.ic_toggle_list, R.drawable.ic_toggle_grid);
-        floatingTitlebar.setToggleActive(true);
+        floatingTitlebar.setRightToggleIcons(R.drawable.ic_refresh, R.drawable.ic_toggle_grid);
+        floatingTitlebar.setToggleActive(false);
 
         firestore = FirebaseFirestore.getInstance();
 
         toaster = Toaster.getInstance(getActivity());
-        toaster.toastLong("Working....");
 
         recViewRental = root.findViewById(R.id.recViewRental);
         
@@ -71,26 +70,54 @@ public class RentalFragment extends FloatingTitlebarFragment {
 
         recViewRental.setLayoutManager(layoutManager);
         itemClickListener = (ItemAdapter.OnItemClickListener<RentalItem>) item -> {
-            toaster.toastShort("You clicked" + item.getTitle());
+            dialogHelper.createDialog(item.getTitle(),
+                    String.format("Checkedout:%s\n\n%s",
+                            item.getCheckedOutDate()
+                    , item.getDescription()),
+                    null, null).show();
+
         };
+
+        reloadItems();
+
+        setTrackerSwipe();
+        setUpLiveListener();
+        return root;
+    }
+
+    private void reloadItems() {
 
         dbHelper.getCollection(Constants.FirestoreCollections.RENTALS)
                 .whereEqualTo("uid", auth.getCurrentUser().getUid())
                 .get().addOnSuccessListener(snapshot -> {
 
-                    if (snapshot.isEmpty()) {
-                        Log.d(TAG, "onSuccess: no items");
-                        toaster.toastShort(getResources().getString(R.string.no_items_in_cart));
-                    } else {
-                        loadRentalItems(initRentalItems(snapshot.getDocuments()));
-                    }
-                }).addOnFailureListener(fail -> {
+            if (snapshot.isEmpty()) {
+                Log.d(TAG, "onSuccess: no items");
+                toaster.toastShort(getResources().getString(R.string.no_items_in_rental));
+            } else {
+
+                loadRentalItems(initRentalItems(snapshot.getDocuments()));
+            }
+        }).addOnFailureListener(fail -> {
             toaster.toastShort(getResources().getString(R.string.error_purchase_cart_items));
             Log.d(TAG, fail.getMessage());
         });
+    }
 
-        setTrackerSwipe();
-        return root;
+
+    private void setUpLiveListener() {
+        firestore.collection(Constants.FirestoreCollections.RENTALS)
+                .whereEqualTo("uid", auth.getCurrentUser().getUid())
+                .addSnapshotListener((snapshot, e) -> {
+            if(snapshot != null && snapshot.size() > 0) {
+                loadRentalItems(initRentalItems(snapshot.getDocuments()));
+                Log.d(TAG, "addSnapshotListener: Items found " + snapshot.size());
+            } else {
+                recViewRental.setAdapter(null);
+            }
+
+        });
+
     }
 
 
@@ -105,15 +132,18 @@ public class RentalFragment extends FloatingTitlebarFragment {
         return pItems;
     }
     private void loadRentalItems(List<RentalItem> rentalItems) {
-        recViewRental.setAdapter(new ItemAdapter<RentalItem>(rentalItems,
+        recViewRental.setAdapter(new ItemAdapter<>(rentalItems,
                 itemClickListener,
                 rentalBinder,
+                R.layout.rental_item,
                 getActivity()));
     }
     @Override
     public void onRightButtonToggle(boolean isActive) {
         super.onRightButtonToggle(isActive);
-        //TODO Do something here
+        toaster.toastShort(getResources().getString(R.string.loading_items));
+        reloadItems();
+
     }
 
     private void setTrackerSwipe() {
@@ -122,8 +152,7 @@ public class RentalFragment extends FloatingTitlebarFragment {
 
             ItemAdapter<RentalItem> itemAdapter = (ItemAdapter<RentalItem>)recViewRental.getAdapter();
             if(itemAdapter != null) {
-                RentalItem p = itemAdapter.getItem(position);
-                //TODO: Do something here
+                toaster.toastShort(getResources().getString(R.string.must_return));
                 itemAdapter.notifyItemChanged(position);
             }
         };

@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,19 +20,13 @@ import com.aluminati.inventory.R;
 import com.aluminati.inventory.adapters.ItemAdapter;
 import com.aluminati.inventory.adapters.swipelisteners.ItemSwipe;
 import com.aluminati.inventory.helpers.DbHelper;
-import com.aluminati.inventory.model.PurchaseItem;
-import com.aluminati.inventory.utils.MiscUtils;
 import com.aluminati.inventory.utils.Toaster;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class PurchaseFragment extends FloatingTitlebarFragment {
 
@@ -134,6 +127,7 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
         recViewPurchase.setAdapter(new ItemAdapter<PurchaseItem>(purchaseItems,
                 itemClickListener,
                 purchaseBinder,
+                R.layout.list_item,
                 getActivity()));
     }
     @Override

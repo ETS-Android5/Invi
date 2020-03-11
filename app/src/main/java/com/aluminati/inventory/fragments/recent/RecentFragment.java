@@ -18,16 +18,13 @@ import com.aluminati.inventory.R;
 import com.aluminati.inventory.adapters.ItemAdapter;
 import com.aluminati.inventory.adapters.swipelisteners.ItemSwipe;
 import com.aluminati.inventory.binders.BaseBinder;
-import com.aluminati.inventory.binders.PurchaseBinder;
 import com.aluminati.inventory.fragments.FloatingTitlebarFragment;
 import com.aluminati.inventory.fragments.MapsActivity;
-import com.aluminati.inventory.fragments.purchase.PurchaseFragment;
 import com.aluminati.inventory.helpers.DbHelper;
 import com.aluminati.inventory.model.BaseItem;
-import com.aluminati.inventory.model.PurchaseItem;
+import com.aluminati.inventory.fragments.purchase.PurchaseItem;
 import com.aluminati.inventory.userprofile.UserProfile;
 import com.aluminati.inventory.utils.Toaster;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -146,6 +143,7 @@ public class RecentFragment extends FloatingTitlebarFragment {
         recViewRecent.setAdapter(new ItemAdapter<>(purchaseItems,
                 itemClickListener,
                 baseBinder,
+                R.layout.list_item,
                 getActivity()));
     }
 

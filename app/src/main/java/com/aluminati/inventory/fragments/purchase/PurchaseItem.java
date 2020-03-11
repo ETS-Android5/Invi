@@ -1,5 +1,8 @@
-package com.aluminati.inventory.model;
+package com.aluminati.inventory.fragments.purchase;
 
+import com.aluminati.inventory.model.BaseItem;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 

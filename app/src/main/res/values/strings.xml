@@ -179,4 +179,7 @@
     <string name="offline_message">Invi Needs an Active Internet Connection\nCheck your Internet Settings</string>
     <string name="menu_cart">Cart</string>
     <string name="menu_search">Search</string>
+    <string name="no_items_in_rental">You have no items on rental</string>
+    <string name="must_return">Item must be scanned back in at store</string>
+    <string name="loading_items">Please wait loading items...</string>
 </resources>

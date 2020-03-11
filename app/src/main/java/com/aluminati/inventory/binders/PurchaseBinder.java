@@ -6,7 +6,7 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.model.PurchaseItem;
+import com.aluminati.inventory.fragments.purchase.PurchaseItem;
 import com.bumptech.glide.Glide;
 
 /*

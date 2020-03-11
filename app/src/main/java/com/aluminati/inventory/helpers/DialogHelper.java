@@ -2,6 +2,7 @@ package com.aluminati.inventory.helpers;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,6 +15,11 @@ public class DialogHelper {
     private static DialogHelper instance;
     private Context context;
 
+    public interface IClickAction {
+        void onAction();
+        String actionName();
+    }
+
     private DialogHelper(Context context) {
         this.context = context;
     }
@@ -24,9 +30,7 @@ public class DialogHelper {
         return instance;
     }
 
-    public AlertDialog.Builder createDialog(String title, String message, String imgUrl, int color) {
-        AlertDialog.Builder build = new AlertDialog.Builder(context);
-
+    public View buildPurchaseView(String title, String message, String imgUrl, int color) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
 
         View v = layoutInflater.inflate(R.layout.dialog_storeitem, null);
@@ -34,10 +38,42 @@ public class DialogHelper {
         ((TextView)v.findViewById(R.id.dialogTitle)).setBackgroundColor(color);
         ((TextView)v.findViewById(R.id.dialogMessage)).setText(message);
         Glide.with(context).load(imgUrl).into((ImageView) v.findViewById(R.id.dialogImageHolder));
-        build.setView(v);
 
+        return v;
+    }
+
+    public View buildRentalView(String title, String message, String imgUrl, int color) {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+
+        View v = layoutInflater.inflate(R.layout.dialog_rentitem, null);
+        ((TextView)v.findViewById(R.id.dialogTitle)).setText(title);
+        ((TextView)v.findViewById(R.id.dialogTitle)).setBackgroundColor(color);
+        ((TextView)v.findViewById(R.id.dialogMessage)).setText(message);
+        Glide.with(context).load(imgUrl).into((ImageView) v.findViewById(R.id.dialogImageHolder));
+
+        return v;
+    }
+
+    public AlertDialog.Builder createDialog(View v) {
+        AlertDialog.Builder build = new AlertDialog.Builder(context);
+        build.setView(v);
         return build;
 
+    }
+
+    public AlertDialog.Builder createDialog(String title, String message, IClickAction action1, IClickAction action2) {
+        AlertDialog.Builder build =  new AlertDialog.Builder(context).setTitle(title).setMessage(message);
+
+        if(action1 != null) {
+            build.setPositiveButton(action1.actionName(), (di, i) -> {action1.onAction(); di.dismiss();});
+        }
+        if(action2 != null) {
+            build.setNegativeButton(action2.actionName(), (di, i) -> {action2.onAction(); di.dismiss();});
+        }
+
+        if(action1 == null && action2 == null) build.setPositiveButton("Close", (di, i) -> { di.dismiss();});
+
+        return build;
     }
 
 }

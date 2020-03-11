@@ -24,18 +24,21 @@ public class ItemAdapter<T> extends RecyclerView.Adapter<ItemAdapter<T>.ViewHold
     private List<T> items;
     private Context context;
     private IBinder<T> iBinder;
-    public ItemAdapter(List<T> Items, OnItemClickListener listener, IBinder<T> iBinder, Context context) {
+    private int layout;
+    public ItemAdapter(List<T> Items, OnItemClickListener listener, IBinder<T> iBinder, int layout,
+                       Context context) {
         this.items = Items;
         this.listener = listener;
         this.context = context;
         this.iBinder = iBinder;
+        this.layout = layout;
     }
 
     @NonNull
     @Override
     public ItemAdapter<T>.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item, parent, false);
+                .inflate(layout, parent, false);
 
         return new ItemAdapter<T>.ViewHolder(itemView, iBinder);
     }

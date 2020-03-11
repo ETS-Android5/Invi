@@ -3,16 +3,21 @@ package com.aluminati.inventory;
 
 import android.app.Activity;
 
+import com.aluminati.inventory.fragments.rental.RentalItem;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class Utils {
@@ -40,6 +45,27 @@ public class Utils {
                     .create()
                     .show();
 
+    }
+
+    public static double getRentalCharge(RentalItem item) {
+        Date now = Calendar.getInstance().getTime();
+        Log.d("Utils--->", item.getPrice() + " " + item.getUnitType() );
+        double charge = item.getPrice();
+        long diff = now.getTime() - item.getCheckedOutDate().getTime();
+        long diffDays = diff / (24 * 60 * 60 * 1000);
+        long diffHours = diff / (60 * 60 * 1000) % 24;
+        switch (item.getUnitType()) {
+            case "Hour":
+                long dayHrs = diffDays * 24;
+                return charge +(charge * (diffHours + dayHrs));
+
+            case "Day":
+
+                return charge + (charge * diffDays);
+        }
+
+
+        return charge;
     }
 
 }
