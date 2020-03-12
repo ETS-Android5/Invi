@@ -57,7 +57,8 @@ public class RentalFragment extends FloatingTitlebarFragment {
         rentalBinder = new RentalBinder();
         //How to programmatically set icons on floating action bar
         floatingTitlebar.setRightToggleIcons(R.drawable.ic_refresh, R.drawable.ic_toggle_grid);
-        floatingTitlebar.setToggleActive(false);
+        floatingTitlebar.setToggleActive(true);
+
 
         firestore = FirebaseFirestore.getInstance();
 
@@ -78,14 +79,14 @@ public class RentalFragment extends FloatingTitlebarFragment {
 
         };
 
-        reloadItems();
+        reloadItems(null);
 
         setTrackerSwipe();
         setUpLiveListener();
         return root;
     }
 
-    private void reloadItems() {
+    private void reloadItems(String filter) {
 
         dbHelper.getCollection(Constants.FirestoreCollections.RENTALS)
                 .whereEqualTo("uid", auth.getCurrentUser().getUid())
@@ -96,7 +97,7 @@ public class RentalFragment extends FloatingTitlebarFragment {
                 toaster.toastShort(getResources().getString(R.string.no_items_in_rental));
             } else {
 
-                loadRentalItems(initRentalItems(snapshot.getDocuments()));
+                loadRentalItems(initRentalItems(snapshot.getDocuments(), filter));
             }
         }).addOnFailureListener(fail -> {
             toaster.toastShort(getResources().getString(R.string.error_purchase_cart_items));
@@ -110,7 +111,7 @@ public class RentalFragment extends FloatingTitlebarFragment {
                 .whereEqualTo("uid", auth.getCurrentUser().getUid())
                 .addSnapshotListener((snapshot, e) -> {
             if(snapshot != null && snapshot.size() > 0) {
-                loadRentalItems(initRentalItems(snapshot.getDocuments()));
+                loadRentalItems(initRentalItems(snapshot.getDocuments(), null));
                 Log.d(TAG, "addSnapshotListener: Items found " + snapshot.size());
             } else {
                 recViewRental.setAdapter(null);
@@ -121,12 +122,17 @@ public class RentalFragment extends FloatingTitlebarFragment {
     }
 
 
-    private List<RentalItem> initRentalItems(List<DocumentSnapshot> snapshots) {
+    private List<RentalItem> initRentalItems(List<DocumentSnapshot> snapshots, String filter) {
         List<RentalItem> pItems = new ArrayList<>();
         for(DocumentSnapshot obj : snapshots) {
             RentalItem p = obj.toObject(RentalItem.class);
             p.setDocID(obj.getId());
-            pItems.add(p);
+            if(filter == null || filter.trim().length() == 0) {
+                pItems.add(p);
+            } else if(p.getTitle().toLowerCase().contains(filter.toLowerCase())
+                    || p.getTags().contains(filter.toLowerCase())) {
+                pItems.add(p);
+            }
         }
 
         return pItems;
@@ -140,9 +146,10 @@ public class RentalFragment extends FloatingTitlebarFragment {
     }
     @Override
     public void onRightButtonToggle(boolean isActive) {
-        super.onRightButtonToggle(isActive);
+
         toaster.toastShort(getResources().getString(R.string.loading_items));
-        reloadItems();
+        reloadItems(null);
+        super.onRightButtonToggle(isActive);
 
     }
 
@@ -165,6 +172,6 @@ public class RentalFragment extends FloatingTitlebarFragment {
 
     @Override
     public void onTextChanged(String searchText) {
-
+        reloadItems(searchText);
     }
 }

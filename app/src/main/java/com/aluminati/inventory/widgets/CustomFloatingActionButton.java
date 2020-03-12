@@ -1,6 +1,6 @@
 package com.aluminati.inventory.widgets;
+
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,34 +13,30 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.aluminati.inventory.Constants;
 import com.aluminati.inventory.HomeActivity;
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.fragments.FloatingTitlebarFragment;
 import com.aluminati.inventory.fragments.scanner.ScannerFragment;
 import com.aluminati.inventory.fragments.ui.currencyConverter.ui.CurrencyFrag;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 public class CustomFloatingActionButton extends Fragment implements View.OnClickListener
 {
     private final static String TAG = CustomFloatingActionButton.class.getName();
     private FloatingActionButton fab;
-    private Button fab2, fab3;
+    private Button cartFab, cart_count, fab2, fab3;
     private Boolean isFABOpen = false;
     private ScannerFragment scannerFragment;
     private RelativeLayout relativeLayout;
     private View view;
-
-
 
     @Nullable
     @Override
@@ -60,27 +56,41 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
         fab2 = view.findViewById(R.id.fab2);
         fab3 = view.findViewById(R.id.fab3);
         relativeLayout = view.findViewById(R.id.fab_copy_1);
+        cartFab = view.findViewById(R.id.fab1);
+        cart_count = view.findViewById(R.id.cart_count);
 
         fab.setOnClickListener(this);
-//        fab1.setOnClickListener(this);
+        cartFab.setOnClickListener(this);
         fab2.setOnClickListener(this);
         fab3.setOnClickListener(this);
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
+        firestore.collection(String.format(Constants.FirestoreCollections.LIVE_USER_CART,
+                FirebaseAuth.getInstance().getUid()))
+                .addSnapshotListener((snapshot, e) -> {
+            if(snapshot != null && snapshot.size() > 0) {
+                cart_count.setVisibility(View.VISIBLE);
+                cart_count.setText("" + snapshot.size());
+            } else {
+                cart_count.setVisibility(View.INVISIBLE);
+                cart_count.setText("");
+            }
 
+        });
 
         return view;
     }
 
 
     private void showFABMenu(){
-        isFABOpen=true;
+        isFABOpen = true;
         openFABAxis(R.id.fab_copy_1);
         openFABAxis(R.id.fab2);
         openFABAxis(R.id.fab3);
     }
 
     private void closeFABMenu(){
-        isFABOpen=false;
+        isFABOpen = false;
         closeFABYaxis(relativeLayout);
         closeFABYaxis(fab2);
         closeFABXaxis(fab3);
@@ -153,12 +163,14 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
 
     @Override
     public void onClick(View view) {
+
         switch (view.getId()){
            case R.id.fab_copy_1:{
-
+               closeFABMenu();
                 break;
             }case R.id.fab2:{
                 replaceFarg(R.id.nav_host_fragment, new CurrencyFrag());
+                closeFABMenu();
                 break;
             }
             case R.id.fab3:{
@@ -170,19 +182,18 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
                     FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.add(R.id.nav_host_fragment, scannerFragment, "scanner_frag").addToBackStack("scanner_frag").commit();
                 }
+                closeFABMenu();
                 break;
             }
             case R.id.fab: {
-
+                if (!isFABOpen) {
+                    showFABMenu();
+                } else closeFABMenu();
             }
 
 
         }
-        if (!isFABOpen) {
-            showFABMenu();
-        } else {
-            closeFABMenu();
-        }
+
     }
 
     private void replaceFarg(int id, Fragment fragment){

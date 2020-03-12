@@ -49,7 +49,7 @@ public class ScannerFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_scanner, container, false);
         dbHelper = DbHelper.getInstance();
-        DialogHelper.getInstance(getActivity());
+        dialogHelper = DialogHelper.getInstance(getActivity());
         toaster = Toaster.getInstance(getActivity());
         switchPriceCheck = root.findViewById(R.id.price_check_switch);
         btnSound = root.findViewById(R.id.toggleQRSound);
@@ -78,9 +78,10 @@ public class ScannerFragment extends Fragment {
             /*
             //TODO: remove after debug
              Test barcode QR code
+             https://idev.ie/demo/
+
              {"sid":"Wcxb1fSbI0uz2RRaIaTl","iid":"tg4AccyV3uulNiVAa8jT","idx":"3"} //rental item
              {"sid":"Wcxb1fSbI0uz2RRaIaTl","iid":"yMjwSXjkyPLhOIjay8DI"}//purchase item item
-             https://barcode.tec-it.com/en/QRCode?data=%7B%22sid%22%3A%22Wcxb1fSbI0uz2RRaIaTl%22%2C%22iid%22%3A%22tg4AccyV3uulNiVAa8jT%22%2C%22idx%22%3A%223%22%7D
 
                 */
 
