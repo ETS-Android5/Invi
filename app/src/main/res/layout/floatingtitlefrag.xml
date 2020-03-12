@@ -16,6 +16,7 @@
         app:leftToggleOnIcon="@drawable/ic_side_list"
         app:rightToggleOffIcon="@drawable/ic_side_profile_blue"
         app:rightToggleOnIcon="@drawable/ic_side_profile"
-        app:titleText="Title Goes here"
+        app:titleText=""
+        app:titleTextMinHeight="40"
         app:searchHint="Search" />
 </LinearLayout>

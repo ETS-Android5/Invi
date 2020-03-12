@@ -13,7 +13,7 @@ import com.bumptech.glide.Glide;
  * This class will be injected in ItemAdapter
  */
 public class PurchaseBinder implements IBinder<PurchaseItem> {
-    private TextView itemTitle, itemDescription, itemPrice;
+    private TextView itemTitle, itemDescription, itemPrice, itemQty;
     private View itemView;
     private ImageView itemImg;
     private TableLayout viewForeground, viewBackground;
@@ -24,6 +24,7 @@ public class PurchaseBinder implements IBinder<PurchaseItem> {
         itemDescription = itemView.findViewById(R.id.itemDescription);
         itemPrice = itemView.findViewById(R.id.itemPrice);
         itemImg = itemView.findViewById(R.id.itemImg);
+        itemQty = itemView.findViewById(R.id.itemQty);
 
         viewForeground = itemView.findViewById(R.id.foreground_view);
         viewBackground = itemView.findViewById(R.id.background_view);
@@ -36,6 +37,7 @@ public class PurchaseBinder implements IBinder<PurchaseItem> {
         itemDescription.setText(item.getDescription());
 
         itemPrice.setText("" + item.getPrice());
+        itemQty.setText("" + item.getQuantity());
 
         Glide.with(context)
                 .load(item.getImgLink())

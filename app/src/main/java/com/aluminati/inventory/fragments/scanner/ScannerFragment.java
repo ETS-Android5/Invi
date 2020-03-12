@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -149,15 +150,19 @@ public class ScannerFragment extends Fragment {
                     //TODO: Do some error checking here
 
                     PurchaseItem item = task.toObject(PurchaseItem.class);
-                    AlertDialog.Builder dialog = dialogHelper
-                            .createDialog(dialogHelper.buildPurchaseView(item.getTitle(), "", item.getImgLink(), Color.GREEN));
+
+                    final View pView = dialogHelper.buildPurchaseView(item.getTitle(),
+                            "", item.getImgLink(), item.getQuantity(),
+                            result -> item.setQuantity(result),
+                            Color.GREEN);
+
+                    AlertDialog.Builder dialog = dialogHelper.createDialog(pView);
 
                     dialog.setMessage(getResources().getString(R.string.add_to_cart));
 
                     dialog.setPositiveButton("Add", (dialogInterface, i) -> {
                         scanResult.put("uid", uid);
                         scanResult.put("addDate", Calendar.getInstance().getTime());
-
                         //addToCart(scanResult, uid);
                         addToCart(item, uid);
 

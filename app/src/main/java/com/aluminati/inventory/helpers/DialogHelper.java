@@ -30,13 +30,40 @@ public class DialogHelper {
         return instance;
     }
 
-    public View buildPurchaseView(String title, String message, String imgUrl, int color) {
+    public interface OnCartUpdate {
+        void result(int result);
+    }
+
+    public View buildPurchaseView(String title, String message, String imgUrl,int quantity,
+                                  OnCartUpdate onCartUpdate, int color) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
 
-        View v = layoutInflater.inflate(R.layout.dialog_storeitem, null);
+        View v = layoutInflater.inflate(R.layout.dialog_purchaseitem, null);
         ((TextView)v.findViewById(R.id.dialogTitle)).setText(title);
         ((TextView)v.findViewById(R.id.dialogTitle)).setBackgroundColor(color);
         ((TextView)v.findViewById(R.id.dialogMessage)).setText(message);
+        TextView qq = v.findViewById(R.id.tvCartItemCount);
+        qq.setText(""+quantity);
+
+        v.findViewById(R.id.btnCartLess).setOnClickListener(view -> {
+            //fdfd
+            int q  =Integer.parseInt(((TextView)v.findViewById(R.id.tvCartItemCount)).getText().toString());
+            if(q > 1) {
+                q--;
+                qq.setText("" + q);
+                onCartUpdate.result(q);
+            }
+        });
+
+        v.findViewById(R.id.btnCartMore).setOnClickListener(view -> {
+            int q  =Integer.parseInt(((TextView)v.findViewById(R.id.tvCartItemCount)).getText().toString());
+            if(q < quantity) {
+                q++;
+                qq.setText("" + q);
+                onCartUpdate.result(q);
+            }
+        });
+
         Glide.with(context).load(imgUrl).into((ImageView) v.findViewById(R.id.dialogImageHolder));
 
         return v;

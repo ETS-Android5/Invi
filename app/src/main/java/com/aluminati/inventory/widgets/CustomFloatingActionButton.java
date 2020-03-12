@@ -20,11 +20,13 @@ import androidx.fragment.app.FragmentTransaction;
 import com.aluminati.inventory.Constants;
 import com.aluminati.inventory.HomeActivity;
 import com.aluminati.inventory.R;
+import com.aluminati.inventory.fragments.purchase.PurchaseItem;
 import com.aluminati.inventory.fragments.scanner.ScannerFragment;
 import com.aluminati.inventory.fragments.ui.currencyConverter.ui.CurrencyFrag;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
@@ -44,8 +46,6 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
         super.onCreateView(inflater, container, savedInstanceState);
 
         view = inflater.inflate(getResources().getLayout(R.layout.customfloatingactionbutton),container,true);
-
-
 
         if(getActivity() instanceof HomeActivity){
             ((HomeActivity)getActivity()).setScannerFragContains(this::onContains);
@@ -69,8 +69,13 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
                 FirebaseAuth.getInstance().getUid()))
                 .addSnapshotListener((snapshot, e) -> {
             if(snapshot != null && snapshot.size() > 0) {
+                int total = 0;
+                for(DocumentSnapshot obj : snapshot) {
+                    PurchaseItem p = obj.toObject(PurchaseItem.class);
+                    total += p.getQuantity();
+                }
                 cart_count.setVisibility(View.VISIBLE);
-                cart_count.setText("" + snapshot.size());
+                cart_count.setText("" + total);
             } else {
                 cart_count.setVisibility(View.INVISIBLE);
                 cart_count.setText("");

@@ -73,6 +73,7 @@ public class FloatingTitlebar extends LinearLayout {
         titleText = new TextView(context);
         titleText.setMaxLines(1);
 
+
         ViewGroup.LayoutParams btnW = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.1f);
         ViewGroup.LayoutParams editW = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.8f);
 

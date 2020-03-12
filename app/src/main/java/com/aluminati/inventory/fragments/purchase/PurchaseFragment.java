@@ -62,8 +62,9 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
 
         purchaseBinder = new PurchaseBinder();
         //How to programmatically set icons on floating action bar
-        floatingTitlebar.setRightToggleIcons(R.drawable.ic_toggle_list, R.drawable.ic_toggle_grid);
+        floatingTitlebar.setRightToggleIcons(R.drawable.ic_search, R.drawable.ic_toggle_list);
         floatingTitlebar.setToggleActive(true);
+        floatingTitlebar.showTitleTextBar();
 
         firestore = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
@@ -115,12 +116,15 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
 
     private List<PurchaseItem> initPurchaseItems(List<DocumentSnapshot> snapshots) {
         List<PurchaseItem> pItems = new ArrayList<>();
+        double total = 0;
         for(DocumentSnapshot obj : snapshots) {
             PurchaseItem p = obj.toObject(PurchaseItem.class);
             p.setDocID(obj.getId());
             pItems.add(p);
+            total += (p.getPrice() * p.getQuantity());
         }
 
+        floatingTitlebar.setTitleText(String.format("Total: €%.2f", total));
         return pItems;
     }
     private void loadPurchaseItems(List<PurchaseItem> purchaseItems) {
@@ -133,7 +137,9 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
     @Override
     public void onRightButtonToggle(boolean isActive) {
         super.onRightButtonToggle(isActive);
-        //TODO Do something here
+        if(isActive) {
+            floatingTitlebar.showSearchBar();
+        } else floatingTitlebar.showTitleTextBar();
     }
 
     private void setTrackerSwipe() {
@@ -154,7 +160,7 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
                             });
 
                 itemAdapter.notifyItemChanged(position);
-            }
+            } else {floatingTitlebar.setTitleText("");}
         };
 
 
