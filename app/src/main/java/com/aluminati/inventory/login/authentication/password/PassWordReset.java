@@ -1,6 +1,7 @@
 package com.aluminati.inventory.login.authentication.password;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -12,12 +13,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.aluminati.inventory.fragments.PassWordReEnter;
 import com.aluminati.inventory.login.authentication.LogInActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.fragments.fragmentListeners.password.PassWordListenerReciever;
 import com.aluminati.inventory.users.User;
+import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
 
 public class PassWordReset extends AppCompatActivity implements View.OnClickListener{
 
@@ -70,19 +74,29 @@ public class PassWordReset extends AppCompatActivity implements View.OnClickList
     }
 
     private void onPassWordMatchSend(String password, String confrimPassWord, boolean meetsReq){
+        if(passWordResetMessage.getVisibility() == View.VISIBLE){
+            passWordResetMessage.setVisibility(View.INVISIBLE);
+        }
+
 
         if(password.isEmpty()){
-          // passWordResetMessage.setText(getResources().getString(R.string.em));
-        }else if(confrimPassWord.isEmpty()){
-
-        }else if(!meetsReq){
+            passWordResetMessage.setText(getResources().getString(R.string.empty_email));
+        }
+        if(confrimPassWord.isEmpty()){
+            passWordResetMessage.setText(getResources().getString(R.string.empty_email));
+        }
+        if(!meetsReq){
             passWordResetMessage.setText(getResources().getString(R.string.password_dont_meet_requirements));
-        }else if(!password.equals(confrimPassWord)){
+        }
+        if(!password.equals(confrimPassWord)){
             passWordResetMessage.setText(getResources().getString(R.string.password_dont_match));
-        }else if(firebaseAuth.getCurrentUser() != null){
-            if(password.contains(user.getDisplayName().split(" ")[0]) || password.contains(user.getDisplayName().split("")[1])) {
-                passWordResetMessage.setText(getResources().getString(R.string.password_conatins_name));
-            }
+        }
+        if(password.contains(user.getDisplayName().split(" ")[0]) || password.contains(user.getDisplayName().split("")[1])) {
+            passWordResetMessage.setText(getResources().getString(R.string.password_conatins_name));
+        }
+
+        if(!passWordResetMessage.getText().toString().isEmpty()){
+            passWordResetMessage.setVisibility(View.VISIBLE);
         }else{
             resetPassWord(password, confrimPassWord);
         }
@@ -105,10 +119,12 @@ public class PassWordReset extends AppCompatActivity implements View.OnClickList
                             }).start();
 
                         }).addOnFailureListener(resultReset -> {
+                            passWordReset(resultReset);
                             Log.w(TAG, "Failed to reset password", resultReset);
                 });
 
             }).addOnFailureListener(result -> {
+                passWordReset(result);
                 Log.w(TAG, "Failed to reset password successfully", result);
                 Utils.makeSnackBar("Failed to reset Password", passWordResetMessage, this);
             });
@@ -118,11 +134,36 @@ public class PassWordReset extends AppCompatActivity implements View.OnClickList
                 Log.i(TAG, "Password updated successfully");
                 setResult(Activity.RESULT_OK);
                 finish();
-            }).addOnFailureListener(resultv -> Log.w(TAG, "Password Update Failed", resultv));
+            }).addOnFailureListener(resultv -> {
+                passWordReset(resultv);
+                Log.w(TAG, "Password Update Failed", resultv);
+            });
         }
     }
 
 
+
+    private void passWordReset(Exception resetResult){
+        if(resetResult instanceof FirebaseAuthRecentLoginRequiredException){
+            new AlertDialog.Builder(this)
+                    .setTitle("Re login required")
+                    .setMessage("Need to re-login to change password\n" +
+                            "1. If you don't remember your password log out and send password reset email " +
+                            "2. Re-log In using your password and then rest your password")
+                    .setPositiveButton("Re-login", (dialog, i) -> {
+
+                        PassWordReEnter passWordReEnter = PassWordReEnter.newInstance("");
+                        passWordReEnter.show(getSupportFragmentManager(),"password_renter");
+
+                    })
+                    .setNegativeButton("Logout", ((dialogInterface, i) -> {
+                        FirebaseAuth.getInstance().signOut();
+                        LoginManager.getInstance().logOut();
+                        startActivity(new Intent(this, LogInActivity.class));
+                        finish();
+                    })).show();
+        }
+    }
 
 
     public <T extends Fragment> void setPassWordListenerReciever(PassWordListenerReciever passWordListenerReciever){

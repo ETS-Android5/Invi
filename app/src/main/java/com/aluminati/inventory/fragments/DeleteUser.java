@@ -91,21 +91,11 @@ public class DeleteUser extends DialogFragment {
             reason = otherReason.getText().toString();
         }
 
-        String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        PassWordReEnter passWordReEnter = PassWordReEnter.newInstance(reason);
+        passWordReEnter.show(getParentFragmentManager(),"password_renter");
 
-        FirebaseAuth.getInstance().getCurrentUser().delete().addOnSuccessListener(result -> {
-            Log.i(TAG, "User deleted");
-            Utils.makeSnackBarWithButtons("User deleted", deleteUser, getActivity());
-            UserFetch.addReason(email, reason);
-            UserFetch.deleteUser(email);
-            getActivity().startActivity(new Intent(getActivity(), LogInActivity.class));
-            getActivity().finish();
-
-        }).addOnFailureListener(result -> {
-            Log.w(TAG, "Failed to delete user", result);
-            Utils.makeSnackBarWithButtons("Failed To Delete User", deleteUser, getActivity());
-        });
     }
+
 
 
 

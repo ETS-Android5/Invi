@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,6 +40,7 @@ public class UserSettings extends Fragment implements View.OnClickListener {
         view.findViewById(R.id.change_password).setOnClickListener(this);
         view.findViewById(R.id.change_language).setOnClickListener(this);
         view.findViewById(R.id.change_currency).setOnClickListener(this);
+        view.findViewById(R.id.verify_identity).setOnClickListener(this);
 
         textView = view.findViewById(R.id.current_currency);
 
@@ -48,7 +50,7 @@ public class UserSettings extends Fragment implements View.OnClickListener {
 
     private void deleteUser() {
         DeleteUser deleteUser = DeleteUser.newInstance("Delete User");
-        deleteUser.show(getActivity().getSupportFragmentManager(), "delete_user_frag");
+        deleteUser.show(getParentFragmentManager(), "delete_user_frag");
     }
 
     @Override
@@ -83,12 +85,16 @@ public class UserSettings extends Fragment implements View.OnClickListener {
                     break;
             }case R.id.change_language:{
                 LanguageSelection languageSelection = LanguageSelection.newInstance("Select Language");
-                languageSelection.show(getActivity().getSupportFragmentManager(), "language_select_frag");
+                languageSelection.show(getParentFragmentManager(), "language_select_frag");
                 break;
             }
             case R.id.change_currency:{
                 CurrencyChange currencyChange = CurrencyChange.newInstance("Select Currency");
-                currencyChange.show(getActivity().getSupportFragmentManager(), "currency_select_frag");
+                currencyChange.show(getParentFragmentManager(), "currency_select_frag");
+                break;
+            }
+            case R.id.verify_identity:{
+                Toast.makeText(getContext(), "To be implemented in final version", Toast.LENGTH_LONG).show();
                 break;
             }
         }

@@ -22,37 +22,39 @@ public class UserProfileButton extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+        return inflater.inflate(R.layout.user_profile_buttons, container, false);
+    }
 
-        View view = inflater.inflate(R.layout.user_profile_buttons, container, false);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         view.findViewById(R.id.account_settings).setOnClickListener(this);
         view.findViewById(R.id.social_platforms).setOnClickListener(this);
         view.findViewById(R.id.account_info).setOnClickListener(this);
         view.findViewById(R.id.log_out).setOnClickListener(this);
 
-
-        return view;
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.account_info:{
-                getActivity().getSupportFragmentManager().beginTransaction()
+                getParentFragmentManager().beginTransaction()
                         .replace(R.id.user_profile,new UserDetails(), "user_details")
                         .addToBackStack("user_details")
                         .commit();
                 break;
             }
             case R.id.account_settings:{
-                getActivity().getSupportFragmentManager().beginTransaction()
+                getParentFragmentManager().beginTransaction()
                         .replace(R.id.user_profile,new UserSettings(), "user_settings")
                         .addToBackStack("user_settings")
                         .commit();
                 break;
             }
             case R.id.social_platforms:{
-                getActivity().getSupportFragmentManager().beginTransaction()
+                getParentFragmentManager().beginTransaction()
                         .replace(R.id.user_profile,new SocialPlatforms(), "social_platforms")
                         .addToBackStack("social_platforms")
                         .commit();
