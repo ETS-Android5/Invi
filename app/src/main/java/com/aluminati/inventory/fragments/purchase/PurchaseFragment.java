@@ -79,22 +79,7 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
         };
 
         //Load items
-        dbHelper.getCollection(String.format(Constants.FirestoreCollections.LIVE_USER_CART,
-                FirebaseAuth.getInstance().getUid()))
-                .get()
-                .addOnSuccessListener(snapshot -> {
-
-                    if (snapshot.isEmpty()) {
-                        Log.d(TAG, "onSuccess: no items");
-                        toaster.toastShort(getResources().getString(R.string.no_items_in_cart));
-                    } else {
-                        loadPurchaseItems(initPurchaseItems(snapshot.getDocuments()));
-                    }
-                }).addOnFailureListener(fail -> {
-            toaster.toastShort(getResources().getString(R.string.error_purchase_cart_items));
-            Log.d(TAG, fail.getMessage());
-        });
-
+        reloadItems(null);
         setTrackerSwipe();
         setUpCartListener();
         return root;
@@ -104,24 +89,32 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
         firestore.collection(String.format(Constants.FirestoreCollections.LIVE_USER_CART,
                 FirebaseAuth.getInstance().getUid())).addSnapshotListener((snapshot, e) -> {
                     if(snapshot != null && snapshot.size() > 0) {
-                        loadPurchaseItems(initPurchaseItems(snapshot.getDocuments()));
+                        loadPurchaseItems(initPurchaseItems(snapshot.getDocuments(), null));
                         Log.d(TAG, "addSnapshotListener: Items found " + snapshot.size());
                     } else {
                         recViewPurchase.setAdapter(null);
+                        floatingTitlebar.setTitleText("");
                     }
 
                 });
 
     }
 
-    private List<PurchaseItem> initPurchaseItems(List<DocumentSnapshot> snapshots) {
+    private List<PurchaseItem> initPurchaseItems(List<DocumentSnapshot> snapshots, String filter) {
         List<PurchaseItem> pItems = new ArrayList<>();
         double total = 0;
         for(DocumentSnapshot obj : snapshots) {
             PurchaseItem p = obj.toObject(PurchaseItem.class);
+
             p.setDocID(obj.getId());
-            pItems.add(p);
-            total += (p.getPrice() * p.getQuantity());
+            if(filter == null || filter.trim().length() == 0) {
+                pItems.add(p);
+                total += (p.getPrice() * p.getQuantity());
+            } else if(p.getTitle().toLowerCase().contains(filter.toLowerCase())
+                    || p.getTags().contains(filter.toLowerCase())) {
+                pItems.add(p);
+                total += (p.getPrice() * p.getQuantity());
+            }
         }
 
         floatingTitlebar.setTitleText(String.format("Total: €%.2f", total));
@@ -169,8 +162,29 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
         new ItemTouchHelper(touchHelper).attachToRecyclerView(recViewPurchase);
     }
 
+    private void reloadItems(String filter) {
+
+        dbHelper.getCollection(String.format(Constants.FirestoreCollections.LIVE_USER_CART,
+                FirebaseAuth.getInstance().getUid()))
+                .get()
+                .addOnSuccessListener(snapshot -> {
+
+                    if (snapshot.isEmpty()) {
+                        Log.d(TAG, "onSuccess: no items");
+                        toaster.toastShort(getResources().getString(R.string.no_items_in_cart));
+                    } else {
+                        loadPurchaseItems(initPurchaseItems(snapshot.getDocuments(), filter));
+                    }
+                }).addOnFailureListener(fail -> {
+            toaster.toastShort(getResources().getString(R.string.error_purchase_cart_items));
+            Log.d(TAG, fail.getMessage());
+        });
+
+    }
+
+
     @Override
     public void onTextChanged(String searchText) {
-
+        reloadItems(searchText);
     }
 }
