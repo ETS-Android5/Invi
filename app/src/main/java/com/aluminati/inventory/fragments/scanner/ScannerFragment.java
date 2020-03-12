@@ -60,6 +60,8 @@ public class ScannerFragment extends Fragment {
             CodeScannerView scannerView = root.findViewById(R.id.scanner_view);
 
                             mCodeScanner = new CodeScanner(getContext(), scannerView);
+                            mCodeScanner.setFormats(CodeScanner.ALL_FORMATS);
+
                             mCodeScanner.setDecodeCallback(result ->
                                     getActivity().runOnUiThread(() -> {
                                         if(!btnSound.isToggled()) {
