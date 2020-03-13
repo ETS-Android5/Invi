@@ -21,10 +21,6 @@ public class DialogHelper {
         String actionName();
     }
 
-    public interface OnImageLoad {
-        void load();
-    }
-
     private DialogHelper(Context context) {
         this.context = context;
     }
@@ -48,14 +44,14 @@ public class DialogHelper {
         ((TextView)v.findViewById(R.id.dialogTitle)).setBackgroundColor(color);
         ((TextView)v.findViewById(R.id.dialogMessage)).setText(message);
 
-        ImageView imgV = (ImageView) v.findViewById(R.id.dialogImageHolder);
+        ImageView imgV = v.findViewById(R.id.dialogImageHolder);
 
         TextView qq = v.findViewById(R.id.tvCartItemCount);
         qq.setText("1");
-
+        onCartUpdate.result(1); //we always need 1
         v.findViewById(R.id.btnCartLess).setOnClickListener(view -> {
             //fdfd
-            int q  =Integer.parseInt(((TextView)v.findViewById(R.id.tvCartItemCount)).getText().toString());
+            int q  =Integer.parseInt(qq.getText().toString());
             if(q > 1) {
                 q--;
                 qq.setText("" + q);
@@ -64,7 +60,7 @@ public class DialogHelper {
         });
 
         v.findViewById(R.id.btnCartMore).setOnClickListener(view -> {
-            int q  =Integer.parseInt(((TextView)v.findViewById(R.id.tvCartItemCount)).getText().toString());
+            int q  =Integer.parseInt(qq.getText().toString());
             if(q < quantity) {
                 q++;
                 qq.setText("" + q);

@@ -92,8 +92,8 @@ public class Product {
     }
 
     public String toString() {
-        return String.format("{image: %s, name: %s, price: %s}",
-                image, name, price);
+        return String.format("{image: %s, name: %s, description: %s, price: %s}",
+                image, name, description, price);
     }
 }
 

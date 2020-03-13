@@ -20,5 +20,6 @@ public class Constants {
         public static final String LIVE_USER_CART = "liveUserCart/%s/items";
         public static final String USER_RENTALS = "userRentals/%s/items";
         public static final String USERS = "users";
+        public static final String TESCO_STORE_ID = "8PjjcfrTbZ917lk9eB59";
     }
 }

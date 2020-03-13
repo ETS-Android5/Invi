@@ -1,6 +1,7 @@
 package com.aluminati.inventory.fragments.scanner;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -49,6 +50,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Map;
 
@@ -162,6 +164,7 @@ public class ScannerFragment extends Fragment implements ProductReady {
             toaster.toastShort(result);
         }*/
         else{
+
                 TescoApi tescoApi = new TescoApi(result);
                          tescoApi.getProduct();
                          tescoApi.setProductReady(this::getProduct);
@@ -190,7 +193,8 @@ public class ScannerFragment extends Fragment implements ProductReady {
 
                     dialog.setMessage(getResources().getString(R.string.add_to_cart));
 
-                    dialog.setPositiveButton("Add", (dialogInterface, i) -> {
+                    dialog.setPositiveButton(getResources().getString(R.string.add_to_cart),
+                            (dialogInterface, i) -> {
                         scanResult.put("uid", uid);
                         scanResult.put("addDate", Calendar.getInstance().getTime());
                         //addToCart(scanResult, uid);
@@ -279,7 +283,6 @@ public class ScannerFragment extends Fragment implements ProductReady {
     }
 
 
-
     private void rentItem(Map<String, Object> scanResult) {
         String docId = String.format("%s_%s", scanResult.get("iid"), scanResult.get("idx"));
 
@@ -327,17 +330,38 @@ public class ScannerFragment extends Fragment implements ProductReady {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
             float gbp = Float.parseFloat(preferences.getString("EUR", "0"));//Default is Euro
 
+            String desc = product.getDescription();
+
+            PurchaseItem pItem = new PurchaseItem();
+            pItem.setTitle(product.getName());
+            pItem.setDescription(product.getDescription());
+            pItem.setPrice(Double.parseDouble(product.getPrice()));
+            pItem.setStoreID(Constants.FirestoreCollections.TESCO_STORE_ID);
+            pItem.setImgLink(product.getImage());
+            pItem.setDocID(product.getId());
+            pItem.setTags(Arrays.asList(pItem.getTitle(), pItem.getDescription()));
+            pItem.setRestricted(false);
+            pItem.setStoreCity("Limerick");//This is only proof of concept
+            pItem.setStoreCountry("Ireland");//This is only proof of concept
+            pItem.setQuantity(1);//always need 1
+            pItem.setTitle(product.getName());
             View pV = dialogHelper.buildPurchaseView(product.getName(),
-                    String.format("Product Price in GBP (%.2f)\nLocal Currency ( %.2f) ",
+                    String.format("%s\n\nProduct Price in GBP (%.2f)\nLocal Currency ( %.2f) ",
+                            desc == null ? "" : desc,
                             Float.parseFloat(product.getPrice())
                             , (Float.parseFloat(product.getPrice()) + gbp)),
                     product.getImage(),
-                    (int)(Math.random() * 25) + 1,
+                    (int)(Math.random() * 25) + 1, //Proof of concept
                     result -> { //What quantity user selected
+                        pItem.setQuantity(result);
                      },
-                    Color.GREEN );
+                    Color.GREEN);
 
-            dialogHelper.createDialog(pV).show();
+            dialogHelper.createDialog(pV).setPositiveButton(getResources().getString(R.string.add_to_cart),
+                    (dialogInterface, i) -> {
+                        //
+                        addToCart(pItem, FirebaseAuth.getInstance().getUid());
+                    }).show();
 // TODO: remove this once we know standard image loading works
 //                Glide.with(this)
 //                        .asBitmap()

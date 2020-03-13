@@ -2,7 +2,6 @@ package com.aluminati.inventory.fragments.tesco;
 
 import android.util.Log;
 
-import com.aluminati.inventory.fragments.scanner.ScannerFragment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -12,7 +11,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
-import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Set;
 
@@ -26,8 +24,8 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
-import retrofit2.http.Query;
 import retrofit2.http.Headers;
+import retrofit2.http.Query;
 
 
 
@@ -169,7 +167,13 @@ class GetItemsCounts implements JsonDeserializer<Totals> {
     @Override
     public Totals deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 
-        final JsonObject jsonObject = json.getAsJsonObject().get("uk").getAsJsonObject().get("ghs").getAsJsonObject().get("products").getAsJsonObject().get("totals").getAsJsonObject();
+        final JsonObject jsonObject = json.getAsJsonObject().get("uk")
+                .getAsJsonObject().get("ghs")
+                .getAsJsonObject()
+                .get("products")
+                .getAsJsonObject()
+                .get("totals").getAsJsonObject();
+
         final String id = jsonObject.get("all").getAsString();
         final String name = jsonObject.get("new").getAsString();
         final String amount = jsonObject.get("offer").getAsString();
@@ -207,11 +211,18 @@ class GetItemListResultDeserializer implements JsonDeserializer<Product> {
 
         Set<String> en = jsonObject.keySet();
         for(String string : en){
-            Log.i("Tesco", "jsobObject " + jsonObject.get("uk").getAsJsonObject().get("ghs").getAsJsonObject().get("products"));
+            Log.i("Tesco", "jsobObject " + jsonObject.get("uk")
+                    .getAsJsonObject().get("ghs")
+                    .getAsJsonObject().get("products"));
 
         }
 
-        final JsonArray itemsJsonArray = jsonObject.get("uk").getAsJsonObject().get("ghs").getAsJsonObject().get("products").getAsJsonObject().get("results").getAsJsonArray();
+        final JsonArray itemsJsonArray = jsonObject.get("uk")
+                .getAsJsonObject().get("ghs")
+                .getAsJsonObject()
+                .get("products")
+                .getAsJsonObject()
+                .get("results").getAsJsonArray();
 
 
 
@@ -221,14 +232,18 @@ class GetItemListResultDeserializer implements JsonDeserializer<Product> {
             final String img = itemJsonObject.get("image").getAsString();
             final String name = itemJsonObject.get("name").getAsString();
             final String price = itemJsonObject.get("price").getAsString();
+            JsonElement tmp = itemJsonObject.get("description");
+            String description = tmp != null ? tmp.getAsString() : name;
             final String id = itemJsonObject.get("id").getAsString();
 
             Log.i("Tesco", name + " " + getDes());
 
                 Log.i("Tesco", "Tesco name matches " + name);
+                tescoProduct.setId(id);
                 tescoProduct.setImage(img);
                 tescoProduct.setName(name);
                 tescoProduct.setPrice(price);
+                tescoProduct.setDescription(description);
 
         }else {
 
@@ -238,20 +253,26 @@ class GetItemListResultDeserializer implements JsonDeserializer<Product> {
                 final String img = itemJsonObject.get("image").getAsString();
                 final String name = itemJsonObject.get("name").getAsString();
                 final String price = itemJsonObject.get("price").getAsString();
+
+                JsonElement tmp = itemJsonObject.get("description");
+                String description = tmp != null ? tmp.getAsString() : name;
                 final String id = itemJsonObject.get("id").getAsString();
 
                 Log.i("Tesco", name + " " + getDes());
 
                 if ((!id.isEmpty() && id.equals((getTpnb())))) {
                     Log.i("Tesco", "Tesco name matches " + name);
+                    tescoProduct.setId(id);
                     tescoProduct.setImage(img);
                     tescoProduct.setName(name);
                     tescoProduct.setPrice(price);
+                    tescoProduct.setDescription(description);
                 } else if (!name.isEmpty() && name.equals(getDes())) {
                     Log.i("Tesco", "Tesco name matches " + name);
                     tescoProduct.setImage(img);
                     tescoProduct.setName(name);
                     tescoProduct.setPrice(price);
+                    tescoProduct.setDescription(description);
                 }
             }
         }
