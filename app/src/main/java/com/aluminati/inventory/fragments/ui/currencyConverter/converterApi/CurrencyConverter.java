@@ -1,7 +1,9 @@
 package com.aluminati.inventory.fragments.ui.currencyConverter.converterApi;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.aluminati.inventory.fragments.ui.currencyConverter.CurrencyResult;
@@ -79,7 +81,13 @@ public class CurrencyConverter{
                         }
                         final int resourceId = resources.getIdentifier(name, "drawable", getActivity().getPackageName());
                         if(resourceId != 0){
-                            Log.i(TAG, "Flag ==== > " + name);
+                            Log.i(TAG, "Flag ==== > " + name + " Currency ====> " + currency.getDisplayName() + " Symbol =====> " + currency.getSymbol()
+                            + " Currency code ====> " + currency.getCurrencyCode());
+
+                            SharedPreferences.Editor ed = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+                            ed.putString(currency.getCurrencyCode(), Float.toString(curren.get(currency.getCurrencyCode())));
+                            ed.apply();
+
 
                             currencies.add(new com.aluminati.inventory.fragments.ui.currencyConverter.Currency(resourceId, currency.getDisplayName(),
                                             Float.toString(curren.get(currency.getCurrencyCode())), currency.getSymbol(), currency.getCurrencyCode()));

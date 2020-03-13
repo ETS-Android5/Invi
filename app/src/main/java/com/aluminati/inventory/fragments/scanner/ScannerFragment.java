@@ -1,9 +1,14 @@
 package com.aluminati.inventory.fragments.scanner;
 
 import android.app.AlertDialog;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +17,14 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.aluminati.inventory.Constants;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.fragments.PriceCheck;
+import com.aluminati.inventory.fragments.tesco.Product;
+import com.aluminati.inventory.fragments.tesco.ProductReady;
 import com.aluminati.inventory.fragments.tesco.TescoApi;
 import com.aluminati.inventory.helpers.DbHelper;
 import com.aluminati.inventory.helpers.DialogHelper;
@@ -26,6 +34,11 @@ import com.aluminati.inventory.utils.Toaster;
 import com.aluminati.inventory.widgets.ToggleButton;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,10 +46,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Map;
 
-public class ScannerFragment extends Fragment {
+public class ScannerFragment extends Fragment implements ProductReady {
     private static final String TAG = ScannerFragment.class.getSimpleName();
     private CodeScanner mCodeScanner;
     private FirebaseFirestore db;
@@ -46,6 +60,8 @@ public class ScannerFragment extends Fragment {
     private Toaster toaster;
     private Switch switchPriceCheck;
     private ToggleButton btnSound;
+    private ProductReady productReady;
+
     //Update
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -55,6 +71,9 @@ public class ScannerFragment extends Fragment {
         toaster = Toaster.getInstance(getActivity());
         switchPriceCheck = root.findViewById(R.id.price_check_switch);
         btnSound = root.findViewById(R.id.toggleQRSound);
+
+
+
 
         try {
 
@@ -143,9 +162,11 @@ public class ScannerFragment extends Fragment {
         else{
                 TescoApi tescoApi = new TescoApi(result);
                          tescoApi.getProduct();
+                         tescoApi.setProductReady(this::getProduct);
 
         }
     }
+
 
     private void addToCartDialog(Map<String, Object> scanResult) {
         final String iid = scanResult.get("iid").toString();
@@ -255,6 +276,8 @@ public class ScannerFragment extends Fragment {
 
     }
 
+
+
     private void rentItem(Map<String, Object> scanResult) {
         String docId = String.format("%s_%s", scanResult.get("iid"), scanResult.get("idx"));
 
@@ -272,6 +295,7 @@ public class ScannerFragment extends Fragment {
         if (mCodeScanner != null) {
             mCodeScanner.startPreview();
         }
+
 
     }
 
@@ -293,4 +317,46 @@ public class ScannerFragment extends Fragment {
             mCodeScanner.releaseResources();
         }
     }
+
+    @Override
+    public void getProduct(Product product) {
+        if(product != null){
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            float gbp = Float.parseFloat(preferences.getString("EUR", ""));
+
+
+            AlertDialog alertDialog = new AlertDialog.Builder(getContext())
+                    .setTitle(product.getName())
+                    .setMessage("Product Price in GBP " + Float.parseFloat(product.getPrice()) + "\nLocal currency " + (Float.parseFloat(product.getPrice()) + gbp)).show();
+           // @Headers("Ocp-Apim-Subscription-Key: cbc1fdf45b5a454cae665a1d34a8a094")
+
+            Glide.with(this)
+                    .asBitmap()
+                    .load(new GlideUrl(product.getImage(), new LazyHeaders.Builder()
+                            .addHeader("Ocp-Apim-Subscription-Key", "cbc1fdf45b5a454cae665a1d34a8a094")
+                            .build()))
+                    .into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            Drawable dr = new BitmapDrawable(getResources(), resource);
+                            alertDialog.setIcon(dr);
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                        }
+                    });
+
+        }else{
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Product not found")
+                    .setPositiveButton("Ok", ((dialogInterface, i) -> dialogInterface.dismiss()))
+                    .show();
+        }
+    }
+
+
+
 }
