@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.aluminati.inventory.Constants;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.fragments.PriceCheck;
+import com.aluminati.inventory.fragments.tesco.TescoApi;
 import com.aluminati.inventory.helpers.DbHelper;
 import com.aluminati.inventory.helpers.DialogHelper;
 import com.aluminati.inventory.fragments.purchase.PurchaseItem;
@@ -107,14 +108,14 @@ public class ScannerFragment extends Fragment {
             Gson gson = new GsonBuilder().create();
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             boolean isVerified = user != null && user.isEmailVerified();
-           if(isVerified) {
+            if(isVerified) {
                try {
                    Map<String, Object> scanResult = gson.fromJson(result, Map.class);
                    boolean isPurchase = scanResult.containsKey("sid") && scanResult.containsKey("iid");
                    int size = scanResult.size();
 
-                   if(size < 4) {
                        switch (size) {
+
                            case 2:
                                if (isPurchase) {
                                    //valid purchase item
@@ -129,9 +130,7 @@ public class ScannerFragment extends Fragment {
                                }
                                break;
                        }
-                   }else{
 
-                   }
                } catch (JsonSyntaxException ex) {
                    toaster.toastShort("Un know barcode format");
                    Log.e(TAG, "Un know barcode format: " +  ex.getMessage());
@@ -142,7 +141,9 @@ public class ScannerFragment extends Fragment {
             toaster.toastShort(result);
         }*/
         else{
-            toaster.toastShort("Un know barcode format");
+                TescoApi tescoApi = new TescoApi(result);
+                         tescoApi.getProduct();
+
         }
     }
 
