@@ -40,6 +40,7 @@ import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity{
     public static AlertDialog alertDialog;
     private static final int ACTION_SETTINGS = 0;
     private TextView infoOffiline;
+    private AtomicBoolean atomicBoolean = new AtomicBoolean(true);
 
 
     @Override
@@ -115,42 +117,44 @@ public class MainActivity extends AppCompatActivity{
         currentTime = startTime;
 
 
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
+        handler.postDelayed(() -> {
 
-                currentTime = System.currentTimeMillis();
-                finishedTime = currentTime - startTime;
+            currentTime = System.currentTimeMillis();
+            finishedTime = currentTime - startTime;
 
-                if(lock){
-                    endTime = (int) ((finishedTime / 250));// divide this by
-                    if(endTime == textView.getText().toString().length()){
-                        startTime = System.currentTimeMillis();
-                        lock = false;
-                    }else {
+            if(atomicBoolean.get()){
+                endTime = (int) ((finishedTime / 250));// divide this by
+                if(endTime == textView.getText().toString().length()){
+                    startTime = System.currentTimeMillis();
+                    atomicBoolean.set(false);
+                }else {
+                    if(endTime <= textView.getText().length()) {
                         Spannable spannableString = new SpannableString(textView.getText());
                         spannableString.setSpan(new ForegroundColorSpan(Color.GRAY), 0, endTime, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         textView.setText(spannableString);
-                        handler.postDelayed(this, 250);
                     }
+                }
 
-                }else{
-                    endTime = (int) ((finishedTime / 250));// divide this by
-                    if(endTime == textView.getText().toString().length()){
-                        startTime = System.currentTimeMillis();
-                        lock = true;
-                    }else {
+            }else{
+                endTime = (int) ((finishedTime / 250));// divide this by
+                if(endTime == textView.getText().toString().length()){
+                    startTime = System.currentTimeMillis();
+                    atomicBoolean.set(true);
+                }else {
+                    if(endTime <= textView.getText().length()) {
                         Spannable spannableString = new SpannableString(textView.getText());
                         spannableString.setSpan(new ForegroundColorSpan(Color.YELLOW), 0, endTime, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         textView.setText(spannableString);
-                        handler.postDelayed(this, 250);
                     }
-
                 }
 
-
             }
+
+
         }, 1000);
+
+
+
     }
 
     private void listenForDynamicLink(){

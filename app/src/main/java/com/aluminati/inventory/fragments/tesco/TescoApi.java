@@ -236,12 +236,12 @@ class GetItemListResultDeserializer implements JsonDeserializer<Product> {
 
                 Log.i("Tesco", name + " " + getDes());
 
-                if ((!id.isEmpty() && id.toLowerCase().trim().equals((getTpnb().toLowerCase().trim())))) {
+                if ((!id.isEmpty() && id.equals((getTpnb())))) {
                     Log.i("Tesco", "Tesco name matches " + name);
                     tescoProduct.setImage(img);
                     tescoProduct.setName(name);
                     tescoProduct.setPrice(price);
-                } else if (!name.isEmpty() && name.toLowerCase().trim().equals(getDes().toLowerCase().trim())) {
+                } else if (!name.isEmpty() && name.equals(getDes())) {
                     Log.i("Tesco", "Tesco name matches " + name);
                     tescoProduct.setImage(img);
                     tescoProduct.setName(name);

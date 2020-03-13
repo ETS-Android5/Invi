@@ -320,7 +320,7 @@ public class ScannerFragment extends Fragment implements ProductReady {
 
     @Override
     public void getProduct(Product product) {
-        if(product != null){
+        if(product != null && product.getImage() != null && product.getPrice() != null){
 
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
             float gbp = Float.parseFloat(preferences.getString("EUR", ""));
@@ -328,26 +328,27 @@ public class ScannerFragment extends Fragment implements ProductReady {
 
             AlertDialog alertDialog = new AlertDialog.Builder(getContext())
                     .setTitle(product.getName())
-                    .setMessage("Product Price in GBP " + Float.parseFloat(product.getPrice()) + "\nLocal currency " + (Float.parseFloat(product.getPrice()) + gbp)).show();
            // @Headers("Ocp-Apim-Subscription-Key: cbc1fdf45b5a454cae665a1d34a8a094")
+                .setMessage("Product Price in GBP " + Float.parseFloat(product.getPrice()) + "\nLocal currency " + (Float.parseFloat(product.getPrice()) + gbp)).show();
 
-            Glide.with(this)
-                    .asBitmap()
-                    .load(new GlideUrl(product.getImage(), new LazyHeaders.Builder()
-                            .addHeader("Ocp-Apim-Subscription-Key", "cbc1fdf45b5a454cae665a1d34a8a094")
-                            .build()))
-                    .into(new CustomTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                            Drawable dr = new BitmapDrawable(getResources(), resource);
-                            alertDialog.setIcon(dr);
-                        }
+                Glide.with(this)
+                        .asBitmap()
+                        .load(new GlideUrl(product.getImage(), new LazyHeaders.Builder()
+                                .addHeader("Ocp-Apim-Subscription-Key", "cbc1fdf45b5a454cae665a1d34a8a094")
+                                .build()))
+                        .into(new CustomTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                Drawable dr = new BitmapDrawable(getResources(), resource);
+                                alertDialog.setIcon(dr);
+                            }
 
-                        @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                            @Override
+                            public void onLoadCleared(@Nullable Drawable placeholder) {
 
-                        }
-                    });
+                            }
+                        });
+
 
         }else{
             new AlertDialog.Builder(getContext())
