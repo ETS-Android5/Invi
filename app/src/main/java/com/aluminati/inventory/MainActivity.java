@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity{
         connectivityCheck.setConnected(this::onConnected);
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -124,26 +125,26 @@ public class MainActivity extends AppCompatActivity{
 
             if(atomicBoolean.get()){
                 endTime = (int) ((finishedTime / 250));// divide this by
-                if(endTime == textView.getText().toString().length()){
+                if(endTime == textView.getText().length()){
                     startTime = System.currentTimeMillis();
                     atomicBoolean.set(false);
                 }else {
                     if(endTime <= textView.getText().length()) {
                         Spannable spannableString = new SpannableString(textView.getText());
-                        spannableString.setSpan(new ForegroundColorSpan(Color.GRAY), 0, endTime, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        spannableString.setSpan(new ForegroundColorSpan(Color.GRAY), 0, endTime, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
                         textView.setText(spannableString);
                     }
                 }
 
             }else{
                 endTime = (int) ((finishedTime / 250));// divide this by
-                if(endTime == textView.getText().toString().length()){
+                if(endTime == textView.getText().length()){
                     startTime = System.currentTimeMillis();
                     atomicBoolean.set(true);
                 }else {
                     if(endTime <= textView.getText().length()) {
                         Spannable spannableString = new SpannableString(textView.getText());
-                        spannableString.setSpan(new ForegroundColorSpan(Color.YELLOW), 0, endTime, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        spannableString.setSpan(new ForegroundColorSpan(Color.YELLOW), 0, endTime, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
                         textView.setText(spannableString);
                     }
                 }

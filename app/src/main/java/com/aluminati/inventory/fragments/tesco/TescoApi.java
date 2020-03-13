@@ -94,6 +94,7 @@ public class TescoApi{
                                                             @Override
                                                             public void onError(Throwable e) {
                                                                 Log.i("Tesco", "Prodcut is null", e);
+                                                                productReady.getProduct(null);
                                                             }
                                                         });
                                             }else{
@@ -104,7 +105,6 @@ public class TescoApi{
                                         @Override
                                         public void onError(Throwable e) {
                                             Log.i("Tesco", "totals null", e);
-
                                         }
                                     });
 
