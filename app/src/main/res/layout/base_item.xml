@@ -162,7 +162,7 @@
                         android:text="Qty:"
                         android:textColor="#000"
                         android:textStyle="bold" />
-
+<!--Update-->
                     <TextView
                         android:id="@+id/itemQty"
                         android:layout_width="0dp"

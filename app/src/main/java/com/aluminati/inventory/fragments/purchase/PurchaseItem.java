@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class PurchaseItem extends BaseItem {
     private int quantity;
-
+    //Update
     public PurchaseItem() {/*for FireStore */}
 
     public PurchaseItem(String storeID, String storeCity,

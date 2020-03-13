@@ -11,7 +11,7 @@ public class RentalItem extends BaseItem {
     private Date checkedOutDate;
 
     public RentalItem() {}
-
+    //Update
     public RentalItem(String storeID, String storeCity,
                       String storeCountry, String title,
                       String description, double price,

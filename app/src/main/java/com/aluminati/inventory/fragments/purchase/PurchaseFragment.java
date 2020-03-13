@@ -52,7 +52,7 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
     public void setNavDrawer(DrawerLayout drawer) {
         this.drawer = drawer;
     }
-
+    //Update
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 

@@ -40,7 +40,7 @@ public class RecentFragment extends FloatingTitlebarFragment {
     private BaseBinder baseBinder;
     private RecyclerView recViewRecent;
 
-
+//Update
     public RecentFragment() {}
 
     public RecentFragment(DrawerLayout drawer) {

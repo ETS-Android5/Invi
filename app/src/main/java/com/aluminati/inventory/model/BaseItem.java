@@ -3,7 +3,7 @@ package com.aluminati.inventory.model;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+//Update
 public abstract class BaseItem implements IMapper {
     protected String docID;
     protected String storeID;

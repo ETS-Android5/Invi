@@ -15,7 +15,7 @@ public class BaseBinder implements IBinder<BaseItem> {
     private View itemView;
     private ImageView itemImg;
     private TableLayout viewForeground, viewBackground;
-
+    //Update
     @Override
     public View initViews(View view) {
         this.itemView = view;

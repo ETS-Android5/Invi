@@ -40,6 +40,7 @@ public class RentalFragment extends FloatingTitlebarFragment {
     private DbHelper dbHelper;
     private RentalBinder rentalBinder;
     private DialogHelper dialogHelper;
+    //Update
     public RentalFragment(DrawerLayout drawer) {
         super(drawer);
     }
