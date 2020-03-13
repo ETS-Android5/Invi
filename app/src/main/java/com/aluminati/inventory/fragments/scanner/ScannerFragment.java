@@ -321,15 +321,16 @@ public class ScannerFragment extends Fragment implements ProductReady {
     @Override
     public void getProduct(Product product) {
         if(product != null && product.getImage() != null && product.getPrice() != null){
-
+            Log.d(TAG, product.toString());
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            float gbp = Float.parseFloat(preferences.getString("EUR", ""));
+            float gbp = Float.parseFloat(preferences.getString("EUR", "0"));//Default is Euro
 
 
             AlertDialog alertDialog = new AlertDialog.Builder(getContext())
                     .setTitle(product.getName())
            // @Headers("Ocp-Apim-Subscription-Key: cbc1fdf45b5a454cae665a1d34a8a094")
-                .setMessage("Product Price in GBP " + Float.parseFloat(product.getPrice()) + "\nLocal currency " + (Float.parseFloat(product.getPrice()) + gbp)).show();
+                .setMessage("Product Price in GBP " + Float.parseFloat(product.getPrice())
+                        + "\nLocal currency " + (Float.parseFloat(product.getPrice()) + gbp)).show();
 
                 Glide.with(this)
                         .asBitmap()
