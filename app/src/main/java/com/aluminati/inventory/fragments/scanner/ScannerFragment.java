@@ -11,8 +11,10 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -325,37 +327,30 @@ public class ScannerFragment extends Fragment implements ProductReady {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
             float gbp = Float.parseFloat(preferences.getString("EUR", "0"));//Default is Euro
 
+            View pV = dialogHelper.buildPurchaseView(product.getName(),
+                    String.format("Product Price in GBP (%.2f)\nLocal Currency ( %.2f) ",
+                            Float.parseFloat(product.getPrice())
+                            , (Float.parseFloat(product.getPrice()) + gbp)),
+                    product.getImage(),
+                    (int)(Math.random() * 25) + 1,
+                    result -> { //What quantity user selected
+                     },
+                    Color.GREEN );
 
-            AlertDialog alertDialog = new AlertDialog.Builder(getContext())
-                    .setTitle(product.getName())
-           // @Headers("Ocp-Apim-Subscription-Key: cbc1fdf45b5a454cae665a1d34a8a094")
-                .setMessage("Product Price in GBP " + Float.parseFloat(product.getPrice())
-                        + "\nLocal currency " + (Float.parseFloat(product.getPrice()) + gbp)).show();
-
-                Glide.with(this)
-                        .asBitmap()
-                        .load(new GlideUrl(product.getImage(), new LazyHeaders.Builder()
-                                .addHeader("Ocp-Apim-Subscription-Key", "cbc1fdf45b5a454cae665a1d34a8a094")
-                                .build()))
-                        .into(new CustomTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                Drawable dr = new BitmapDrawable(getResources(), resource);
-                                alertDialog.setIcon(dr);
-                            }
-
-                            @Override
-                            public void onLoadCleared(@Nullable Drawable placeholder) {
-
-                            }
-                        });
+            dialogHelper.createDialog(pV).show();
+// TODO: remove this once we know standard image loading works
+//                Glide.with(this)
+//                        .asBitmap()
+//                        .load(new GlideUrl(product.getImage(), new LazyHeaders.Builder()
+//                                .addHeader("Ocp-Apim-Subscription-Key", "cbc1fdf45b5a454cae665a1d34a8a094")
+//                                .build()))
+//                        .into((ImageView)pV.findViewById(R.id.dialogImageHolder));
 
 
         }else{
-            new AlertDialog.Builder(getContext())
-                    .setTitle("Product not found")
-                    .setPositiveButton("Ok", ((dialogInterface, i) -> dialogInterface.dismiss()))
-                    .show();
+            dialogHelper.createDialog("Error",
+                    "Sorry cannot find this product",
+                    null, null).show();
         }
     }
 

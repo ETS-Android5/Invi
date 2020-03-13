@@ -3,6 +3,7 @@ package com.aluminati.inventory.helpers;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,6 +19,10 @@ public class DialogHelper {
     public interface IClickAction {
         void onAction();
         String actionName();
+    }
+
+    public interface OnImageLoad {
+        void load();
     }
 
     private DialogHelper(Context context) {
@@ -42,8 +47,11 @@ public class DialogHelper {
         ((TextView)v.findViewById(R.id.dialogTitle)).setText(title);
         ((TextView)v.findViewById(R.id.dialogTitle)).setBackgroundColor(color);
         ((TextView)v.findViewById(R.id.dialogMessage)).setText(message);
+
+        ImageView imgV = (ImageView) v.findViewById(R.id.dialogImageHolder);
+
         TextView qq = v.findViewById(R.id.tvCartItemCount);
-        qq.setText(""+quantity);
+        qq.setText("1");
 
         v.findViewById(R.id.btnCartLess).setOnClickListener(view -> {
             //fdfd
@@ -64,7 +72,10 @@ public class DialogHelper {
             }
         });
 
-        Glide.with(context).load(imgUrl).into((ImageView) v.findViewById(R.id.dialogImageHolder));
+        if(imgUrl != null && imgUrl.trim().length() > 0) {
+            Glide.with(context).load(imgUrl).into(imgV);
+        }
+
 
         return v;
     }

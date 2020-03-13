@@ -38,15 +38,14 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 android:gravity="center_horizontal|center_vertical">
 
                 <ImageView
                     android:id="@+id/dialogImageHolder"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="100dp"
                     android:layout_weight=".5"
-                    android:maxHeight="30dp"
                     app:srcCompat="@drawable/flag_argentina" />
             </TableRow>
 
