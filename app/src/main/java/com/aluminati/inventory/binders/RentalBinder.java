@@ -42,9 +42,9 @@ public class RentalBinder implements IBinder<RentalItem> {
         tvRentalUnit.setText("Price Per " + item.getUnitType());
 
         itemPrice.setText(String.format("€%.2f", item.getPrice()));
-        double test = Utils.getRentalCharge(item);
-        itemCurrentRentalCost.setText(String.format("€%.2f",test ));
-        Log.d(RentalBinder.class.getSimpleName(), "Rental Cost:" + test);
+        double balance = Utils.getRentalCharge(item);
+        itemCurrentRentalCost.setText(String.format("€%.2f",balance ));
+        Log.d(RentalBinder.class.getSimpleName(), "Rental Cost:" + balance);
 
         Glide.with(context)
                 .load(item.getImgLink())

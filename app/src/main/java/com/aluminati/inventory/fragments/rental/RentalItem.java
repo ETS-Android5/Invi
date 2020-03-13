@@ -11,12 +11,12 @@ public class RentalItem extends BaseItem {
     private Date checkedOutDate;
 
     public RentalItem() {}
-
+    //Update
     public RentalItem(String storeID, String storeCity,
                       String storeCountry, String title,
                       String description, double price,
                       String imgLink, List<String> tags, boolean isRestricted, String unitType) {
-        super(storeID, storeCity, storeCountry, title, description, price, imgLink, tags, isRestricted);
+        super(storeID, storeCity, storeCountry, title, description, price, imgLink, tags, isRestricted, true);
         this.unitType = unitType;
     }
 

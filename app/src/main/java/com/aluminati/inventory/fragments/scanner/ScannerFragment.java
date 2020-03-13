@@ -46,7 +46,7 @@ public class ScannerFragment extends Fragment {
     private Toaster toaster;
     private Switch switchPriceCheck;
     private ToggleButton btnSound;
-
+    //Update
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_scanner, container, false);

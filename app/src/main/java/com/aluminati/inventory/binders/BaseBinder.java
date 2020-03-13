@@ -11,11 +11,11 @@ import com.aluminati.inventory.model.BaseItem;
 import com.bumptech.glide.Glide;
 
 public class BaseBinder implements IBinder<BaseItem> {
-    private TextView itemTitle, itemDescription, itemPrice;
+    private TextView itemTitle, itemDescription, itemPrice, itemQty;
     private View itemView;
     private ImageView itemImg;
     private TableLayout viewForeground, viewBackground;
-
+    //Update
     @Override
     public View initViews(View view) {
         this.itemView = view;
@@ -23,6 +23,7 @@ public class BaseBinder implements IBinder<BaseItem> {
         itemDescription = itemView.findViewById(R.id.itemDescription);
         itemPrice = itemView.findViewById(R.id.itemPrice);
         itemImg = itemView.findViewById(R.id.itemImg);
+        itemQty = itemView.findViewById(R.id.itemQty);
 
         viewForeground = itemView.findViewById(R.id.foreground_view);
         viewBackground = itemView.findViewById(R.id.background_view);
@@ -35,6 +36,7 @@ public class BaseBinder implements IBinder<BaseItem> {
         itemDescription.setText(item.getDescription());
 
         itemPrice.setText("" + item.getPrice());
+        itemQty.setText(item.getRental() ? "Rental" : "*");
 
         Glide.with(context)
                 .load(item.getImgLink())
