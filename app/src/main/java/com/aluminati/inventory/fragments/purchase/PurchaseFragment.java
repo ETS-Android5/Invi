@@ -20,6 +20,7 @@ import com.aluminati.inventory.R;
 import com.aluminati.inventory.adapters.ItemAdapter;
 import com.aluminati.inventory.adapters.swipelisteners.ItemSwipe;
 import com.aluminati.inventory.helpers.DbHelper;
+import com.aluminati.inventory.helpers.DialogHelper;
 import com.aluminati.inventory.utils.Toaster;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -38,6 +39,7 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
     private ItemAdapter.OnItemClickListener itemClickListener;
     private Toaster toaster;
     private DbHelper dbHelper;
+    private DialogHelper dialogHelper;
     private PurchaseBinder purchaseBinder;
 
     public PurchaseFragment(DrawerLayout drawer) {
@@ -59,10 +61,11 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
 
         floatingTitlebar.setLeftToggleOn(false);//dont change icon on toggle
         dbHelper = DbHelper.getInstance();
+        dialogHelper = DialogHelper.getInstance(getActivity());
 
         purchaseBinder = new PurchaseBinder();
         //How to programmatically set icons on floating action bar
-        floatingTitlebar.setRightToggleIcons(R.drawable.ic_search, R.drawable.ic_toggle_list);
+        floatingTitlebar.setRightToggleIcons(R.drawable.ic_search, R.drawable.ic_dollar);
         floatingTitlebar.setToggleActive(true);
         floatingTitlebar.showTitleTextBar();
 
@@ -75,7 +78,8 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
                 LinearLayoutManager.VERTICAL, false);
         recViewPurchase.setLayoutManager(layoutManager);
         itemClickListener = (ItemAdapter.OnItemClickListener<PurchaseItem>) item -> {
-            toaster.toastShort("You clicked" + item.getTitle());
+
+            dialogHelper.createDialog(item.getTitle(), item.toString(),null, null).show();
         };
 
         //Load items

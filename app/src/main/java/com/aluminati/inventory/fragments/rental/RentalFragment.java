@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.aluminati.inventory.Constants;
 import com.aluminati.inventory.R;
+import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.adapters.ItemAdapter;
 import com.aluminati.inventory.adapters.swipelisteners.ItemSwipe;
 import com.aluminati.inventory.binders.RentalBinder;
@@ -56,9 +57,9 @@ public class RentalFragment extends FloatingTitlebarFragment {
 
         rentalBinder = new RentalBinder();
         //How to programmatically set icons on floating action bar
-        floatingTitlebar.setRightToggleIcons(R.drawable.ic_refresh, R.drawable.ic_toggle_grid);
+        floatingTitlebar.setRightToggleIcons(R.drawable.ic_search, R.drawable.ic_dollar);
         floatingTitlebar.setToggleActive(true);
-
+        floatingTitlebar.showTitleTextBar();
 
         firestore = FirebaseFirestore.getInstance();
 
@@ -124,16 +125,21 @@ public class RentalFragment extends FloatingTitlebarFragment {
 
     private List<RentalItem> initRentalItems(List<DocumentSnapshot> snapshots, String filter) {
         List<RentalItem> pItems = new ArrayList<>();
+        double tBal = 0;
         for(DocumentSnapshot obj : snapshots) {
             RentalItem p = obj.toObject(RentalItem.class);
             p.setDocID(obj.getId());
+
             if(filter == null || filter.trim().length() == 0) {
+                tBal += Utils.getRentalCharge(p);
                 pItems.add(p);
             } else if(p.getTitle().toLowerCase().contains(filter.toLowerCase())
                     || p.getTags().contains(filter.toLowerCase())) {
                 pItems.add(p);
+                tBal += Utils.getRentalCharge(p);
             }
         }
+        floatingTitlebar.setTitleText(tBal > 0 ? String.format("Balance: €%.2f", tBal) : "");
 
         return pItems;
     }
@@ -146,10 +152,10 @@ public class RentalFragment extends FloatingTitlebarFragment {
     }
     @Override
     public void onRightButtonToggle(boolean isActive) {
-
-        toaster.toastShort(getResources().getString(R.string.loading_items));
-        reloadItems(null);
         super.onRightButtonToggle(isActive);
+        if(isActive) {
+            floatingTitlebar.showSearchBar();
+        } else floatingTitlebar.showTitleTextBar();
 
     }
 

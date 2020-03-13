@@ -122,8 +122,8 @@ public class RecentFragment extends FloatingTitlebarFragment {
 
         };
 
-
-        ItemTouchHelper.SimpleCallback touchHelper = new ItemSwipe(0, ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT,swipe);
+        //ItemTouchHelper.LEFT ---> Only add right swipe on search for map
+        ItemTouchHelper.SimpleCallback touchHelper = new ItemSwipe(0, ItemTouchHelper.RIGHT,swipe);
 
         new ItemTouchHelper(touchHelper).attachToRecyclerView(recViewRecent);
     }
@@ -143,7 +143,7 @@ public class RecentFragment extends FloatingTitlebarFragment {
         recViewRecent.setAdapter(new ItemAdapter<>(purchaseItems,
                 itemClickListener,
                 baseBinder,
-                R.layout.list_item,
+                R.layout.base_item,
                 getActivity()));
     }
 

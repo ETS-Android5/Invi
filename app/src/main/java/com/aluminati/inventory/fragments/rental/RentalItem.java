@@ -16,7 +16,7 @@ public class RentalItem extends BaseItem {
                       String storeCountry, String title,
                       String description, double price,
                       String imgLink, List<String> tags, boolean isRestricted, String unitType) {
-        super(storeID, storeCity, storeCountry, title, description, price, imgLink, tags, isRestricted);
+        super(storeID, storeCity, storeCountry, title, description, price, imgLink, tags, isRestricted, true);
         this.unitType = unitType;
     }
 

@@ -15,13 +15,14 @@ public abstract class BaseItem implements IMapper {
     protected double price;
     protected String imgLink;
     protected List<String> tags;
+    protected boolean rental;
 
     public BaseItem() {}
 
     public BaseItem(String storeID, String storeCity,
                     String storeCountry, String title,
                     String description, double price,
-                    String imgLink, List<String> tags, boolean isRestricted) {
+                    String imgLink, List<String> tags, boolean isRestricted, boolean rental) {
         this.storeID = storeID;
         this.storeCity = storeCity;
         this.storeCountry = storeCountry;
@@ -31,6 +32,7 @@ public abstract class BaseItem implements IMapper {
         this.imgLink = imgLink;
         this.tags = tags;
         this.isRestricted = isRestricted;
+        this.rental = rental;
     }
 
     public boolean isRestricted() {
@@ -113,6 +115,14 @@ public abstract class BaseItem implements IMapper {
         this.tags = tags;
     }
 
+    public boolean getRental() {
+        return rental;
+    }
+
+    public void setRental(boolean rental) {
+        this.rental = rental;
+    }
+
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
 
@@ -125,6 +135,7 @@ public abstract class BaseItem implements IMapper {
         map.put("storeID", storeID);
         map.put("price", price);
         map.put("isRestricted", isRestricted);
+        map.put("rental", rental);
 
         return map;
     }
