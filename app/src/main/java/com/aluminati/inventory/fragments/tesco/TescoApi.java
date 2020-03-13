@@ -99,17 +99,23 @@ public class TescoApi{
                                                         });
                                             }else{
                                                 Log.i("Tesco", "totals null");
+                                                productReady.getProduct(null);
+
                                             }
                                         }
 
                                         @Override
                                         public void onError(Throwable e) {
                                             Log.i("Tesco", "totals null", e);
+                                            productReady.getProduct(null);
+
                                         }
                                     });
 
                         }else{
                             Log.i("Tesco", "Product is null");
+                            productReady.getProduct(null);
+
                         }
                     }
 
