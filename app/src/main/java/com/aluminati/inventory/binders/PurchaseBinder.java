@@ -36,7 +36,7 @@ public class PurchaseBinder implements IBinder<PurchaseItem> {
         itemTitle.setText(item.getTitle());
         itemDescription.setText(item.getDescription());
 
-        itemPrice.setText("" + item.getPrice());
+        itemPrice.setText(String.format("€%.2f", item.getPrice()));
         itemQty.setText("" + item.getQuantity());
 
         Glide.with(context)
