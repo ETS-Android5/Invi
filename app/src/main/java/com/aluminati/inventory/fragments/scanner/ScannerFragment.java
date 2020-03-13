@@ -113,20 +113,24 @@ public class ScannerFragment extends Fragment {
                    boolean isPurchase = scanResult.containsKey("sid") && scanResult.containsKey("iid");
                    int size = scanResult.size();
 
-                   switch(size) {
-                       case 2:
-                           if(isPurchase) {
-                               //valid purchase item
-                               addToCartDialog(scanResult);
-                           }
-                           break;
-                       case 3:
-                           if(isPurchase && scanResult.containsKey("idx")) {
-                               //valid rental item
-                               scanResult.put("uid", user.getUid());
-                               isRented(scanResult);
-                           }
-                           break;
+                   if(size < 4) {
+                       switch (size) {
+                           case 2:
+                               if (isPurchase) {
+                                   //valid purchase item
+                                   addToCartDialog(scanResult);
+                               }
+                               break;
+                           case 3:
+                               if (isPurchase && scanResult.containsKey("idx")) {
+                                   //valid rental item
+                                   scanResult.put("uid", user.getUid());
+                                   isRented(scanResult);
+                               }
+                               break;
+                       }
+                   }else{
+
                    }
                } catch (JsonSyntaxException ex) {
                    toaster.toastShort("Un know barcode format");

@@ -42,6 +42,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 
 public class MapsActivity extends Fragment implements OnMapReadyCallback {
 
@@ -49,7 +50,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private String storeId;
-    private DocumentSnapshot documentSnapshot;
+    private ArrayList<DocumentSnapshot> documentSnapshot = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                          ViewGroup container, Bundle savedInstanceState) {
@@ -65,7 +66,11 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback {
             DbHelper.getInstance().getItem("stores", storeId)
                     .addOnSuccessListener(success-> {
                         if(success != null){
-                            documentSnapshot = success;
+                            documentSnapshot.add(success);
+                            double lat = documentSnapshot.get(0).getGeoPoint("geoPoint").getLatitude();
+                            double lng = documentSnapshot.get(0).getGeoPoint("geoPoint").getLongitude();
+
+                            mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)));
                         }
                     })
                     .addOnFailureListener(failure -> {
@@ -73,6 +78,24 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback {
                     });
 
 
+        }else{
+            DbHelper.getInstance().getCollection("stores")
+                    .get()
+                    .addOnSuccessListener(success -> {
+                        for(int i = 0; i < success.getDocuments().size(); i++){
+                            documentSnapshot.add(success.getDocuments().get(i));
+                            double lat = documentSnapshot.get(i).getGeoPoint("geoPoint").getLatitude();
+                            double lng = documentSnapshot.get(i).getGeoPoint("geoPoint").getLongitude();
+
+
+                            Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)));
+                                   marker.setTag(Integer.toString(i));
+
+                        }
+                    })
+                    .addOnFailureListener(failure -> {
+                        Log.w(TAG, "Failed to get store collection", failure);
+                    });
         }
         return root;
     }
@@ -91,16 +114,18 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(52.6638, 8.6267);//Limerick :)
-        MarkerOptions markerOptions = new MarkerOptions().position(sydney).title("Marker");
 
-        mMap.addMarker(markerOptions);
         mMap.setOnMarkerClickListener(latLng -> {
-            CustomMarkerView customMarkerView = CustomMarkerView.newInstance("Map Marker", documentSnapshot);
-            customMarkerView.show(getChildFragmentManager(), "map_marker");
+            if(documentSnapshot.size() == 1) {
+                CustomMarkerView customMarkerView = CustomMarkerView.newInstance("Map Marker", documentSnapshot.get(0));
+                customMarkerView.show(getChildFragmentManager(), "map_marker");
+            }else if(documentSnapshot.size() > 1){
+               int index = Integer.parseInt((String) latLng.getTag());
+                CustomMarkerView customMarkerView = CustomMarkerView.newInstance("Map Marker", documentSnapshot.get(index));
+                customMarkerView.show(getChildFragmentManager(), "map_marker");
+            }
             return true;
         });
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
 
     }

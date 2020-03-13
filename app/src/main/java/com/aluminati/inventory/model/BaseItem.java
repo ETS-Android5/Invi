@@ -35,6 +35,13 @@ public abstract class BaseItem implements IMapper {
         this.rental = rental;
     }
 
+    public BaseItem(String title, String description, double price, String imgLink){
+        this.title = title;
+        this.description = description;
+        this.price = price;
+        this.imgLink = imgLink;
+    }
+
     public boolean isRestricted() {
         return isRestricted;
     }
