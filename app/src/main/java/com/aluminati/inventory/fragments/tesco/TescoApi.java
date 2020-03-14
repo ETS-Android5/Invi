@@ -43,6 +43,7 @@ public class TescoApi{
     private String result;
     private CompositeDisposable compositeDisposable;
     private ProductReady productReady;
+    private final int LIMIT = 1000;
 
 
     public TescoApi(String reseult){
@@ -84,9 +85,11 @@ public class TescoApi{
                                         public void onSuccess(Totals totals) {
                                             if(totals != null){
 
+                                                int total = Integer.parseInt(totals.getAll()) > 100 ? LIMIT : Integer.parseInt(totals.getAll()) ;
+
                                                 Log.i("Tesco", "Totals " + totals.getAll());
                                                 new TescoProductQuery(tescoProducts.getTpnc(), tescoProducts.getDescription())
-                                                        .getData(200, new GetItemListResultDeserializer(tescoProducts.getTpnc(), tescoProducts.getDescription()))
+                                                        .getData(total, new GetItemListResultDeserializer(tescoProducts.getTpnc(), tescoProducts.getDescription()))
                                                         .subscribeOn(Schedulers.io())
                                                         .observeOn(AndroidSchedulers.mainThread())
                                                         .subscribe(new SingleObserver<Product>() {
@@ -219,7 +222,7 @@ class GetItemListResultDeserializer implements JsonDeserializer<Product> {
 
 
     public GetItemListResultDeserializer(String tpnb, String des){
-        Log.i("Tesco", "Call from des + " + tpnb);
+        Log.i("Tesco", "Call from des + " + des);
         this.des = des;
         this.tpnb = tpnb;
     }
@@ -260,6 +263,7 @@ class GetItemListResultDeserializer implements JsonDeserializer<Product> {
 
 
 
+
         if(itemsJsonArray.size() == 1){
             final JsonObject itemJsonObject = itemsJsonArray.get(0).getAsJsonObject();
 
@@ -287,22 +291,32 @@ class GetItemListResultDeserializer implements JsonDeserializer<Product> {
                 final String img = itemJsonObject.get("image").getAsString();
                 final String name = itemJsonObject.get("name").getAsString();
                 final String price = itemJsonObject.get("price").getAsString();
-
                 final String id = itemJsonObject.get("id").getAsString();
+                JsonElement tmp = itemJsonObject.get("description");
+                String description = tmp != null ? tmp.getAsString() : name;
+
 
                 Log.i("Tesco", name + " " + getDes());
 
-                if ((!id.isEmpty() && id.matches((getTpnb())))) {
+                if ((!id.isEmpty() && id.equals((getTpnb())))) {
                     Log.i("Tesco", "Tesco name matches " + name);
                     tescoProduct.setId(id);
                     tescoProduct.setImage(img);
                     tescoProduct.setName(name);
                     tescoProduct.setPrice(price);
-                } else if (!name.isEmpty() && name.matches(getDes())) {
+                    tescoProduct.setDescription(description);
+                    break;
+                }
+
+                if (!name.isEmpty() && name.contains(getDes())) {
                     Log.i("Tesco", "Tesco name matches " + name);
+                    tescoProduct.setId(id);
                     tescoProduct.setImage(img);
                     tescoProduct.setName(name);
                     tescoProduct.setPrice(price);
+                    tescoProduct.setDescription(description);
+                    break;
+
                 }
             }
         }

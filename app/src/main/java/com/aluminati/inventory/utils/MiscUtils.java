@@ -2,7 +2,12 @@ package com.aluminati.inventory.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.widget.TextView;
 
 import com.aluminati.inventory.R;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -34,5 +39,8 @@ public class MiscUtils {
         Snackbar snackbar = Snackbar.make(view, message, BaseTransientBottomBar.LENGTH_LONG);
         snackbar.show();
     }
+
+
+
 
 }

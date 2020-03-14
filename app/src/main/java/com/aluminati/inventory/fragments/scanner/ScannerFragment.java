@@ -16,6 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -33,6 +34,7 @@ import com.aluminati.inventory.helpers.DbHelper;
 import com.aluminati.inventory.helpers.DialogHelper;
 import com.aluminati.inventory.fragments.purchase.PurchaseItem;
 import com.aluminati.inventory.fragments.rental.RentalItem;
+import com.aluminati.inventory.utils.TextLoader;
 import com.aluminati.inventory.utils.Toaster;
 import com.aluminati.inventory.widgets.ToggleButton;
 import com.budiyev.android.codescanner.CodeScanner;
@@ -65,6 +67,7 @@ public class ScannerFragment extends Fragment implements ProductReady {
     private Switch switchPriceCheck;
     private ToggleButton btnSound;
     private ProductReady productReady;
+    private TextView progressBar;
 
     //Update
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -75,9 +78,10 @@ public class ScannerFragment extends Fragment implements ProductReady {
         toaster = Toaster.getInstance(getActivity());
         switchPriceCheck = root.findViewById(R.id.price_check_switch);
         btnSound = root.findViewById(R.id.toggleQRSound);
+        progressBar = root.findViewById(R.id.scanner_progress_loader);
 
-
-
+        TextLoader textLoader = new TextLoader();
+        textLoader.setForeground(progressBar, getResources().getString(R.string.loading));
 
         try {
 
@@ -167,7 +171,8 @@ public class ScannerFragment extends Fragment implements ProductReady {
 
                 TescoApi tescoApi = new TescoApi(result);
                          tescoApi.getProduct();
-                         tescoApi.setProductReady(this::getProduct);
+                         tescoApi.setProductReady(this);
+                         progressBar.setVisibility(View.VISIBLE);
 
         }
     }
@@ -362,6 +367,8 @@ public class ScannerFragment extends Fragment implements ProductReady {
                         //
                         addToCart(pItem, FirebaseAuth.getInstance().getUid());
                     }).show();
+
+            progressBar.setVisibility(View.INVISIBLE);
 // TODO: remove this once we know standard image loading works
 //                Glide.with(this)
 //                        .asBitmap()
@@ -375,6 +382,9 @@ public class ScannerFragment extends Fragment implements ProductReady {
             dialogHelper.createDialog("Error",
                     "Sorry cannot find this product",
                     null, null).show();
+
+            progressBar.setVisibility(View.INVISIBLE);
+
         }
     }
 

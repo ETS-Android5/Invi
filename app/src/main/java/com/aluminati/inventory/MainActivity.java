@@ -34,6 +34,7 @@ import com.aluminati.inventory.login.authentication.verification.VerificationSta
 import com.aluminati.inventory.login.authentication.verification.VerifyUser;
 import com.aluminati.inventory.login.authentication.password.PassWordReset;
 import com.aluminati.inventory.offline.ConnectivityCheck;
+import com.aluminati.inventory.utils.TextLoader;
 import com.aluminati.inventory.widgets.MagicTextView;
 import com.google.firebase.auth.ActionCodeResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -52,8 +53,7 @@ public class MainActivity extends AppCompatActivity{
 
     private FirebaseAuth firebaseAuth;
     private Handler handler;
-    private long startTime, currentTime, finishedTime = 0L;
-    private int endTime = 0;
+
     private boolean lock = false;
     private TextView textView;
     private ConnectivityCheck connectivityCheck;
@@ -69,10 +69,15 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.main_activity);
         firebaseAuth = FirebaseAuth.getInstance();
         infoOffiline = findViewById(R.id.offile_text);
-        setForeground();
+        textView = findViewById(R.id.invi_i);
+
         connetionInfo();
         connectivityCheck = new ConnectivityCheck(textView, alertDialog);
         connectivityCheck.setConnected(this::onConnected);
+        TextLoader textLoader = new TextLoader();
+        textLoader.setForeground(textView, getResources().getString(R.string.app_name));
+
+
     }
 
 
@@ -110,55 +115,6 @@ public class MainActivity extends AppCompatActivity{
     }
 
 
-    private void setForeground(){
-
-
-        textView = findViewById(R.id.invi_i);
-        textView.setText(getResources().getString(R.string.app_name));
-        handler = new Handler();
-        startTime = System.currentTimeMillis();
-        currentTime = startTime;
-
-
-        handler.postDelayed(() -> {
-
-            currentTime = System.currentTimeMillis();
-            finishedTime = currentTime - startTime;
-
-            if(atomicBoolean.get()){
-                endTime = (int) ((finishedTime / 250));// divide this by
-                if(endTime == textView.getText().length()){
-                    startTime = System.currentTimeMillis();
-                    atomicBoolean.set(false);
-                }else {
-                    if(endTime <= textView.getText().length()) {
-                        Spannable spannableString = new SpannableString(textView.getText());
-                        spannableString.setSpan(new ForegroundColorSpan(Color.GRAY), 0, endTime, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-                        textView.setText(spannableString);
-                    }
-                }
-
-            }else{
-                endTime = (int) ((finishedTime / 250));// divide this by
-                if(endTime == textView.getText().length()){
-                    startTime = System.currentTimeMillis();
-                    atomicBoolean.set(true);
-                }else {
-                    if(endTime <= textView.getText().length()) {
-                        Spannable spannableString = new SpannableString(textView.getText());
-                        spannableString.setSpan(new ForegroundColorSpan(Color.YELLOW), 0, endTime, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-                        textView.setText(spannableString);
-                    }
-                }
-
-            }
-
-
-        }, 1000);
-
-
-
-    }
 
     private void listenForDynamicLink(){
 
