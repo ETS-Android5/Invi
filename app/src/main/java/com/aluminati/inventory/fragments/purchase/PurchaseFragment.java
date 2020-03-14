@@ -115,7 +115,7 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
                 pItems.add(p);
                 total += (p.getPrice() * p.getQuantity());
             } else if(p.getTitle().toLowerCase().contains(filter.toLowerCase())
-                    || p.getTags().contains(filter.toLowerCase())) {
+                    || (p.getTags()!= null && p.getTags().contains(filter.toLowerCase()))) {
                 pItems.add(p);
                 total += (p.getPrice() * p.getQuantity());
             }

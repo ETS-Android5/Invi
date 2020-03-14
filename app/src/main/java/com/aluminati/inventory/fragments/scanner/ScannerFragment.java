@@ -159,8 +159,8 @@ public class ScannerFragment extends Fragment implements ProductReady {
                        }
 
                } catch (JsonSyntaxException ex) {
-                   toaster.toastShort("Un know barcode format");
-                   Log.e(TAG, "Un know barcode format: " +  ex.getMessage());
+                   toaster.toastShort("Unknown barcode format");
+                   Log.e(TAG, "Unknown barcode format: " +  ex.getMessage());
                }
            }
 
@@ -344,7 +344,7 @@ public class ScannerFragment extends Fragment implements ProductReady {
             pItem.setStoreID(Constants.FirestoreCollections.TESCO_STORE_ID);
             pItem.setImgLink(product.getImage());
             pItem.setDocID(product.getId());
-            pItem.setTags(Arrays.asList(pItem.getTitle(), pItem.getDescription()));
+            pItem.setTags(Arrays.asList(pItem.getTitle()));
             pItem.setRestricted(false);
             pItem.setStoreCity("Limerick");//This is only proof of concept
             pItem.setStoreCountry("Ireland");//This is only proof of concept

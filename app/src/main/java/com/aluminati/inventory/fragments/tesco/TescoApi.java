@@ -26,7 +26,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.HttpException;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -362,11 +361,6 @@ class TescoProductQuery{
 
     private static Retrofit getRetrofitInstance(Type type, Object typeAdapter) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        builder.addInterceptor(loggingInterceptor);
-
-
         return new retrofit2.Retrofit.Builder()
                 .baseUrl(API_URL)
                 .client(builder.build())
