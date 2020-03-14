@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.Set;
 
 import io.reactivex.Single;
@@ -239,6 +240,9 @@ class GetItemListResultDeserializer implements JsonDeserializer<Product> {
 
 
         Product tescoProduct = new Product();
+        boolean exactMatch = false;
+        boolean weakMatch = false;
+        Product alternative = null;
 
         final JsonObject jsonObject = json.getAsJsonObject();
 
@@ -265,22 +269,18 @@ class GetItemListResultDeserializer implements JsonDeserializer<Product> {
 
         if(itemsJsonArray.size() == 1){
             final JsonObject itemJsonObject = itemsJsonArray.get(0).getAsJsonObject();
-
+            exactMatch = true;
             final String img = itemJsonObject.get("image").getAsString();
             final String name = itemJsonObject.get("name").getAsString();
             final String price = itemJsonObject.get("price").getAsString();
             JsonElement tmp = itemJsonObject.get("description");
-            String description = tmp != null ? tmp.getAsString() : name;
+            String description = tmp != null ? tmp.getAsJsonArray().get(0).getAsString() : name;
             final String id = itemJsonObject.get("id").getAsString();
 
             Log.i("Tesco", name + " " + getDes());
 
                 Log.i("Tesco", "Tesco name matches " + name);
-                tescoProduct.setId(id);
-                tescoProduct.setImage(img);
-                tescoProduct.setName(name);
-                tescoProduct.setPrice(price);
-                tescoProduct.setDescription(description);
+                tescoProduct = loadProduct(id, img, name, price, description);
 
         }else {
 
@@ -292,33 +292,51 @@ class GetItemListResultDeserializer implements JsonDeserializer<Product> {
                 final String price = itemJsonObject.get("price").getAsString();
                 final String id = itemJsonObject.get("id").getAsString();
                 JsonElement tmp = itemJsonObject.get("description");
-                String description = tmp != null ? tmp.getAsString() : name;
+                String description = tmp != null ? tmp.getAsJsonArray().get(0).getAsString() : name;
 
 
-                Log.i("Tesco", name + " " + getDes());
+                Log.i("Tesco", "id:" + id + " name:" +
+                        name + " desc:" + getDes() + " desc2:"
+                        + tmp.getAsJsonArray().toString());
 
-                if ((!id.isEmpty() && id.equals((getTpnb())))) {
+                String des = getDes();
+                String desArray = tmp != null ? tmp.getAsJsonArray().toString() : null;
+
+                weakMatch = (des != null && desArray != null && desArray.toLowerCase().contains(des.toLowerCase()));
+                alternative = null;
+                if(weakMatch && alternative == null) {
+                    alternative = loadProduct(id, img, name, price, description);
+                }
+
+                exactMatch = !id.isEmpty() && id.equals((getTpnb()));
+                if (exactMatch) {
                     Log.i("Tesco", "Tesco name matches " + name);
-                    tescoProduct.setId(id);
-                    tescoProduct.setImage(img);
-                    tescoProduct.setName(name);
-                    tescoProduct.setPrice(price);
-                    tescoProduct.setDescription(description);
+                    tescoProduct = loadProduct(id, img, name, price, description);
+                    tescoProduct.setExactMatch(true);
                     break;
                 }
 
                 if (!name.isEmpty() && name.contains(getDes())) {
                     Log.i("Tesco", "Tesco name matches " + name);
-                    tescoProduct.setId(id);
-                    tescoProduct.setImage(img);
-                    tescoProduct.setName(name);
-                    tescoProduct.setPrice(price);
-                    tescoProduct.setDescription(description);
+                    tescoProduct = loadProduct(id, img, name, price, description);
+                    tescoProduct.setExactMatch(true);
                     break;
-
                 }
             }
+
+
         }
+
+        return exactMatch ? tescoProduct : (weakMatch ? alternative : new Product()) ;
+    }
+
+    private Product loadProduct(String id, String img, String name, String price, String description) {
+        Product tescoProduct = new Product();
+        tescoProduct.setId(id);
+        tescoProduct.setImage(img);
+        tescoProduct.setName(name);
+        tescoProduct.setPrice(price);
+        tescoProduct.setDescription(description);
 
         return tescoProduct;
     }

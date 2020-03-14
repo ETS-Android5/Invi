@@ -336,15 +336,16 @@ public class ScannerFragment extends Fragment implements ProductReady {
             float gbp = Float.parseFloat(preferences.getString("EUR", "0"));//Default is Euro
 
             String desc = product.getDescription();
+            String alt = product.getExactMatch() ? "Alternative:" : "";
 
             PurchaseItem pItem = new PurchaseItem();
-            pItem.setTitle(product.getName());
+            pItem.setTitle( alt+ product.getName());
             pItem.setDescription(product.getDescription());
             pItem.setPrice(Double.parseDouble(product.getPrice()));
             pItem.setStoreID(Constants.FirestoreCollections.TESCO_STORE_ID);
             pItem.setImgLink(product.getImage());
             pItem.setDocID(product.getId());
-            pItem.setTags(Arrays.asList(pItem.getTitle()));
+            pItem.setTags(Arrays.asList(pItem.getTitle(), pItem.getDescription()));
             pItem.setRestricted(false);
             pItem.setStoreCity("Limerick");//This is only proof of concept
             pItem.setStoreCountry("Ireland");//This is only proof of concept
@@ -369,14 +370,6 @@ public class ScannerFragment extends Fragment implements ProductReady {
                     }).show();
 
             progressBar.setVisibility(View.INVISIBLE);
-// TODO: remove this once we know standard image loading works
-//                Glide.with(this)
-//                        .asBitmap()
-//                        .load(new GlideUrl(product.getImage(), new LazyHeaders.Builder()
-//                                .addHeader("Ocp-Apim-Subscription-Key", "cbc1fdf45b5a454cae665a1d34a8a094")
-//                                .build()))
-//                        .into((ImageView)pV.findViewById(R.id.dialogImageHolder));
-
 
         }else{
             dialogHelper.createDialog("Error",

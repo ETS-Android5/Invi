@@ -23,6 +23,9 @@ public class Product {
     @Expose
     @SerializedName("id")
     private  String id;
+    @Expose
+    @SerializedName("exactMatch")
+    private  boolean exactMatch;
 
     public String getImage() {
         return image;
@@ -71,6 +74,10 @@ public class Product {
     public void setId(String id) {
         this.id = id;
     }
+
+    public void setExactMatch(boolean exactMatch) {this.exactMatch = exactMatch;}
+
+    public boolean getExactMatch() {return exactMatch; }
 
     public Product(String image, String tpnb, String name, String description, String price, String id) {
         this.image = image;
