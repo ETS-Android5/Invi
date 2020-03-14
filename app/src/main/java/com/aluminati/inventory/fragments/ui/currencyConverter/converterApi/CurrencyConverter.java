@@ -69,7 +69,7 @@ public class CurrencyConverter{
         Locale[] locales = Locale.getAvailableLocales();
         for(Locale locale : locales){
             try {
-                    Currency currency = Currency.getInstance(locale);
+                       Currency currency = Currency.getInstance(locale);
                     if(currenciesSymbols.contains(currency.getCurrencyCode())){
                         Resources resources = getActivity().getResources();
                         String name = "";

@@ -127,7 +127,6 @@
          <string name = "failed_log_in"> Logowanie nie powiodło się </string>
          <string name = "inccorect_phone_number"> Niepoprawny numer telefonu </string>
          <string name = "to_many_requests"> Do wielu prób telefon tymczasowo zablokowany \ n spróbuj ponownie za kilka minut </string>
-         <string name="resend"> Wyślij ponownie </string>
          <string name = "title_activity_maps"> Mapa </string>
         <string name="options">Opcje</string>
          <!-- Facebook api-->

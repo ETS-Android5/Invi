@@ -27,6 +27,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aluminati.inventory.login.authentication.LogInActivity;
 import com.aluminati.inventory.login.authentication.verification.VerificationStatus;
@@ -36,6 +37,7 @@ import com.aluminati.inventory.offline.ConnectivityCheck;
 import com.aluminati.inventory.widgets.MagicTextView;
 import com.google.firebase.auth.ActionCodeResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthActionCodeException;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 
 import java.security.MessageDigest;
@@ -188,14 +190,17 @@ public class MainActivity extends AppCompatActivity{
                                                 }
                                             }
                                         }).addOnFailureListener(result -> {
-                                            Log.w(TAG, "Invalid code sent");
+                                            Log.w(TAG, "Invalid code sent", result);
+                                            if(result instanceof FirebaseAuthActionCodeException){
+                                                Toast.makeText(this, "Expired PassWord Reset Link", Toast.LENGTH_LONG).show();
+                                            }
                                             finish();
                                         });
                                     }
                                 }
                             }).addOnFailureListener(result -> {
-                        Log.w(TAG, "Failed to get dynamic link");
-                        finish();
+                                Log.w(TAG, "Failed to get dynamic link");
+                            finish();
                     });
                 }
             } else {

@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -48,10 +49,22 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
             connetionInfo();
 
          connection = new ConnectivityCheck(registerButton, alertDialog);
+         connection.setConnected(this::onConnected);
          registerReceiver(connection, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
          firebaseAuth = FirebaseAuth.getInstance();
 
+    }
+
+    private void onConnected(boolean connected){
+        if(connected) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            alertDialog.dismiss();
+        }else{
+            alertDialog.show();
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        }
     }
 
     @Override
@@ -103,6 +116,11 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
             firebaseAuth.getCurrentUser().reload().addOnSuccessListener(result -> {
                 Log.i(TAG, "User reloaded");
             }).addOnFailureListener(result -> Log.w(TAG, "Failed to reload user", result));
+        }
+
+        if(connection == null) {
+            connection = new ConnectivityCheck(registerButton, alertDialog);
+            connection.setConnected(this::onConnected);
         }
         registerReceiver(connection, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }

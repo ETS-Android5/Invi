@@ -1,5 +1,6 @@
 package com.aluminati.inventory.fragments.tesco;
 
+import android.net.Uri;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -11,7 +12,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.net.URLEncoder;
 import java.util.Set;
 
 import io.reactivex.Single;
@@ -20,6 +24,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.HttpException;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -67,6 +76,7 @@ public class TescoApi{
                                     .subscribe(new SingleObserver<Totals>() {
                                         @Override
                                         public void onSubscribe(Disposable d) {
+                                            compositeDisposable.add(d);
 
                                         }
 
@@ -74,8 +84,9 @@ public class TescoApi{
                                         public void onSuccess(Totals totals) {
                                             if(totals != null){
 
+                                                Log.i("Tesco", "Totals " + totals.getAll());
                                                 new TescoProductQuery(tescoProducts.getTpnc(), tescoProducts.getDescription())
-                                                        .getData(Integer.parseInt(totals.getAll()), new GetItemListResultDeserializer(tescoProducts.getTpnc(), tescoProducts.getDescription()))
+                                                        .getData(200, new GetItemListResultDeserializer(tescoProducts.getTpnc(), tescoProducts.getDescription()))
                                                         .subscribeOn(Schedulers.io())
                                                         .observeOn(AndroidSchedulers.mainThread())
                                                         .subscribe(new SingleObserver<Product>() {
@@ -92,6 +103,23 @@ public class TescoApi{
                                                             @Override
                                                             public void onError(Throwable e) {
                                                                 Log.i("Tesco", "Prodcut is null", e);
+
+
+                                                                if(e instanceof HttpException) {
+                                                                    ResponseBody body = ((HttpException) e).response().errorBody();
+
+
+                                                                    try {
+                                                                        Log.i("Tesco", body.string());
+
+                                                                    } catch (IOException err) {
+                                                                        Log.i("Tesco", "Failed to get", err);
+                                                                    }
+
+                                                                }
+
+
+
                                                                 productReady.getProduct(null);
                                                             }
                                                         });
@@ -107,6 +135,8 @@ public class TescoApi{
                                             Log.i("Tesco", "totals null", e);
                                             productReady.getProduct(null);
 
+
+
                                         }
                                     });
 
@@ -121,7 +151,8 @@ public class TescoApi{
                     public void onError(Throwable e) {
                         Log.i("Tesco", "Product is null", e);
 
-                    }
+
+                        }
                 });
 
     }
@@ -225,6 +256,9 @@ class GetItemListResultDeserializer implements JsonDeserializer<Product> {
                 .get("results").getAsJsonArray();
 
 
+        Log.i("Tesco", "Size" + itemsJsonArray.size());
+
+
 
         if(itemsJsonArray.size() == 1){
             final JsonObject itemJsonObject = itemsJsonArray.get(0).getAsJsonObject();
@@ -254,25 +288,21 @@ class GetItemListResultDeserializer implements JsonDeserializer<Product> {
                 final String name = itemJsonObject.get("name").getAsString();
                 final String price = itemJsonObject.get("price").getAsString();
 
-                JsonElement tmp = itemJsonObject.get("description");
-                String description = tmp != null ? tmp.getAsString() : name;
                 final String id = itemJsonObject.get("id").getAsString();
 
                 Log.i("Tesco", name + " " + getDes());
 
-                if ((!id.isEmpty() && id.equals((getTpnb())))) {
+                if ((!id.isEmpty() && id.matches((getTpnb())))) {
                     Log.i("Tesco", "Tesco name matches " + name);
                     tescoProduct.setId(id);
                     tescoProduct.setImage(img);
                     tescoProduct.setName(name);
                     tescoProduct.setPrice(price);
-                    tescoProduct.setDescription(description);
-                } else if (!name.isEmpty() && name.equals(getDes())) {
+                } else if (!name.isEmpty() && name.matches(getDes())) {
                     Log.i("Tesco", "Tesco name matches " + name);
                     tescoProduct.setImage(img);
                     tescoProduct.setName(name);
                     tescoProduct.setPrice(price);
-                    tescoProduct.setDescription(description);
                 }
             }
         }
@@ -317,8 +347,15 @@ class TescoProductQuery{
     }
 
     private static Retrofit getRetrofitInstance(Type type, Object typeAdapter) {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        builder.addInterceptor(loggingInterceptor);
+
+
         return new retrofit2.Retrofit.Builder()
                 .baseUrl(API_URL)
+                .client(builder.build())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(createGsonConverter(type, typeAdapter))
                 .build();
@@ -327,7 +364,7 @@ class TescoProductQuery{
 
 
     public TescoProductQuery(String tpnc, String des){
-        Log.i("Tesco", des+  "tpnp " + tpnc);
+        Log.i("Tesco", des+  " tpnp  " + tpnc);
         this.tpnc = tpnc;
         this.des = des;
     }
@@ -342,7 +379,7 @@ class TescoProductQuery{
     public Single<Totals> getDataTotals(int limit, Object typeAdapter) {
         return TescoProductQuery
                 .getRetrofitInstance(Totals.class, typeAdapter)
-                .create(TescoProductInfo.class).getProductsTotasl(getDes(), Integer.toString(0), Integer.toString(limit));
+                .create(TescoProductInfo.class).getProductsTotasl(Uri.encode(getDes()), 0, limit);
 
     }
 
@@ -355,13 +392,13 @@ class TescoProductQuery{
     }
 
     public interface TescoProductInfo {
-        @Headers("Ocp-Apim-Subscription-Key: cbc1fdf45b5a454cae665a1d34a8a094")
+        @Headers({"Ocp-Apim-Subscription-Key: cbc1fdf45b5a454cae665a1d34a8a094", "Cache-Control: no-cache"})
         @GET("products")
         Single<Product> getProducts(@Query("query") String query, @Query("offset") String offset, @Query("limit") String limit);
 
-        @Headers("Ocp-Apim-Subscription-Key: cbc1fdf45b5a454cae665a1d34a8a094")
+        @Headers({"Ocp-Apim-Subscription-Key: cbc1fdf45b5a454cae665a1d34a8a094", "Cache-Control: no-cache"})
         @GET("products")
-        Single<Totals> getProductsTotasl(@Query("query") String query, @Query("offset") String offset, @Query("limit") String limit);
+        Single<Totals> getProductsTotasl(@Query("query") String query, @Query("offset") int offset, @Query("limit") int limit);
 
     }
 

@@ -169,7 +169,7 @@
     <string name="card_number">Card Number</string>
     <string name="delete_card">Delete Card</string>
     <string name="error_getting_searchitems">Error searching for items</string>
-
+    <string name="resend_email">Resend</string>
     <string name="linked_social_platforms">Linked Social Accounts</string>
     <string name="enter_dob">Enter Date of Birth</string>
     <string name="dob_day">Day</string>
@@ -182,4 +182,5 @@
     <string name="no_items_in_rental">You have no items on rental</string>
     <string name="must_return">Item must be scanned back in at store</string>
     <string name="loading_items">Please wait loading items...</string>
+    <string name="enter_confirm_password">Enter confirm Password</string>
 </resources>

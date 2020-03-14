@@ -75,6 +75,7 @@
             android:layout_gravity="center"
             android:layout_margin="20dp"
             android:textColor="@color/text_color"
+
             android:textSize="20sp"
             />
 
@@ -89,6 +90,7 @@
             android:layout_gravity="center"
             android:layout_margin="20dp"
             android:textColor="@color/text_color"
+            android:text="No email ?"
             android:textSize="20sp"
             />
 
@@ -113,7 +115,8 @@
             android:layout_column="4"
             android:layout_row="3"
             android:layout_margin="20dp"
-            android:text="@string/verify_button"
+            android:text="@string/resend_email"
+            android:padding="10sp"
             android:textSize="15sp"
             android:layout_gravity="end"
             android:textColor="@color/white_text"

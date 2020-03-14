@@ -41,6 +41,7 @@ public class PassWordReset extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.password_reset_cancel).setOnClickListener(this);
         findViewById(R.id.password_reset_button).setOnClickListener(this);
 
+
         if(getIntent().getExtras() != null) {
             oobCode = getIntent().getExtras().getString("oobCode");
         }
@@ -74,31 +75,38 @@ public class PassWordReset extends AppCompatActivity implements View.OnClickList
     }
 
     private void onPassWordMatchSend(String password, String confrimPassWord, boolean meetsReq){
-        if(passWordResetMessage.getVisibility() == View.VISIBLE){
-            passWordResetMessage.setVisibility(View.INVISIBLE);
-        }
 
+        if(password.isEmpty() && confrimPassWord.isEmpty()){
+            passWordResetMessage.setText(getResources().getString(R.string.reg_hint_password));
+        }
+        else if(password.isEmpty()){
+            passWordResetMessage.setText(getResources().getString(R.string.reg_hint_password));
+        }
+        else if(confrimPassWord.isEmpty()){
+            passWordResetMessage.setText(getResources().getString(R.string.enter_confirm_password));
+        }
+        else {
 
-        if(password.isEmpty()){
-            passWordResetMessage.setText(getResources().getString(R.string.empty_email));
-        }
-        if(confrimPassWord.isEmpty()){
-            passWordResetMessage.setText(getResources().getString(R.string.empty_email));
-        }
-        if(!meetsReq){
-            passWordResetMessage.setText(getResources().getString(R.string.password_dont_meet_requirements));
-        }
-        if(!password.equals(confrimPassWord)){
-            passWordResetMessage.setText(getResources().getString(R.string.password_dont_match));
-        }
-        if(password.contains(user.getDisplayName().split(" ")[0]) || password.contains(user.getDisplayName().split("")[1])) {
-            passWordResetMessage.setText(getResources().getString(R.string.password_conatins_name));
-        }
+            if (!meetsReq) {
+                passWordResetMessage.setText(getResources().getString(R.string.password_dont_meet_requirements));
+            }
+            if (!password.equals(confrimPassWord)) {
+                passWordResetMessage.setText(getResources().getString(R.string.password_dont_match));
+            }else{
+                if(meetsReq){
+                    resetPassWord(password, confrimPassWord);
+                }
+            }
 
-        if(!passWordResetMessage.getText().toString().isEmpty()){
-            passWordResetMessage.setVisibility(View.VISIBLE);
-        }else{
-            resetPassWord(password, confrimPassWord);
+            if(firebaseAuth.getCurrentUser() != null) {
+                if (password.contains(user.getDisplayName().split(" ")[0]) || password.contains(user.getDisplayName().split("")[1])) {
+                    passWordResetMessage.setText(getResources().getString(R.string.password_conatins_name));
+                }
+            }
+
+            if (!passWordResetMessage.getText().toString().isEmpty()) {
+                passWordResetMessage.setVisibility(View.VISIBLE);
+            }
         }
     }
 

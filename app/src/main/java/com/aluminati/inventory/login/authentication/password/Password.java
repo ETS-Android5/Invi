@@ -95,9 +95,7 @@ public class Password extends Fragment implements View.OnClickListener{
 
     private void onCodeReceived(int code){
         if (code == 3001) {
-            if (!passWord.getText().toString().isEmpty() && !confrimPassWord.getText().toString().isEmpty()) {
-                passWordListenerReciever.onPassWordMatchSend(passWord.getText().toString(), confrimPassWord.getText().toString(), meetsRequirments());
-            }
+            passWordListenerReciever.onPassWordMatchSend(passWord.getText().toString(), confrimPassWord.getText().toString(), meetsRequirments());
             Log.i(TAG, "Code " + code);
         }
     }

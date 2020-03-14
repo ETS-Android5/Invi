@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,11 +68,18 @@ public class UserSettings extends Fragment implements View.OnClickListener {
 
     private void setCurrentCurrency(){
         SharedPreferences ed = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        if(ed != null){
-            if(ed.contains("currency")){
-                textView.setText(ed.getString("currency", null));
+
+        ed.registerOnSharedPreferenceChangeListener((sharedPreferences, s) -> {
+            Log.i("UserSettings",s);
+            if(s.equals("currency")){
+                textView.setText(sharedPreferences.getString(s, null));
             }
+        });
+
+        if(ed.contains("currency")){
+            textView.setText(ed.getString("currency", null));
         }
+
     }
 
     @Override

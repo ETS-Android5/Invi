@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -72,9 +73,13 @@ public class PassWordReEnter extends DialogFragment{
                                     Utils.makeSnackBarWithButtons("User deleted", passWord, getActivity());
                                     UserFetch.addReason(firebaseUser.getEmail(), reason);
                                     UserFetch.deleteUser(firebaseUser.getEmail());
+
+                                    Toast.makeText(getContext(), "Account deleted successfully", Toast.LENGTH_LONG).show();
+
                                     getActivity().startActivity(new Intent(getActivity(), LogInActivity.class));
                                     getActivity().finish();
                                 }).addOnFailureListener(failure -> {
+                                    Utils.makeSnackBar("Failed to delte account", getView(), getActivity());
                                     Log.w(TAG, "Failed to delete account", failure);
                                 });
                             })
