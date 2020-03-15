@@ -159,53 +159,66 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
 
         dialogHelper.createDialog("Checkout",
                 String.format("Order Details:\n\nTotal Items:  %d\nTotal Price: €%.2f",
-                        currentQuantity, currentTotal), new DialogHelper.IClickAction(){
+                        currentQuantity, currentTotal), new DialogHelper.IClickAction() {
                     @Override
                     public void onAction() {
-                        Map<String,Object> order = new HashMap<>();
-                        order.put("timestamp",""+System.currentTimeMillis());
-                        order.put("quantity",currentQuantity);
-                        order.put("total",currentTotal);
-
-                        ItemAdapter<PurchaseItem> itemAdapter = (ItemAdapter<PurchaseItem>)recViewPurchase.getAdapter();
-                        if(itemAdapter != null) {
-                            List<String>items = new ArrayList<>();
-                            for(int i = 0; i < itemAdapter.getItemCount(); i++) {
-                                PurchaseItem pi = itemAdapter.getItem(i);
-
-                                items.add(String.format("{\"title\":\"%s\",\"imgurl\":\"%s\",\"price\":%.2f,\"quantity\":%d}",
-                                        pi.getTitle(),
-                                        pi.getImgLink(),
-                                        pi.getPrice(),
-                                        pi.getQuantity()));
-
-                                dbHelper.deleteItem(String.format(Constants.FirestoreCollections.LIVE_USER_CART,
-                                        auth.getUid()), itemAdapter.getItem(i).getDocID());
-                            }
-
-                            if(items.size() > 0) {
-                                order.put("items", items);
-                            }
-                        }
-
-                        dbHelper.addItem(String.format(Constants.FirestoreCollections.COMPLETED_USER_CART,
-                                auth.getUid()), order)
-                                .addOnSuccessListener(setResult ->{
-                                    //TODO: Item is added
-                                    toaster.toastShort("Order completed");
-                                })
-                                .addOnFailureListener(setFail ->{
-                                    toaster.toastShort("Failed to complete order");
-                                });
-
+                        completeOrder();
                     }
 
                     @Override
                     public String actionName() {
-                        return "Pay";
+                        return "Cash";
                     }
-                }, null).show();
+                }, new DialogHelper.IClickAction() {
+                    @Override
+                    public void onAction() {
+                        //TODO: @Bart do whatever here then call completeOrder();
+                    }
 
+                    @Override
+                    public String actionName() {
+                        return "Card";
+                    }
+                }).show();
+
+    }
+
+    private void completeOrder() {
+        Map<String, Object> order = new HashMap<>();
+        order.put("timestamp", "" + System.currentTimeMillis());
+        order.put("quantity", currentQuantity);
+        order.put("total", currentTotal);
+
+        ItemAdapter<PurchaseItem> itemAdapter = (ItemAdapter<PurchaseItem>) recViewPurchase.getAdapter();
+        if (itemAdapter != null) {
+            List<String> items = new ArrayList<>();
+            for (int i = 0; i < itemAdapter.getItemCount(); i++) {
+                PurchaseItem pi = itemAdapter.getItem(i);
+
+                items.add(String.format(Constants.PURCHASE_RECEIPT_ITEM,
+                        pi.getTitle(),
+                        pi.getImgLink(),
+                        pi.getPrice(),
+                        pi.getQuantity()));
+
+                dbHelper.deleteItem(String.format(Constants.FirestoreCollections.LIVE_USER_CART,
+                        auth.getUid()), itemAdapter.getItem(i).getDocID());
+            }
+
+            if (items.size() > 0) {
+                order.put("items", items);
+            }
+        }
+
+        dbHelper.addItem(String.format(Constants.FirestoreCollections.COMPLETED_USER_CART,
+                auth.getUid()), order)
+                .addOnSuccessListener(setResult -> {
+                    //TODO: Item is added
+                    toaster.toastShort("Order completed");
+                })
+                .addOnFailureListener(setFail -> {
+                    toaster.toastShort("Failed to complete order");
+                });
     }
 
     private void setTrackerSwipe() {

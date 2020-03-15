@@ -10,6 +10,7 @@ public class Constants {
     public static final String MY_ITEMS_FRAG = "MyItems";
     public static final int SCANNER_STARTED = 0x1234;
     public static final int SCANNER_FINISHED = 0x1235;
+    public static final String PURCHASE_RECEIPT_ITEM = "{\"title\":\"%s\",\"imgurl\":\"%s\",\"price\":%.2f,\"quantity\":%d}";
 
     private Constants() {}
 
