@@ -150,7 +150,7 @@ public class HomeActivity extends AppCompatActivity implements CardNfcAsyncTask.
          * --If you want access to the nav drawer for closing and opening pass to constructor
          * --If you want to send data to the call Activity pass a handler
          */
-        fragMap.put(R.id.nav_gallery, new PurchaseFragment(mDrawerLayout, homeHandler));
+        fragMap.put(R.id.nav_gallery, new PurchaseFragment());
         fragMap.put(R.id.nav_home, new RecentFragment(mDrawerLayout));
         fragMap.put(R.id.receipts, new ReceiptFragment(mDrawerLayout));
         fragMap.put(R.id.nav_rental, new RentalFragment(mDrawerLayout));

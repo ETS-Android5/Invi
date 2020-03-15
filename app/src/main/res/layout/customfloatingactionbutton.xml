@@ -29,47 +29,44 @@
         android:layout_alignBottom="@+id/fab_copy_1"
         android:layout_marginTop="-20dp"
         android:layout_marginBottom="20dp"
-        android:visibility="invisible"
-        android:background="@drawable/conversions_button" />
+        android:background="@drawable/conversions_button"
+        android:visibility="invisible" />
 
     <RelativeLayout
         android:id="@+id/fab_copy_1"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:gravity="center"
-        android:layout_alignBottom="@id/fab"
         android:layout_alignEnd="@+id/fab"
+        android:layout_alignBottom="@id/fab"
         android:clickable="true"
         android:focusable="true"
-        android:visibility="invisible"
-        >
+        android:gravity="center"
+        android:visibility="invisible">
 
         <Button
             android:id="@+id/fab1"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            app:srcCompat="@drawable/cart"
-            android:enabled="false"
             android:background="@drawable/cart_button"
-            />
+            android:enabled="false"
+            app:srcCompat="@drawable/cart" />
 
         <Button
             android:id="@+id/cart_count"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginTop="-10dp"
-            android:layout_marginStart="-5dp"
-            android:layout_alignTop="@id/fab1"
             android:layout_alignStart="@+id/fab1"
+            android:layout_alignTop="@id/fab1"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
+            android:layout_marginStart="-5dp"
+            android:layout_marginTop="-10dp"
+            android:background="@drawable/cart_count"
+            android:enabled="false"
             android:textAlignment="center"
             android:textColor="@color/white_text"
             android:textSize="12sp"
-            android:enabled="false"
-            android:visibility="invisible"
-            android:background="@drawable/cart_count"
-            />
+            android:visibility="visible" />
 
     </RelativeLayout>
 

@@ -27,7 +27,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PurchaseFragment extends FloatingTitlebarFragment {
 
@@ -41,7 +43,10 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
     private DbHelper dbHelper;
     private DialogHelper dialogHelper;
     private PurchaseBinder purchaseBinder;
+    private double currentTotal;
+    private int currentQuantity;
 
+    public PurchaseFragment() {super(null);}
     public PurchaseFragment(DrawerLayout drawer) {
         super(drawer);
     }
@@ -65,7 +70,8 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
 
         purchaseBinder = new PurchaseBinder();
         //How to programmatically set icons on floating action bar
-        floatingTitlebar.setRightToggleIcons(R.drawable.ic_search, R.drawable.ic_dollar);
+        floatingTitlebar.setRightToggleIcons(R.drawable.ic_dollar, R.drawable.ic_dollar);
+        floatingTitlebar.setLeftToggleIcons(R.drawable.ic_search, R.drawable.ic_side_list_blue);
         floatingTitlebar.setToggleActive(true);
         floatingTitlebar.showTitleTextBar();
 
@@ -107,8 +113,13 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
     private List<PurchaseItem> initPurchaseItems(List<DocumentSnapshot> snapshots, String filter) {
         List<PurchaseItem> pItems = new ArrayList<>();
         double total = 0;
+        currentTotal = 0;
+        currentQuantity = 0;
+
         for(DocumentSnapshot obj : snapshots) {
             PurchaseItem p = obj.toObject(PurchaseItem.class);
+            currentTotal += (p.getPrice() * p.getQuantity());
+            currentQuantity += p.getQuantity();
 
             p.setDocID(obj.getId());
             if(filter == null || filter.trim().length() == 0) {
@@ -121,6 +132,8 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
             }
         }
 
+        currentTotal = total;
+
         floatingTitlebar.setTitleText(String.format("Total: €%.2f", total));
         return pItems;
     }
@@ -131,12 +144,63 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
                 R.layout.list_item,
                 getActivity()));
     }
+
     @Override
-    public void onRightButtonToggle(boolean isActive) {
-        super.onRightButtonToggle(isActive);
+    public void onLeftButtonToggle(boolean isActive) {
+        super.onLeftButtonToggle(isActive);
         if(isActive) {
             floatingTitlebar.showSearchBar();
         } else floatingTitlebar.showTitleTextBar();
+    }
+    @Override
+    public void onRightButtonToggle(boolean isActive) {
+        super.onRightButtonToggle(isActive);
+
+
+        dialogHelper.createDialog("Checkout",
+                String.format("Order Details:\n\nTotal Items:  %d\nTotal Price: €%.2f",
+                        currentQuantity, currentTotal), new DialogHelper.IClickAction(){
+                    @Override
+                    public void onAction() {
+                        Map<String,Object> order = new HashMap<>();
+                        order.put("timestamp",""+System.currentTimeMillis());
+                        order.put("quantity",currentQuantity);
+                        order.put("total",currentTotal);
+
+                        ItemAdapter<PurchaseItem> itemAdapter = (ItemAdapter<PurchaseItem>)recViewPurchase.getAdapter();
+                        if(itemAdapter != null) {
+                            List<String>items = new ArrayList<>();
+                            for(int i = 0; i < itemAdapter.getItemCount(); i++) {
+                                items.add(String.format("{\"title\":\"%s\",\"imgurl\":\"%s\"}",
+                                        itemAdapter.getItem(i).getTitle(),
+                                        itemAdapter.getItem(i).getImgLink()));
+                                dbHelper.deleteItem(String.format(Constants.FirestoreCollections.LIVE_USER_CART,
+                                        auth.getUid()), itemAdapter.getItem(i).getDocID());
+                            }
+
+                            if(items.size() > 0) {
+                                order.put("items", items);
+                            }
+                        }
+
+                        dbHelper.addItem(String.format(Constants.FirestoreCollections.COMPLETED_USER_CART,
+                                auth.getUid()), order)
+                                .addOnSuccessListener(setResult ->{
+                                    //TODO: Item is added
+                                    toaster.toastShort("Order completed");
+                                })
+                                .addOnFailureListener(setFail ->{
+                                    toaster.toastShort("Failed to complete order");
+                                });
+
+                    }
+
+                    @Override
+                    public String actionName() {
+                        return "Pay";
+                    }
+                }, null).show();
+
     }
 
     private void setTrackerSwipe() {

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +21,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.aluminati.inventory.Constants;
 import com.aluminati.inventory.HomeActivity;
 import com.aluminati.inventory.R;
+import com.aluminati.inventory.fragments.purchase.PurchaseFragment;
 import com.aluminati.inventory.fragments.purchase.PurchaseItem;
 import com.aluminati.inventory.fragments.scanner.ScannerFragment;
 import com.aluminati.inventory.fragments.ui.currencyConverter.ui.CurrencyFrag;
@@ -61,6 +63,8 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
 
         fab.setOnClickListener(this);
         cartFab.setOnClickListener(this);
+        relativeLayout.setOnClickListener(this);
+        cart_count.setOnClickListener(this);
         fab2.setOnClickListener(this);
         fab3.setOnClickListener(this);
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
@@ -170,10 +174,11 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
     public void onClick(View view) {
 
         switch (view.getId()){
-           case R.id.fab_copy_1:{
+           case R.id.fab1: case R.id.fab_copy_1: case R.id.cart_count:
                closeFABMenu();
+               replaceFarg(R.id.nav_host_fragment, new PurchaseFragment());
                 break;
-            }case R.id.fab2:{
+            case R.id.fab2:{
                 replaceFarg(R.id.nav_host_fragment, new CurrencyFrag());
                 closeFABMenu();
                 break;
