@@ -171,9 +171,14 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
                         if(itemAdapter != null) {
                             List<String>items = new ArrayList<>();
                             for(int i = 0; i < itemAdapter.getItemCount(); i++) {
-                                items.add(String.format("{\"title\":\"%s\",\"imgurl\":\"%s\"}",
-                                        itemAdapter.getItem(i).getTitle(),
-                                        itemAdapter.getItem(i).getImgLink()));
+                                PurchaseItem pi = itemAdapter.getItem(i);
+
+                                items.add(String.format("{\"title\":\"%s\",\"imgurl\":\"%s\",\"price\":%.2f,\"quantity\":%d}",
+                                        pi.getTitle(),
+                                        pi.getImgLink(),
+                                        pi.getPrice(),
+                                        pi.getQuantity()));
+
                                 dbHelper.deleteItem(String.format(Constants.FirestoreCollections.LIVE_USER_CART,
                                         auth.getUid()), itemAdapter.getItem(i).getDocID());
                             }
