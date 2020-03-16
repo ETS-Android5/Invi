@@ -48,6 +48,9 @@ public class Utils {
     }
 
     public static double getRentalCharge(RentalItem item) {
+
+        if(item.getCheckedOutDate() == null) return 0;
+
         Date now = Calendar.getInstance().getTime();
         Log.d("Utils--->", item.getPrice() + " " + item.getUnitType() );
         double charge = item.getPrice();

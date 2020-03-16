@@ -184,4 +184,8 @@
     <string name="loading_items">Please wait loading items...</string>
     <string name="enter_confirm_password">Enter confirm Password</string>
     <string name="loading">Loading...</string>
+    <string name="no_items">Empty Cart</string>
+    <string name="no_items_msg">Sorry you have no items in the cart</string>
+    <string name="no_receipts">No Receipts Found</string>
+    <string name="error_getting_receipts">Error Getting receipts</string>
 </resources>

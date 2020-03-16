@@ -15,7 +15,9 @@ public class Constants {
     private Constants() {}
 
     public class FirestoreCollections {
-        public static final String RENTALS = "rentals";
+        public static final String RENTALS = "rentals/%s/items";
+        public static final String RECEIPTS_TEST = "receipts/%s/items";
+        public static final String RENTALS_RETURNED = "rentals/%s/returned";
         public static final String STORES = "stores";
         public static final String STORE_ITEMS = "storeItem";
         public static final String LIVE_USER_CART = "liveUserCart/%s/items";

@@ -157,6 +157,13 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
         super.onRightButtonToggle(isActive);
 
 
+        if(currentQuantity == 0 ) {
+            dialogHelper.createDialog(getResources().getString(R.string.no_items),
+                    getResources().getString(R.string.no_items_msg), null, null).show();
+
+            return;
+        }
+
         dialogHelper.createDialog("Checkout",
                 String.format("Order Details:\n\nTotal Items:  %d\nTotal Price: €%.2f",
                         currentQuantity, currentTotal), new DialogHelper.IClickAction() {
@@ -185,9 +192,11 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
 
     private void completeOrder() {
         Map<String, Object> order = new HashMap<>();
-        order.put("timestamp", "" + System.currentTimeMillis());
+        final long ts = System.currentTimeMillis();
+        order.put("timestamp", "" + ts);
         order.put("quantity", currentQuantity);
         order.put("total", currentTotal);
+        order.put("rental", false);
 
         ItemAdapter<PurchaseItem> itemAdapter = (ItemAdapter<PurchaseItem>) recViewPurchase.getAdapter();
         if (itemAdapter != null) {
@@ -213,8 +222,19 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
         dbHelper.addItem(String.format(Constants.FirestoreCollections.COMPLETED_USER_CART,
                 auth.getUid()), order)
                 .addOnSuccessListener(setResult -> {
-                    //TODO: Item is added
+                    String id = setResult.getId();
+                    order.remove("items");
+                    order.put("itemref", String.format(Constants.FirestoreCollections.COMPLETED_USER_CART
+                            + "/%s",
+                            auth.getUid(),id));
+
+                    dbHelper.addItem(String.format(Constants.FirestoreCollections.RECEIPTS_TEST,
+                            auth.getCurrentUser().getUid()), order)
+                            .addOnSuccessListener(result -> {Log.d(TAG, "receipt created: " + id);});
+
                     toaster.toastShort("Order completed");
+                    currentQuantity = 0;
+                    currentTotal = 0;
                 })
                 .addOnFailureListener(setFail -> {
                     toaster.toastShort("Failed to complete order");

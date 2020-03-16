@@ -26,6 +26,7 @@ import androidx.fragment.app.Fragment;
 
 import com.aluminati.inventory.Constants;
 import com.aluminati.inventory.R;
+import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.fragments.PriceCheck;
 import com.aluminati.inventory.fragments.tesco.Product;
 import com.aluminati.inventory.fragments.tesco.ProductReady;
@@ -54,6 +55,7 @@ import com.google.gson.JsonSyntaxException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ScannerFragment extends Fragment implements ProductReady {
@@ -104,17 +106,6 @@ public class ScannerFragment extends Fragment implements ProductReady {
                                             parseScanResult(result.getText());
                                         }
 
-                //TODO: remove after debug -
-
-            /*
-            //TODO: remove after debug
-             Test barcode QR code
-             https://idev.ie/demo/
-
-             {"sid":"Wcxb1fSbI0uz2RRaIaTl","iid":"tg4AccyV3uulNiVAa8jT","idx":"3"} //rental item
-             {"sid":"Wcxb1fSbI0uz2RRaIaTl","iid":"yMjwSXjkyPLhOIjay8DI"}//purchase item item
-
-                */
 
                 Log.i(ScannerFragment.class.getName(), "Result --> " + result.getText());
             }));
@@ -202,7 +193,6 @@ public class ScannerFragment extends Fragment implements ProductReady {
                             (dialogInterface, i) -> {
                         scanResult.put("uid", uid);
                         scanResult.put("addDate", Calendar.getInstance().getTime());
-                        //addToCart(scanResult, uid);
                         addToCart(item, uid);
 
 
@@ -214,9 +204,9 @@ public class ScannerFragment extends Fragment implements ProductReady {
     }
 
     private void addToCart(PurchaseItem item, String uid) {
+
         dbHelper.addItem(String.format(Constants.FirestoreCollections.LIVE_USER_CART, uid), item)
                 .addOnSuccessListener(setResult ->{
-                    //TODO: Item is added
                     toaster.toastShort("Item added to cart");
                 })
                 .addOnFailureListener(setFail ->{
@@ -227,9 +217,9 @@ public class ScannerFragment extends Fragment implements ProductReady {
     private void isRented(Map<String, Object> scanResult) {
         String docId = String.format("%s_%s", scanResult.get("iid"), scanResult.get("idx"));
 
-        dbHelper.getItem(Constants.FirestoreCollections.RENTALS,docId)
+        dbHelper.getItem(String.format(Constants.FirestoreCollections.RENTALS,
+                FirebaseAuth.getInstance().getUid()),docId)
                 .addOnSuccessListener( res -> {
-                   // String msg = res.exists() ? "Sorry this item is already rented" :"You can rent this item";
 
                     final String uid = res.getString("uid");
 
@@ -239,12 +229,11 @@ public class ScannerFragment extends Fragment implements ProductReady {
 
                                 RentalItem item = task.toObject(RentalItem.class);
 
-                                toaster.toastShort(item.getTitle());
-
                                 int color = res.exists() ? Color.RED : Color.GREEN;
 
                                 AlertDialog.Builder dialog = dialogHelper
-                                        .createDialog(dialogHelper.buildRentalView(item.getTitle(), "", item.getImgLink(), color));
+                                        .createDialog(dialogHelper.buildRentalView(item.getTitle(),
+                                                "", item.getImgLink(), color));
                                 dialog.setMessage("This item is all ready rented");
 
                                 if(!res.exists()) { //if item isn't in rentals we can rent it
@@ -267,9 +256,30 @@ public class ScannerFragment extends Fragment implements ProductReady {
 
                                         dialog.setPositiveButton("Return Item",
                                                 (dialogInterface, i) -> {
-                                                    //Print receipt here
-                                                    dbHelper.deleteItem(Constants.FirestoreCollections.RENTALS, docId)
-                                                            .addOnSuccessListener( deleted -> {
+                                                    //move item we are checking in to archive
+
+                                                    dbHelper.addItem(
+                                                            String.format(Constants.FirestoreCollections.RENTALS_RETURNED, uid)
+                                                            , res.toObject(RentalItem.class)).addOnSuccessListener( result -> {
+
+                                                        final long ts = System.currentTimeMillis();
+                                                        Map<String, Object> order = new HashMap<>();
+                                                        order.put("timestamp", ""+ts);
+                                                        order.put("quantity", 1);
+                                                        order.put("itemref", String.format(Constants.FirestoreCollections.RENTALS_RETURNED, uid) + "/" + result.getId());
+                                                        order.put("total", Utils.getRentalCharge(res.toObject(RentalItem.class)));
+                                                        order.put("rental", true);
+
+                                                        //create a receipt with new archived item
+                                                        dbHelper.addItem(String.format(Constants.FirestoreCollections.RECEIPTS_TEST,
+                                                                uid), order)
+                                                                .addOnSuccessListener(returned -> {Log.d(TAG, "receipt created: " + returned.getId());});
+                                                    });
+
+                                                    //Delete original item from users rental list
+                                                    dbHelper.deleteItem(
+                                                            String.format(Constants.FirestoreCollections.RENTALS, uid)
+                                                            , docId).addOnSuccessListener( deleted -> {
                                                                 toaster.toastLong("You have now checked in " + item.getTitle());
                                                             });
                                                     dialogInterface.dismiss();
@@ -282,7 +292,7 @@ public class ScannerFragment extends Fragment implements ProductReady {
                             });
                 })
                 .addOnFailureListener(ex -> {
-                    //TODO: something happened here
+                    Log.e(TAG, ex.getMessage());
                 });
 
     }
@@ -291,12 +301,12 @@ public class ScannerFragment extends Fragment implements ProductReady {
     private void rentItem(Map<String, Object> scanResult) {
         String docId = String.format("%s_%s", scanResult.get("iid"), scanResult.get("idx"));
 
-        dbHelper.setItem(Constants.FirestoreCollections.RENTALS,docId, scanResult)
+        dbHelper.setItem(String.format(Constants.FirestoreCollections.RENTALS,
+                FirebaseAuth.getInstance().getUid()),docId, scanResult)
                 .addOnSuccessListener(setResult ->{
-                    //TODO: Item is added
                     toaster.toastShort("Item added");
                 })
-                .addOnFailureListener(setFail ->{});
+                .addOnFailureListener(setFail ->{toaster.toastShort("Failed to add item");});
     }
 
     @Override

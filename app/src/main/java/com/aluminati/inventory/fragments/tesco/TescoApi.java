@@ -294,11 +294,8 @@ class GetItemListResultDeserializer implements JsonDeserializer<Product> {
                 JsonElement tmp = itemJsonObject.get("description");
                 String description = tmp != null ? tmp.getAsJsonArray().get(0).getAsString() : name;
 
-
-                //TODO: to much data for logs remove in production
                 Log.i("Tesco", "id:" + id + " name:" +
-                        name + " desc:" + getDes() + " desc2:"
-                        + tmp.getAsJsonArray().toString());
+                        name + " desc:" + getDes() );
 
                 String des = getDes();
                 String desArray = tmp != null ? tmp.getAsJsonArray().toString() : null;

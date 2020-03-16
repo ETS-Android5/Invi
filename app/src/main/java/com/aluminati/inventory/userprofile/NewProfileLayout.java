@@ -289,33 +289,6 @@ public class NewProfileLayout extends AppCompatActivity  {
     }
 
 
-//    @Override
-//    public boolean onMenuItemClick(MenuItem menuItem) {
-//        switch (menuItem.getItemId()) {
-//            case R.id.reload: {
-//                reloadUser();
-//                break;
-//            }
-//            case R.id.password_reset: {
-//                startActivityForResult(new Intent(NewProfileLayout.this, PassWordReset.class), PASSWORD_RESET);
-//                break;
-//            }
-//            case R.id.logout: {
-//                firebaseAuth.signOut();
-//                if (LoginManager.getInstance() != null) {
-//                    LoginManager.getInstance().logOut();
-//                }
-//                //TODO: not good --> look for clear flags when creating intent HomeActivity.homeActivity.finish();
-//                Intent logout = new Intent(NewProfileLayout.this, LogInActivity.class);
-//                logout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                startActivity(logout);
-//                finish();
-//                break;
-//            }
-//        }
-//        return false;
-//    }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();

@@ -67,7 +67,6 @@ public class VerifyUser {
         if (user != null) {
             if (user.isPhoneVerified() && user.isEmailVerified()){
                 Log.i(TAG, "User verified -> InfoPage Activity Intent");
-                //TODO: this needs to be put in a frag activity.startActivity(new Intent(activity, UserProfile.class));
                 activity.startActivity(new Intent(activity, HomeActivity.class));
                 activity.finish();
             }else {

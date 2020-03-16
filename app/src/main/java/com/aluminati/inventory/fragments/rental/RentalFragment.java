@@ -82,16 +82,13 @@ public class RentalFragment extends FloatingTitlebarFragment {
         };
 
         reloadItems(null);
-
-        setTrackerSwipe();
         setUpLiveListener();
         return root;
     }
 
     private void reloadItems(String filter) {
-
-        dbHelper.getCollection(Constants.FirestoreCollections.RENTALS)
-                .whereEqualTo("uid", auth.getCurrentUser().getUid())
+        dbHelper.getCollection(String.format(Constants.FirestoreCollections.RENTALS,
+                auth.getCurrentUser().getUid()))
                 .get().addOnSuccessListener(snapshot -> {
 
             if (snapshot.isEmpty()) {
@@ -109,14 +106,15 @@ public class RentalFragment extends FloatingTitlebarFragment {
 
 
     private void setUpLiveListener() {
-        firestore.collection(Constants.FirestoreCollections.RENTALS)
-                .whereEqualTo("uid", auth.getCurrentUser().getUid())
+        firestore.collection(String.format(Constants.FirestoreCollections.RENTALS,
+                auth.getCurrentUser().getUid()))
                 .addSnapshotListener((snapshot, e) -> {
             if(snapshot != null && snapshot.size() > 0) {
                 loadRentalItems(initRentalItems(snapshot.getDocuments(), null));
                 Log.d(TAG, "addSnapshotListener: Items found " + snapshot.size());
             } else {
                 recViewRental.setAdapter(null);
+                floatingTitlebar.setTitleText("");
             }
 
         });

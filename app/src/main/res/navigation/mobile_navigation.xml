@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_purchase" />
 
     <fragment
+        android:id="@+id/nav_receipts"
+        android:name="com.aluminati.inventory.fragments.receipt.ReceiptFragment"
+        android:label="Receipts"
+        tools:layout="@layout/fragment_receipt" />
+
+    <fragment
         android:id="@+id/nav_rental"
         android:name="com.aluminati.inventory.fragments.rental.RentalFragment"
         android:label="@string/menu_share"
