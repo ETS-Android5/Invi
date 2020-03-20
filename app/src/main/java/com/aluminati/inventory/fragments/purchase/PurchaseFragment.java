@@ -292,7 +292,9 @@ public class PurchaseFragment extends FloatingTitlebarFragment implements GetCar
                                 Log.i(TAG, "Got user successfully");
                                 Map<String, Long> cats = (Map<String, Long>) success.get("items_categories");
 
-                                UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(), "items_categories", concat(cats, depts));
+
+                                UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(),
+                                        "items_categories", cats != null ? concat(cats, depts): depts);
 
                             })
                             .addOnFailureListener(failure -> {
@@ -323,6 +325,8 @@ public class PurchaseFragment extends FloatingTitlebarFragment implements GetCar
         Map<String, Long> newMap = new HashMap<>();
         Set<String> keys = catsNew.keySet();
         for(String key : keys){
+            if(key == null) continue;
+
             if(catsCurrent.containsKey(key)){
                 long catCount = (catsCurrent.get(key) + Integer.parseInt(catsNew.get(key)));
                 newMap.put(key, catCount);
