@@ -105,7 +105,10 @@ public class ItemAdapter<T> extends RecyclerView.Adapter<ItemAdapter<T>.ViewHold
 
         public void bind(final T item, final OnItemClickListener<T> listener){
             binder.bind(item, context);
-            itemView.setOnClickListener(view -> listener.onItemClick(item));
+            if(listener != null) {
+                itemView.setOnClickListener(view -> listener.onItemClick(item));
+            }
+
         }
 
         public View getForeground() {return viewForeground;}
