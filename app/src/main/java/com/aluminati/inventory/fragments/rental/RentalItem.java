@@ -21,20 +21,9 @@ public class RentalItem extends BaseItem {
         this.unitType = unitType;
     }
 
-    public RentalItem(DocumentSnapshot documentSnapshot){
-
-        this.storeID = documentSnapshot.getString("storedId");
-        this.storeCity = documentSnapshot.getString("storeCity");
-        this.storeCountry = documentSnapshot.getString("storeCountry");
-        this.title = documentSnapshot.getString("title");
-        this.description = documentSnapshot.getString("description");
-        this.price = (Double) documentSnapshot.get("price");
-        this.imgLink = documentSnapshot.getString("imgLink");
-        this.tags = (List<String>)documentSnapshot.get("tags");
-        this.isRestricted = documentSnapshot.getBoolean("restricted");
-        this.unitType = documentSnapshot.getString("unitType");
-
-        new RentalItem(storeID,storeCity,storeCountry,title,description,price,imgLink,tags,isRestricted,unitType);
+    public RentalItem(RentalItem copy) {
+        this(copy.storeID, copy.storeCity, copy.storeCountry, copy.title, copy.description,
+                copy.price, copy.imgLink, copy.tags, copy.isRestricted, copy.unitType);
     }
 
     public void setCheckedOutDate(Date checkedOutDate) {
