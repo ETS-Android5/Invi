@@ -5,7 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -13,7 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,30 +20,33 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
-import com.aluminati.inventory.fragments.ui.currencyConverter.Currency;
-import com.aluminati.inventory.fragments.ui.currencyConverter.ui.CurrencyAdapter;
+import com.aluminati.inventory.fragments.summary.recenttransaction.Transaction;
+import com.aluminati.inventory.fragments.summary.recenttransaction.adapter.TransactionAdapter;
 import com.aluminati.inventory.login.authentication.encryption.PhoneAESDecryption;
 import com.aluminati.inventory.login.authentication.encryption.PhoneAESEncryption;
-import com.aluminati.inventory.payments.Payment;
+import com.aluminati.inventory.payments.model.Payment;
 import com.aluminati.inventory.users.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class Payments extends Fragment {
 
     private static final String TAG = Payment.class.getName();
-    private static RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
+    private static RecyclerView recyclerView, recyclerViewTransaction;
+    private RecyclerView.LayoutManager layoutManager, layoutManagerTransactions;
     private static ArrayList<Payment> data;
-    private static RecyclerView.Adapter adapter;
+    private static ArrayList<Transaction> transactions;
+    private static RecyclerView.Adapter adapter, transactionsAdapter;
     private static String decCrypt;
-    private TextView emptyView;
-    private LinearLayout layout;
-    private EditText nameField, expiryDate, cardNumber;
+    private TextView emptyView, transactionEmptyView;
+    private Button deleteButton;
     private int pos;
 
 
@@ -53,11 +55,18 @@ public class Payments extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+        return inflater.inflate(getResources().getLayout(R.layout.card_views), container, false);
+    }
 
-        View view = inflater.inflate(getResources().getLayout(R.layout.card_views), container, false);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        layoutManagerTransactions = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
 
         emptyView = view.findViewById(R.id.empty_recyler_view);
+        transactionEmptyView = view.findViewById(R.id.transaction_recycler_view_placeholder);
+
 
         view.findViewById(R.id.add_card).setOnClickListener(click -> {
             Bundle bundle = new Bundle();
@@ -69,28 +78,8 @@ public class Payments extends Fragment {
                     .commit();
         });
 
-        view.findViewById(R.id.delete_card).setOnClickListener(click -> {
+        deleteButton = view.findViewById(R.id.delete_card);
 
-            String tmp = cardNumber.getText().toString();
-                   tmp = tmp.substring(tmp.length() - 4);
-            data.remove(pos);
-            recyclerView.removeViewAt(pos);
-            clearFields();
-
-            Utils.makeSnackBar("Card ending " + tmp + " deleted successfully", nameField, getActivity());
-            if(data.isEmpty()){
-                UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(), "cidi", "");
-            }else {
-                encryptPayments(data, FirebaseAuth.getInstance().getCurrentUser());
-            }
-        });
-
-
-        nameField = view.findViewById(R.id.card_name);
-        cardNumber = view.findViewById(R.id.card_number);
-        expiryDate = view.findViewById(R.id.card_expiry);
-
-        layout = view.findViewById(R.id.card_details);
 
         recyclerView = view.findViewById(R.id.card_view_recycler);
         recyclerView.setHasFixedSize(true);
@@ -98,13 +87,33 @@ public class Payments extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        recyclerView = view.findViewById(R.id.card_view_recycler);
-
-
+        recyclerViewTransaction = view.findViewById(R.id.transaction_recycler_view);
+        recyclerViewTransaction.setHasFixedSize(true);
+        recyclerViewTransaction.setLayoutManager(layoutManagerTransactions);
+        recyclerViewTransaction.setItemAnimator(new DefaultItemAnimator());
 
         decryptPayments(FirebaseAuth.getInstance().getCurrentUser());
 
-        return view;
+        deleteButton.setOnClickListener(click -> {
+            String tmp = data.get(pos).getNumber();
+            tmp = tmp.substring(tmp.length() - 4);
+            data.remove(pos);
+            recyclerView.removeViewAt(pos);
+
+
+
+            Utils.makeSnackBar("Card ending " + tmp + " deleted successfully", emptyView, getActivity());
+
+            deleteButton.setVisibility(View.INVISIBLE);
+            int size = transactions.size();
+            transactionsAdapter.notifyItemRangeRemoved(0,size);
+            if(data.isEmpty()){
+                UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(), "cidi", "");
+            }else {
+                encryptPayments(data, FirebaseAuth.getInstance().getCurrentUser());
+            }
+        });
+
     }
 
     @Override
@@ -119,25 +128,26 @@ public class Payments extends Fragment {
                     .addOnSuccessListener(result -> {
                         Log.i(TAG, "Got Payment Successfully");
                         try {
-                            if(result.contains("cidi")){
-                                String cidi = (String)result.get("cidi");
-                                String pid = (String)result.get("pid");
-                                new PhoneAESDecryption(cidi, pid, (dec) -> {
-                                    if(dec != null){
-                                        decCrypt = dec;
-                                        data = Payment.stringToList(dec);
+                            if(result.contains("cidi")) {
+                                String cidi = (String) result.get("cidi");
+                                if (cidi != null && !cidi.isEmpty()) {
+                                    String pid = (String) result.get("pid");
+                                    new PhoneAESDecryption(cidi, pid, (dec) -> {
+                                        if (dec != null) {
+                                            decCrypt = dec;
+                                            data = Payment.stringToList(dec);
 
-                                        if(!data.isEmpty()){
-                                            emptyView.setVisibility(View.INVISIBLE);
+                                            if (!data.isEmpty()) {
+                                                emptyView.setVisibility(View.INVISIBLE);
+                                            }
+
+                                            adapter = new PaymentAdapter(data, this);
+                                            bind(adapter);
+                                            recyclerView.setAdapter(adapter);
                                         }
-
-                                        adapter = new PaymentAdapter(data, getActivity());
-                                        bind(adapter);
-                                        recyclerView.setAdapter(adapter);
-                                    }
-                                });
+                                    });
+                                }
                             }
-
                         }catch (Exception e){
                             Log.w(TAG, "Failed to decrypt phone number", e);
                         }
@@ -162,30 +172,51 @@ public class Payments extends Fragment {
 
     }
 
-    private void clearFields(){
-        cardNumber.setText("");
-        expiryDate.setText("");
-        nameField.setText("");
-        layout.setVisibility(View.INVISIBLE);
+
+    private void onPaymentCardRecieved(int position){
+
+           String cardRef = data.get(position).getCardRef();
+           if(cardRef != null){
+
+               UserFetch.getTransactionsByRef(cardRef,FirebaseAuth.getInstance().getCurrentUser().getEmail())
+                       .addOnSuccessListener(success -> {
+                           transactions = new ArrayList<>();
+                           List<Map<String, Object>> trans = (List<Map<String, Object>>)success.get("transactions");
+                           for(Map<String, Object> tr : trans){
+                               transactions.add(new Transaction((String) tr.get("amount"), (String) tr.get("date"), "card"));
+                           }
+
+                           if(!transactions.isEmpty()){
+                               transactionEmptyView.setVisibility(View.INVISIBLE);
+                           }
+
+                           transactionsAdapter = new TransactionAdapter(transactions, this);
+                           recyclerViewTransaction.setAdapter(transactionsAdapter);
+
+                       })
+                       .addOnFailureListener(failure -> {
+                          Log.i(TAG, "Failed to get transactions", failure);
+                       });
+           }
+
     }
 
-    private void onPaymentCardRecieved(Payment payment, int position){
-        if(payment != null){
-            layout.setVisibility(View.VISIBLE);
-            cardNumber.setText(payment.getNumber());
-            expiryDate.setText(payment.getExpiryDate());
-            nameField.setText(payment.getName());
-            pos = position;
-        }
+    private void setDeleteButtonVisisbile(){
+        deleteButton.setVisibility(View.VISIBLE);
     }
 
     private void bind(RecyclerView.Adapter adapter){
         if(adapter instanceof PaymentAdapter) {
             ((PaymentAdapter)adapter).setSelectedCard(this::onPaymentCardRecieved);
+            ((PaymentAdapter)adapter).setSetButtonVisible(this::setDeleteButtonVisisbile);
         }
     }
 
     public interface SelectedCard extends Serializable{
-        void selectedCard(Payment payment, int postion);
+        void selectedCard(int postion);
+    }
+
+    public interface SetButtonVisible extends Serializable{
+        void setVisibile();
     }
 }

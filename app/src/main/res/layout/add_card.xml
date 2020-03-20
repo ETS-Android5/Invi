@@ -18,7 +18,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="25dp"
         android:background="@drawable/buttonpositive"
-        android:text="Add Cart"
+        android:text="@string/add_card"
         android:textSize="20sp"
         android:textColor="@color/white_text"
         />

@@ -1,4 +1,4 @@
-package com.aluminati.inventory.fragments.tesco;
+package com.aluminati.inventory.fragments.tesco.objects;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -31,6 +31,8 @@ public class TescoProduct {
     @Expose
     @SerializedName("pkgDimensions")
     private PkgDimensions pkgDimensions;
+
+    private String dept;
 
     public TescoProduct(){
 
@@ -79,6 +81,14 @@ public class TescoProduct {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setDept(String dept) {
+        this.dept = dept;
+    }
+
+    public String getDept() {
+        return dept;
     }
 
     public String getBrand() {

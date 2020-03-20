@@ -1,41 +1,33 @@
 package com.aluminati.inventory;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.nfc.NfcAdapter;
-import android.nfc.Tag;
-import android.nfc.tech.NfcA;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.aluminati.inventory.fragments.MapsActivity;
+import com.aluminati.inventory.fragments.googleMaps.MapsActivity;
+import com.aluminati.inventory.fragments.summary.Summary;
 import com.aluminati.inventory.fragments.ui.currencyConverter.ui.CurrencyFrag;
 import com.aluminati.inventory.fragments.purchase.PurchaseFragment;
 import com.aluminati.inventory.fragments.receipt.ReceiptFragment;
 import com.aluminati.inventory.fragments.recent.RecentFragment;
 import com.aluminati.inventory.fragments.rental.RentalFragment;
 import com.aluminati.inventory.fragments.scanner.ScannerFragment;
-import com.aluminati.inventory.fragments.search.SearchFragment;
 import com.aluminati.inventory.fragments.tools.ToolsFragment;
 
 import com.aluminati.inventory.login.authentication.LogInActivity;
@@ -44,18 +36,14 @@ import com.aluminati.inventory.payments.ui.Card;
 import com.aluminati.inventory.payments.ui.Payments;
 import com.aluminati.inventory.payments.ui.PaymentsFrag;
 import com.aluminati.inventory.utils.Toaster;
-import com.aluminati.inventory.widgets.CustomFloatingActionButton;
 import com.aluminati.inventory.widgets.ScannerFragContains;
 import com.facebook.login.LoginManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.pro100svitlo.creditCardNfcReader.CardNfcAsyncTask;
-import com.pro100svitlo.creditCardNfcReader.model.EmvCard;
 import com.pro100svitlo.creditCardNfcReader.utils.CardNfcUtils;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -97,6 +85,7 @@ public class HomeActivity extends AppCompatActivity implements CardNfcAsyncTask.
                 .setText("| ".concat(getResources()
                         .getString(R.string.app_name))
                         .concat(" " + getYear()).concat(" ®"));
+
 
 
 
@@ -154,8 +143,6 @@ public class HomeActivity extends AppCompatActivity implements CardNfcAsyncTask.
         fragMap.put(R.id.nav_home, new RecentFragment(mDrawerLayout));
         fragMap.put(R.id.nav_receipts, new ReceiptFragment(mDrawerLayout));
         fragMap.put(R.id.nav_rental, new RentalFragment(mDrawerLayout));
-        fragMap.put(R.id.nav_slideshow, new SearchFragment(mDrawerLayout));
-        fragMap.put(R.id.nav_tools, new ToolsFragment(mDrawerLayout));
         fragMap.put(R.id.maps, new MapsActivity());
         fragMap.put(R.id.nav_scanner, new ScannerFragment());
         fragMap.put(R.id.currency_converions, new CurrencyFrag());
@@ -192,6 +179,8 @@ public class HomeActivity extends AppCompatActivity implements CardNfcAsyncTask.
         });
 
         loadFrag(fragMap.get(R.id.nav_home));//default nav
+
+
     }
 
     private void connetionInfo(){

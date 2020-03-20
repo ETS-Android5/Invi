@@ -1,22 +1,15 @@
 package com.aluminati.inventory.fragments.scanner;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -28,9 +21,10 @@ import com.aluminati.inventory.Constants;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.fragments.PriceCheck;
-import com.aluminati.inventory.fragments.tesco.Product;
-import com.aluminati.inventory.fragments.tesco.ProductReady;
-import com.aluminati.inventory.fragments.tesco.TescoApi;
+import com.aluminati.inventory.fragments.tesco.TescoProductsApi;
+import com.aluminati.inventory.fragments.tesco.objects.Product;
+import com.aluminati.inventory.fragments.tesco.listeners.ProductReady;
+import com.aluminati.inventory.fragments.tesco.TescoProductsApi;
 import com.aluminati.inventory.helpers.DbHelper;
 import com.aluminati.inventory.helpers.DialogHelper;
 import com.aluminati.inventory.fragments.purchase.PurchaseItem;
@@ -40,11 +34,6 @@ import com.aluminati.inventory.utils.Toaster;
 import com.aluminati.inventory.widgets.ToggleButton;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -52,7 +41,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -64,61 +52,56 @@ public class ScannerFragment extends Fragment implements ProductReady {
     private FirebaseFirestore db;
     private DbHelper dbHelper;
     private DialogHelper dialogHelper;
-
     private Toaster toaster;
-    private Switch switchPriceCheck;
     private ToggleButton btnSound;
     private ProductReady productReady;
     private TextView progressBar;
 
     //Update
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_scanner, container, false);
+    }
 
-        View root = inflater.inflate(R.layout.fragment_scanner, container, false);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         dbHelper = DbHelper.getInstance();
         dialogHelper = DialogHelper.getInstance(getActivity());
         toaster = Toaster.getInstance(getActivity());
-        switchPriceCheck = root.findViewById(R.id.price_check_switch);
-        btnSound = root.findViewById(R.id.toggleQRSound);
-        progressBar = root.findViewById(R.id.scanner_progress_loader);
+        btnSound = view.findViewById(R.id.toggleQRSound);
+        progressBar = view.findViewById(R.id.scanner_progress_loader);
 
         TextLoader textLoader = new TextLoader();
         textLoader.setForeground(progressBar, getResources().getString(R.string.loading));
 
         try {
 
-            CodeScannerView scannerView = root.findViewById(R.id.scanner_view);
+            CodeScannerView scannerView = view.findViewById(R.id.scanner_view);
 
-                            mCodeScanner = new CodeScanner(getContext(), scannerView);
-                            mCodeScanner.setFormats(CodeScanner.ALL_FORMATS);
+            mCodeScanner = new CodeScanner(getContext(), scannerView);
+            mCodeScanner.setFormats(CodeScanner.ALL_FORMATS);
 
-                            mCodeScanner.setDecodeCallback(result ->
-                                    getActivity().runOnUiThread(() -> {
-                                        if(!btnSound.isToggled()) {
-                                            MediaPlayer.create(getActivity(), R.raw.scan).start();
-                                        }
-
-                                        if(switchPriceCheck.isChecked()){
-                                            PriceCheck priceCheck = PriceCheck.newInstance("PriceCheck");
-                                            priceCheck.show(getActivity().getSupportFragmentManager(),
-                                                    "price_check_frag");
-                                        }else{
-                                            parseScanResult(result.getText());
-                                        }
+            mCodeScanner.setDecodeCallback(result ->
+                    getActivity().runOnUiThread(() -> {
+                        if(!btnSound.isToggled()) {
+                            MediaPlayer.create(getActivity(), R.raw.scan).start();
+                        }
 
 
-                Log.i(ScannerFragment.class.getName(), "Result --> " + result.getText());
-            }));
+                        parseScanResult(result.getText());
 
-            scannerView.setOnClickListener(view -> mCodeScanner.startPreview());
+
+
+                        Log.i(ScannerFragment.class.getName(), "Result --> " + result.getText());
+                    }));
+
+            scannerView.setOnClickListener(click -> mCodeScanner.startPreview());
 
         } catch (Exception ex) {
             toaster.toastLong("Error opening camera. Make sure permission is set");
             Log.e(ScannerFragment.class.getSimpleName(), ex.toString());
 
         }
-
-        return root;
     }
 
     private void parseScanResult(String result){
@@ -160,7 +143,7 @@ public class ScannerFragment extends Fragment implements ProductReady {
         }*/
         else{
 
-                TescoApi tescoApi = new TescoApi(result);
+                TescoProductsApi tescoApi = new TescoProductsApi(result);
                          tescoApi.getProduct();
                          tescoApi.setProductReady(this);
                          progressBar.setVisibility(View.VISIBLE);
@@ -355,6 +338,7 @@ public class ScannerFragment extends Fragment implements ProductReady {
             pItem.setStoreID(Constants.FirestoreCollections.TESCO_STORE_ID);
             pItem.setImgLink(product.getImage());
             pItem.setDocID(product.getId());
+            pItem.setDep(product.getDep());
             pItem.setTags(Arrays.asList(pItem.getTitle(), pItem.getDescription()));
             pItem.setRestricted(false);
             pItem.setStoreCity("Limerick");//This is only proof of concept

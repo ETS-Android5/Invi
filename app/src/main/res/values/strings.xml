@@ -188,4 +188,11 @@
     <string name="no_items_msg">Sorry you have no items in the cart</string>
     <string name="no_receipts">No Receipts Found</string>
     <string name="error_getting_receipts">Error Getting receipts</string>
+    <string name="opens">Opens</string>
+    <string name="closes">Closes</string>
+    <string name="other">Other</string>
+    <string name="date">Date</string>
+    <string name="payment_type">Type</string>
+    <string name="no_transactions">No Transactions</string>
+    <string name="pay">Pay</string>
 </resources>

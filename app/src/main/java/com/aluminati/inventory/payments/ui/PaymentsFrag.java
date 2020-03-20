@@ -64,16 +64,10 @@ import java.util.concurrent.Executors;
 public class PaymentsFrag extends Fragment implements View.OnClickListener, LifecycleOwner, CameraXConfig.Provider {
 
     private static final String TAG = PaymentsFrag.class.getName();
-    private View imgCapture;
-    private TextureView textureView;
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
     private ImageAnalysis imageAnalysis;
-    private ImageCapture imageCapture;
     private ImageButton picImage;
     private PreviewView previewView;
-    private final int STORAGE_PERMISSION_CODE = 2001;
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    private Card.cardDetails cardDetails;
     private Executor executor;
     private sendBackResult sendBackResult;
 
@@ -82,11 +76,12 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+        return inflater.inflate(getResources().getLayout(R.layout.scan_card), container, false);
+    }
 
-        View view = inflater.inflate(getResources().getLayout(R.layout.scan_card), container, false);
-
-
-
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         picImage = view.findViewById(R.id.imgCapture);
         picImage.setOnClickListener(this);
@@ -97,7 +92,6 @@ public class PaymentsFrag extends Fragment implements View.OnClickListener, Life
         setCamera();
 
 
-        return view;
     }
 
     private void setCamera(){

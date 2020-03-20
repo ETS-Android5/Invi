@@ -18,5 +18,6 @@
         app:rightToggleOnIcon="@drawable/ic_side_profile"
         app:titleText=""
         app:titleTextMinHeight="40"
+        android:layout_marginTop="10dp"
         app:searchHint="Search" />
 </LinearLayout>

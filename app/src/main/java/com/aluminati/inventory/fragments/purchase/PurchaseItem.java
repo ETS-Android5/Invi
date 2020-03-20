@@ -1,6 +1,7 @@
 package com.aluminati.inventory.fragments.purchase;
 
 import com.aluminati.inventory.model.BaseItem;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +19,11 @@ public class PurchaseItem extends BaseItem {
         super(storeID, storeCity, storeCountry, title, description, price, imgLink,tags, isRestricted, false);
         this.quantity = quantity;
     }
+
+    public PurchaseItem(DocumentSnapshot documentSnapshot){
+
+    }
+
 
     public int getQuantity() {
         return quantity;

@@ -36,7 +36,7 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
 {
     private final static String TAG = CustomFloatingActionButton.class.getName();
     private FloatingActionButton fab;
-    private Button cartFab, cart_count, fab2, fab3;
+    private Button cartFab, cart_count, fab2, fab3, fab1;
     private Boolean isFABOpen = false;
     private ScannerFragment scannerFragment;
     private RelativeLayout relativeLayout;
@@ -60,6 +60,8 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
         relativeLayout = view.findViewById(R.id.fab_copy_1);
         cartFab = view.findViewById(R.id.fab1);
         cart_count = view.findViewById(R.id.cart_count);
+
+        view.findViewById(R.id.fab_copy_1).setOnClickListener(this);
 
         fab.setOnClickListener(this);
         cartFab.setOnClickListener(this);
@@ -174,10 +176,9 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
     public void onClick(View view) {
 
         switch (view.getId()){
-           case R.id.fab1: case R.id.fab_copy_1: case R.id.cart_count:
-               closeFABMenu();
+           case R.id.fab1:
                replaceFarg(R.id.nav_host_fragment, new PurchaseFragment());
-                break;
+               break;
             case R.id.fab2:{
                 replaceFarg(R.id.nav_host_fragment, new CurrencyFrag());
                 closeFABMenu();
@@ -206,9 +207,10 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
 
     }
 
+
+
     private void replaceFarg(int id, Fragment fragment){
-        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(id, fragment).commit();
+        getParentFragmentManager().beginTransaction().replace(id, fragment).commit();
         closeFABMenu();
     }
 

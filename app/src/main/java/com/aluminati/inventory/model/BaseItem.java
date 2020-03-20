@@ -16,6 +16,8 @@ public abstract class BaseItem implements IMapper {
     protected String imgLink;
     protected List<String> tags;
     protected boolean rental;
+    protected String dep;
+    private String name;
 
     public BaseItem() {}
 
@@ -65,6 +67,7 @@ public abstract class BaseItem implements IMapper {
     public void setStoreID(String storeID) {
         this.storeID = storeID;
     }
+
 
     public String getStoreCity() {
         return storeCity;
@@ -128,6 +131,14 @@ public abstract class BaseItem implements IMapper {
 
     public void setRental(boolean rental) {
         this.rental = rental;
+    }
+
+    public String getDep() {
+        return dep;
+    }
+
+    public void setDep(String dep) {
+        this.dep = dep;
     }
 
     public Map<String, Object> toMap() {

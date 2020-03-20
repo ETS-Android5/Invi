@@ -41,19 +41,6 @@
         />
 
 
-
-    <Switch
-        android:id="@+id/price_check_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:text="@string/price_check"
-        android:switchPadding="10dp"
-        android:textColor="@color/white_text"
-        android:textSize="15sp"
-        android:layout_margin="30dp"
-        />
-
     <com.aluminati.inventory.widgets.ToggleButton
         android:id="@+id/toggleQRSound"
         android:layout_width="wrap_content"

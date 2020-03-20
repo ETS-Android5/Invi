@@ -52,15 +52,10 @@ public class MainActivity extends AppCompatActivity{
     private static final String TAG = MainActivity.class.getName();
 
     private FirebaseAuth firebaseAuth;
-    private Handler handler;
-
-    private boolean lock = false;
-    private TextView textView;
     private ConnectivityCheck connectivityCheck;
     public static AlertDialog alertDialog;
     private static final int ACTION_SETTINGS = 0;
     private TextView infoOffiline;
-    private AtomicBoolean atomicBoolean = new AtomicBoolean(true);
 
 
     @Override
@@ -69,7 +64,7 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.main_activity);
         firebaseAuth = FirebaseAuth.getInstance();
         infoOffiline = findViewById(R.id.offile_text);
-        textView = findViewById(R.id.invi_i);
+        TextView textView = findViewById(R.id.invi_i);
 
         connetionInfo();
         connectivityCheck = new ConnectivityCheck(textView, alertDialog);

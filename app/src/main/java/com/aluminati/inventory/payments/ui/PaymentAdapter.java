@@ -10,13 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.fragments.ui.currencyConverter.Currency;
-import com.aluminati.inventory.fragments.ui.currencyConverter.ui.converterDialog.ConversionPopUp;
-import com.aluminati.inventory.payments.Payment;
+import com.aluminati.inventory.payments.model.Payment;
+import com.aluminati.inventory.payments.selectPayment.SelectPayment;
 
 import java.util.ArrayList;
 
@@ -30,12 +30,13 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.Payments
     private ArrayList<Payment> dataSet;
     private View view;
     private PaymentsViewHolder currencyViewHolder;
-    private FragmentActivity activity;
+    private Fragment activity;
     private Payments.SelectedCard selectedCard;
+    private Payments.SetButtonVisible setButtonVisible;
 
 
 
-    public PaymentAdapter(ArrayList<Payment> data, FragmentActivity activity) {
+    public PaymentAdapter(ArrayList<Payment> data, Fragment activity) {
         this.dataSet = data;
         this.activity = activity;
     }
@@ -43,8 +44,16 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.Payments
     @NonNull
     @Override
     public PaymentsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.payment_card, parent, false);
+
+        if(activity instanceof SelectPayment) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.payment_card_small, parent, false);
+        }else if(activity instanceof Payments){
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.payment_card, parent, false);
+        }
         currencyViewHolder = new PaymentsViewHolder(view);
+
+        selectedCard.selectedCard(0);
+
         return currencyViewHolder;
     }
 
@@ -56,7 +65,9 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.Payments
         EditText cardExpiry = holder.cardExpiry;
         ImageView cardIcon = holder.cardLogo;
         Button editCardButton = holder.editButton;
-        editCardButton.setOnClickListener(click -> editCard(cardNumber, cardExpiry, editCardButton));
+        if(activity instanceof Payments){
+            editCardButton.setOnClickListener(click -> editCard(cardNumber, cardExpiry, editCardButton));
+        }
         cardNumber.setText(formatString(dataSet.get(position).getNumber()));
         cardExpiry.setText(dataSet.get(position).getExpiryDate());
 
@@ -67,8 +78,11 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.Payments
                 : view.getResources().getDrawable(R.drawable.master_card) );
 
 
+        selectedCard.selectedCard(position);
+
         view.setOnClickListener(click -> {
-            selectedCard.selectedCard(new Payment(cardNumber.getText().toString(),dataSet.get(position).getName(),cardExpiry.getText().toString()), position);
+            cardNumber.setSelection(0);
+            setButtonVisible.setVisibile();
         });
     }
 
@@ -121,6 +135,10 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.Payments
 
     public void setSelectedCard(Payments.SelectedCard selectedCard){
         this.selectedCard = selectedCard;
+    }
+
+    public void setSetButtonVisible(Payments.SetButtonVisible setButtonVisible) {
+        this.setButtonVisible = setButtonVisible;
     }
 
     static class PaymentsViewHolder extends RecyclerView.ViewHolder {

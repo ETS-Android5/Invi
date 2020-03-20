@@ -19,6 +19,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
     <uses-feature android:name="android.hardware.nfc" android:required="true" />
 
     <application
@@ -42,26 +45,26 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
         <activity
-            android:name=".fragments.MapsActivity"
+            android:name=".fragments.googleMaps.MapsActivity"
             android:label="@string/title_activity_maps"></activity>
         <activity
             android:name=".login.authentication.authentication.AuthenticationActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".login.authentication.phoneauthentication.PhoneAuthenticationFragment"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".login.authentication.forgotPassWord.ForgotPasswordActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".userprofile.UserProfile"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".login.authentication.LogInActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".HomeActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"  >
             <intent-filter>
                 <action android:name="android.nfc.action.TAG_DISCOVERED" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -76,7 +79,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -97,11 +100,11 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"  />
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -113,10 +116,10 @@
         </activity>
         <activity
             android:name=".login.authentication.phoneauthentication.PhoneAuthentication"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".login.authentication.password.PassWordReset"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"  />
     </application>
 
 </manifest>

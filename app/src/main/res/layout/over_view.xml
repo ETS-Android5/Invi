@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:scrollbars="vertical"
+    android:fadeScrollbars="true"
+    android:padding="10dp"
+    android:layout_marginTop="75dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <fragment
+                android:id="@+id/recent_transaction_fragment"
+                class="com.aluminati.inventory.fragments.summary.recenttransaction.RecentTransactions"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                />
+
+            <fragment
+                android:id="@+id/retal_overview"
+                class="com.aluminati.inventory.fragments.summary.currentlyRented.Rented"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginTop="10dp"
+                />
+
+            <fragment
+                android:id="@+id/purchase_categories"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginTop="10dp"
+                class="com.aluminati.inventory.fragments.summary.purchaseCategories.PurchaseCategories"
+                />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</RelativeLayout>

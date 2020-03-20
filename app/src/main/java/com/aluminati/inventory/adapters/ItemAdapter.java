@@ -20,7 +20,7 @@ import java.util.List;
  *  IBinder
  */
 public class ItemAdapter<T> extends RecyclerView.Adapter<ItemAdapter<T>.ViewHolder> {
-    private final OnItemClickListener<T> listener;
+    private OnItemClickListener<T> listener;
     private List<T> items;
     private Context context;
     private IBinder<T> iBinder;
@@ -34,6 +34,14 @@ public class ItemAdapter<T> extends RecyclerView.Adapter<ItemAdapter<T>.ViewHold
         this.layout = layout;
     }
 
+    public ItemAdapter(List<T> Items, IBinder<T> iBinder, int layout, Context context) {
+        this.items = Items;
+        this.context = context;
+        this.iBinder = iBinder;
+        this.layout = layout;
+    }
+
+
     @NonNull
     @Override
     public ItemAdapter<T>.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -45,8 +53,8 @@ public class ItemAdapter<T> extends RecyclerView.Adapter<ItemAdapter<T>.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(items.get(position), listener);
 
+        holder.bind(items.get(position), listener);
     }
 
     @Override
@@ -58,6 +66,15 @@ public class ItemAdapter<T> extends RecyclerView.Adapter<ItemAdapter<T>.ViewHold
         return items.get(position);
     }
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 
     public T removeItem(int position) {
         return removeItem(items.get(position));

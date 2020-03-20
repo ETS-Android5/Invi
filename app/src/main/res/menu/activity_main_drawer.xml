@@ -38,16 +38,7 @@
             android:title="@string/google_maps"
             />
 
-        <item android:title="@string/settings">
-            <menu>
-                <item
-                    android:id="@+id/nav_tools"
-                    android:icon="@drawable/ic_menu_manage"
-                    android:title="@string/menu_tools" />
-            </menu>
-        </item>
-
-        <item android:title="@string/communicate_menu_sec">
+        <item android:title="@string/other">
             <menu>
 <!--                <item-->
 <!--                    android:id="@+id/nav_share"-->

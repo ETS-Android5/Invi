@@ -1,4 +1,4 @@
-package com.aluminati.inventory.fragments.tesco;
+package com.aluminati.inventory.fragments.tesco.objects;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

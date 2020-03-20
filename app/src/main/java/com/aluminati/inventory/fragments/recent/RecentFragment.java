@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,7 +20,12 @@ import com.aluminati.inventory.adapters.ItemAdapter;
 import com.aluminati.inventory.adapters.swipelisteners.ItemSwipe;
 import com.aluminati.inventory.binders.BaseBinder;
 import com.aluminati.inventory.fragments.FloatingTitlebarFragment;
-import com.aluminati.inventory.fragments.MapsActivity;
+import com.aluminati.inventory.fragments.googleMaps.MapsActivity;
+import com.aluminati.inventory.fragments.summary.Summary;
+import com.aluminati.inventory.fragments.tesco.TescoProductsApi;
+import com.aluminati.inventory.fragments.tesco.objects.Product;
+import com.aluminati.inventory.fragments.tesco.listeners.ProductsReady;
+import com.aluminati.inventory.fragments.tesco.TescoProductsApi;
 import com.aluminati.inventory.helpers.DbHelper;
 import com.aluminati.inventory.model.BaseItem;
 import com.aluminati.inventory.fragments.purchase.PurchaseItem;
@@ -29,9 +35,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class RecentFragment extends FloatingTitlebarFragment {
+public class RecentFragment extends FloatingTitlebarFragment implements ProductsReady {
     private static final String TAG = RecentFragment.class.getSimpleName();
     private FirebaseFirestore firestore;
     private Toaster toaster;
@@ -39,6 +46,8 @@ public class RecentFragment extends FloatingTitlebarFragment {
     private ItemAdapter.OnItemClickListener itemClickListener;
     private BaseBinder baseBinder;
     private RecyclerView recViewRecent;
+    private TescoProductsApi tescoApi;
+    private Summary summary;
 
 //Update
     public RecentFragment() {}
@@ -76,12 +85,38 @@ public class RecentFragment extends FloatingTitlebarFragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        this.tescoApi = new TescoProductsApi();
+        this.tescoApi.setProductsReady(this);
+
+        summary = new Summary();
+
+        getParentFragmentManager().beginTransaction()
+                .add(R.id.nav_host_fragment, summary)
+                .commit();
+
+    }
+
+    @Override
     public void onTextChanged(String searchText) {
         /*
             Firebase doesn't have search by case sensitivity. Another flaw in this
             framework. Downloading every item to search isn't practical so we have
             to make tags lower case.
          */
+
+        if(searchText.isEmpty()){
+            if(!getParentFragmentManager().getFragments().contains(summary)){
+                getParentFragmentManager().beginTransaction()
+                        .add(R.id.nav_host_fragment, summary)
+                        .commit();
+            }
+        }else {
+            getParentFragmentManager().beginTransaction().remove(summary).commit();
+        }
+
+
         dbHelper.getCollection(Constants.FirestoreCollections.STORE_ITEMS)
                 .whereArrayContains("tags", searchText.toLowerCase().trim())
                 .orderBy("title")
@@ -90,7 +125,8 @@ public class RecentFragment extends FloatingTitlebarFragment {
 
                     if (snapshot.isEmpty()) {
                         Log.d(TAG, "onSuccess -> onTextChanged: no items");
-                        recViewRecent.setAdapter(null);
+                        //recViewRecent.setAdapter(null);
+                                 tescoApi.getProducts(searchText);
                     } else {
                         loadPurchaseItems(initItems(snapshot.getDocuments()));
                     }
@@ -111,10 +147,15 @@ public class RecentFragment extends FloatingTitlebarFragment {
                             break;
                             case ItemTouchHelper.RIGHT:
                                 Bundle bundle = new Bundle();
-                                bundle.putString("store_id", itemAdapter.getItem(position).getStoreID());
-                                getActivity().getSupportFragmentManager().beginTransaction()
-                                   .replace(R.id.nav_host_fragment, MapsActivity.class, bundle,"maps_frag")
-                                   .commit();
+
+                                String storeId = itemAdapter.getItem(position).getStoreID();
+                                if(!storeId.equals(Constants.FirestoreCollections.TESCO_STORE_ID)) {
+                                    bundle.putString("store_id", itemAdapter.getItem(position).getStoreID());
+                                }
+
+                                getParentFragmentManager().beginTransaction()
+                                        .replace(R.id.nav_host_fragment, MapsActivity.class, bundle, "maps_frag")
+                                        .commit();
                                 break;
                     }
 
@@ -140,6 +181,7 @@ public class RecentFragment extends FloatingTitlebarFragment {
     }
 
     private void loadPurchaseItems(List<BaseItem> purchaseItems) {
+        recViewRecent.setAdapter(null);
         recViewRecent.setAdapter(new ItemAdapter<>(purchaseItems,
                 itemClickListener,
                 baseBinder,
@@ -151,5 +193,41 @@ public class RecentFragment extends FloatingTitlebarFragment {
     public void onRightButtonToggle(boolean isActive) {
         super.onRightButtonToggle(isActive);
         startActivity(new Intent(getActivity(), UserProfile.class));
+    }
+
+    @Override
+    public void getProducts(ArrayList<Product> products) {
+        if(products.size() > 0){
+            loadPurchaseItems(toPurchaseItmes(products));
+        }else{
+            recViewRecent.setAdapter(null);
+        }
+    }
+
+    private List<BaseItem> toPurchaseItmes(ArrayList<Product> products){
+        ArrayList<BaseItem> purchaseItems = new ArrayList<>();
+
+        for(Product product : products){
+
+            String desc = product.getDescription();
+            String alt = product.getExactMatch() ? "Alternative:" : "";
+
+            PurchaseItem pItem = new PurchaseItem();
+            pItem.setTitle(alt+ product.getName());
+            pItem.setDescription(product.getDescription());
+            pItem.setPrice(Double.parseDouble(product.getPrice()));
+            pItem.setStoreID(Constants.FirestoreCollections.TESCO_STORE_ID);
+            pItem.setImgLink(product.getImage());
+            pItem.setDocID(product.getId());
+            pItem.setTags(Arrays.asList(pItem.getTitle(), pItem.getDescription()));
+            pItem.setRestricted(false);
+            pItem.setStoreCity("Limerick");//This is only proof of concept
+            pItem.setStoreCountry("Ireland");//This is only proof of concept
+            pItem.setQuantity(1);//always need 1
+
+            purchaseItems.add(pItem);
+        }
+
+        return purchaseItems;
     }
 }

@@ -1,4 +1,4 @@
-package com.aluminati.inventory.fragments.tesco;
+package com.aluminati.inventory.fragments.tesco.objects;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -26,6 +26,8 @@ public class Product {
     @Expose
     @SerializedName("exactMatch")
     private  boolean exactMatch;
+
+    public String dep;
 
     public String getImage() {
         return image;
@@ -79,13 +81,21 @@ public class Product {
 
     public boolean getExactMatch() {return exactMatch; }
 
-    public Product(String image, String tpnb, String name, String description, String price, String id) {
+    public void setDep(String dep) {
+        this.dep = dep;
+    }
+
+    public String getDep() {
+        return dep;
+    }
+
+    public Product(String id, String image, String name, String price, String description, String dep){
         this.image = image;
-        this.tpnb = tpnb;
         this.name = name;
         this.description = description;
         this.price = price;
         this.id = id;
+        this.dep = dep;
     }
 
     public Product(String img, String name, String price){

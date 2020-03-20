@@ -1,0 +1,140 @@
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="350dp"
+    xmlns:qwerjk="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/marker"
+    card_view:cardBackgroundColor="@color/grey"
+    android:background="@drawable/transactionssumarry"
+    android:orientation="horizontal"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:padding="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:id="@+id/marker_image_one"
+        android:layout_width="match_parent"
+        android:layout_height="126dp"
+        android:layout_below="@+id/shop_name_layout"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        >
+
+
+        <ImageView
+            android:id="@+id/marker_image"
+            android:layout_width="match_parent"
+            android:layout_height="126dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            />
+
+
+        <com.aluminati.inventory.widgets.MagicTextView
+            android:id="@+id/info_window_loader"
+            android:textSize="20sp"
+            android:textColor="#ff333333"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:layout_gravity="center"
+            android:textStyle="bold"
+            android:layout_centerInParent="true"
+            qwerjk:strokeColor="@android:color/darker_gray"
+            qwerjk:strokeJoinStyle="miter"
+            qwerjk:strokeWidth="1sp"
+            />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/opening_times_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/options_buttons"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentStart="true"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:textColor="@color/white_text"
+        android:text="Opening Times" />
+
+    <LinearLayout
+        android:id="@+id/shop_name_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/shop_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:singleLine="true"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:textColor="@color/white_text"
+            android:textAlignment="center"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/options_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/marker_image_one"
+
+        >
+
+        <ImageButton
+            android:id="@+id/location_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/location"
+            />
+
+        <ImageButton
+            android:id="@+id/website_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:background="@drawable/www_button"
+            android:layout_centerVertical="true"/>
+
+        <ImageButton
+            android:id="@+id/phone_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/phone"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:layout_alignParentEnd="true"
+            />
+
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/opening_times_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scrollbars="vertical"
+        android:layout_below="@+id/opening_times_label"
+        android:layout_marginTop="20dp"
+        />
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

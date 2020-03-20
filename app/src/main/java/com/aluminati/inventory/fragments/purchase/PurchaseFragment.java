@@ -15,23 +15,31 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.aluminati.inventory.Constants;
 import com.aluminati.inventory.binders.PurchaseBinder;
+import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.fragments.FloatingTitlebarFragment;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.adapters.ItemAdapter;
 import com.aluminati.inventory.adapters.swipelisteners.ItemSwipe;
+import com.aluminati.inventory.fragments.recent.RecentFragment;
 import com.aluminati.inventory.helpers.DbHelper;
 import com.aluminati.inventory.helpers.DialogHelper;
+import com.aluminati.inventory.payments.model.Payment;
+import com.aluminati.inventory.payments.selectPayment.SelectPayment;
+import com.aluminati.inventory.users.User;
 import com.aluminati.inventory.utils.Toaster;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-public class PurchaseFragment extends FloatingTitlebarFragment {
+public class PurchaseFragment extends FloatingTitlebarFragment implements GetCardRefNumber {
 
     private static final String TAG = PurchaseFragment.class.getSimpleName();
     private FirebaseFirestore firestore;
@@ -44,6 +52,7 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
     private DialogHelper dialogHelper;
     private PurchaseBinder purchaseBinder;
     private double currentTotal;
+    private FirebaseUser firebaseUser;
     private int currentQuantity;
 
     public PurchaseFragment() {super(null);}
@@ -66,6 +75,7 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
 
         floatingTitlebar.setLeftToggleOn(false);//dont change icon on toggle
         dbHelper = DbHelper.getInstance();
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         dialogHelper = DialogHelper.getInstance(getActivity());
 
         purchaseBinder = new PurchaseBinder();
@@ -169,7 +179,7 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
                         currentQuantity, currentTotal), new DialogHelper.IClickAction() {
                     @Override
                     public void onAction() {
-                        completeOrder();
+                        completeOrder("cash", null);
                     }
 
                     @Override
@@ -180,6 +190,9 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
                     @Override
                     public void onAction() {
                         //TODO: @Bart do whatever here then call completeOrder();
+                        SelectPayment selectPayment = SelectPayment.getInstance();
+                                      selectPayment.setGetCardRefNumber(PurchaseFragment.this);
+                        selectPayment.show(getParentFragmentManager(), "select_payment");
                     }
 
                     @Override
@@ -190,7 +203,10 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
 
     }
 
-    private void completeOrder() {
+
+
+
+    private void completeOrder(String type, String cardRef) {
         Map<String, Object> order = new HashMap<>();
         final long ts = System.currentTimeMillis();
         order.put("timestamp", "" + ts);
@@ -198,17 +214,23 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
         order.put("total", currentTotal);
         order.put("rental", false);
 
+        ArrayList<String> deps = new ArrayList<>();
+
+
         ItemAdapter<PurchaseItem> itemAdapter = (ItemAdapter<PurchaseItem>) recViewPurchase.getAdapter();
         if (itemAdapter != null) {
             List<String> items = new ArrayList<>();
             for (int i = 0; i < itemAdapter.getItemCount(); i++) {
                 PurchaseItem pi = itemAdapter.getItem(i);
 
-                items.add(String.format(Constants.PURCHASE_RECEIPT_ITEM,
+                deps.add(pi.getDep());
+                items.add(
+                        String.format(Constants.PURCHASE_RECEIPT_ITEM,
                         pi.getTitle(),
                         pi.getImgLink(),
                         pi.getPrice(),
-                        pi.getQuantity()));
+                        pi.getQuantity())
+                );
 
                 dbHelper.deleteItem(String.format(Constants.FirestoreCollections.LIVE_USER_CART,
                         auth.getUid()), itemAdapter.getItem(i).getDocID());
@@ -219,6 +241,8 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
             }
         }
 
+        Map<String, String> depts = depCount(deps);
+
         dbHelper.addItem(String.format(Constants.FirestoreCollections.COMPLETED_USER_CART,
                 auth.getUid()), order)
                 .addOnSuccessListener(setResult -> {
@@ -228,17 +252,77 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
                             + "/%s",
                             auth.getUid(),id));
 
+                    UserFetch.getTransactionsDoc(cardRef == null ? "cash" : cardRef, auth.getCurrentUser().getEmail(),
+                            Payment.addTransaction(Double.toString(currentTotal),type,
+                                    cardRef, String.format(Constants.FirestoreCollections.RECEIPTS_TEST,
+                                    auth.getCurrentUser().getUid())));
+
+                    UserFetch.getUser(firebaseUser.getEmail())
+                            .addOnSuccessListener(success -> {
+                                Log.i(TAG, "Got user successfully");
+                                Map<String, Long> cats = (Map<String, Long>) success.get("items_categories");
+
+                                UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(), "items_categories", concat(cats, depts));
+
+                            })
+                            .addOnFailureListener(failure -> {
+                               Log.i(TAG, "Failed to get user", failure);
+                            });
+
+
                     dbHelper.addItem(String.format(Constants.FirestoreCollections.RECEIPTS_TEST,
                             auth.getCurrentUser().getUid()), order)
                             .addOnSuccessListener(result -> {Log.d(TAG, "receipt created: " + id);});
 
-                    toaster.toastShort("Order completed");
+                    toaster.toastShort("Payment Successful");
                     currentQuantity = 0;
                     currentTotal = 0;
+
+                    getParentFragmentManager().beginTransaction()
+                            .replace(R.id.nav_host_fragment, new RecentFragment())
+                            .commit();
                 })
                 .addOnFailureListener(setFail -> {
                     toaster.toastShort("Failed to complete order");
                 });
+
+
+    }
+
+    private Map<String, Long> concat(Map<String, Long> catsCurrent, Map<String, String> catsNew){
+        Map<String, Long> newMap = new HashMap<>();
+        Set<String> keys = catsNew.keySet();
+        for(String key : keys){
+            if(catsCurrent.containsKey(key)){
+                long catCount = (catsCurrent.get(key) + Integer.parseInt(catsNew.get(key)));
+                newMap.put(key, catCount);
+                catsCurrent.remove(key);
+            }else{
+                newMap.put(key, Long.parseLong(catsNew.get(key)));
+            }
+        }
+
+        newMap.putAll(catsCurrent);
+
+        return newMap;
+    }
+
+
+    private Map<String, String> depCount(ArrayList<String> dep){
+        Map<String, String> counts = new HashMap<>();
+        Set<String> deps = new HashSet<>(dep);
+        for(String depts : deps){
+            int counter = 0;
+            for(int i = 0; i < dep.size(); i++){
+                Log.i(TAG, "Set " + (depts == null) + " array " + (dep.get(i) == null));
+                if(dep.get(i).equals(depts)){
+                    counter++;
+                }
+                counts.put(depts, Integer.toString(counter));
+                counter = 0;
+            }
+        }
+        return counts;
     }
 
     private void setTrackerSwipe() {
@@ -292,5 +376,12 @@ public class PurchaseFragment extends FloatingTitlebarFragment {
     @Override
     public void onTextChanged(String searchText) {
         reloadItems(searchText);
+    }
+
+    @Override
+    public void getCardRef(String ref) {
+        if(ref != null){
+            completeOrder("card", ref);
+        }
     }
 }

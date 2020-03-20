@@ -38,8 +38,6 @@
         android:layout_height="100dp"
         android:layout_alignEnd="@+id/fab"
         android:layout_alignBottom="@id/fab"
-        android:clickable="true"
-        android:focusable="true"
         android:gravity="center"
         android:visibility="invisible">
 
@@ -48,7 +46,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:background="@drawable/cart_button"
-            android:enabled="false"
+            android:foregroundGravity="bottom"
             app:srcCompat="@drawable/cart" />
 
         <Button
@@ -62,7 +60,6 @@
             android:layout_marginStart="-5dp"
             android:layout_marginTop="-10dp"
             android:background="@drawable/cart_count"
-            android:enabled="false"
             android:textAlignment="center"
             android:textColor="@color/white_text"
             android:textSize="12sp"

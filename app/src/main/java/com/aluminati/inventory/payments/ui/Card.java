@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,20 +26,20 @@ import androidx.fragment.app.FragmentManager;
 import com.aluminati.inventory.HomeActivity;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.firestore.UserFetch;
-import com.aluminati.inventory.fragments.scanner.ScannerFragment;
 import com.aluminati.inventory.login.authentication.encryption.PhoneAESEncryption;
-import com.aluminati.inventory.payments.Payment;
+import com.aluminati.inventory.payments.model.Payment;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-import org.w3c.dom.Text;
-
-import java.io.CharArrayReader;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class Card extends Fragment {
@@ -53,18 +52,26 @@ public class Card extends Fragment {
     private final String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.NFC, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private int REQUEST_CODE_PERMISSIONS = 101;
     private HomeActivity.nfcCardScan nfcCardScan;
+    private FirebaseUser firebaseUser;
+
 
 
     public interface cardDetails extends Serializable{
-        public void cardDeatilsString(String card_dets);
+        void cardDeatilsString(String card_dets);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+        return inflater.inflate(R.layout.add_card, container, false);
+    }
 
-        View view = inflater.inflate(R.layout.add_card, container, false);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         if(!allPermissionsGranted()){
             askForPermision();
@@ -77,7 +84,7 @@ public class Card extends Fragment {
         view.findViewById(R.id.camera_icon).setOnClickListener(result -> {
 
             Bundle bundle = new Bundle();
-                   bundle.putString("card_details", "");
+            bundle.putString("card_details", "");
             getActivity().getSupportFragmentManager().beginTransaction()
                     .add(R.id.nav_host_fragment, PaymentsFrag.class, bundle,"payments_frag")
                     .addToBackStack("payments_frag")
@@ -90,31 +97,39 @@ public class Card extends Fragment {
         }
 
         addTextWatcher();
+
         if(getActivity() instanceof HomeActivity){
             bindActivity((HomeActivity)getActivity());
         }
 
+
         view.findViewById(R.id.add_card_button).setOnClickListener(click -> {
             if(!verify(cardNumber) && !verify(cardExpiryDate)){
 
-                if(getDec(getArguments().containsKey("dec_string"))){
-                    Log.w(TAG, "Card empty +++++");
-                    String dec = getArguments().getString("dec_string");
-                        ArrayList<Payment> payments = Payment.stringToList(dec);
+                String uniqeCardRef = unqiueCardRef();
+                ArrayList<Payment> payments;
 
-                        if (contains(payments)) {
-                            Snackbar.make(cardNumber, "Card All ready Linked", BaseTransientBottomBar.LENGTH_INDEFINITE).show();
-                        } else {
-                            payments.add(new Payment(cardNumber.getText().toString()
-                                    , cardName, cardExpiryDate.getText().toString()));
-                            encryptPayments(payments, FirebaseAuth.getInstance().getCurrentUser());
-                        }
+                if(getDec(getArguments().containsKey("dec_string"))){
+                    String dec = getArguments().getString("dec_string");
+                    payments = Payment.stringToList(dec);
+
+                    if (contains(payments)) {
+                        Snackbar.make(cardNumber, "Card All ready Linked", BaseTransientBottomBar.LENGTH_INDEFINITE).show();
+                    } else {
+                        payments.add(new Payment(cardNumber.getText().toString()
+                                , cardName, cardExpiryDate.getText().toString(), uniqeCardRef));
+                        UserFetch.createTransactionsDoc(uniqeCardRef,firebaseUser.getEmail(),initTransactionsMap());
+                        encryptPayments(payments, FirebaseAuth.getInstance().getCurrentUser());
+                    }
+
+
                 }else {
-                    ArrayList<Payment> payments = new ArrayList<>();
+                    payments = new ArrayList<>();
                     payments.add(new Payment(cardNumber.getText().toString()
-                            , cardName, cardExpiryDate.getText().toString()));
+                            , cardName, cardExpiryDate.getText().toString(), uniqeCardRef));
+                    UserFetch.createTransactionsDoc(uniqeCardRef,firebaseUser.getEmail(),initTransactionsMap());
+
                     encryptPayments(payments, FirebaseAuth.getInstance().getCurrentUser());
-                    Log.w(TAG, "Card empty ==== ");
                 }
 
 
@@ -126,7 +141,12 @@ public class Card extends Fragment {
 
 
 
-        return view;
+    }
+
+    private Map<String, List<Map<String, Object>>> initTransactionsMap(){
+        Map<String, List<Map<String, Object>>> transactionMap = new HashMap<>();
+        transactionMap.put("transactions", new ArrayList<Map<String, Object>>());
+        return transactionMap;
     }
 
     private boolean getDec(boolean cotains){
@@ -135,6 +155,11 @@ public class Card extends Fragment {
         }
         return false;
     }
+
+    public String unqiueCardRef() {
+            return UUID.randomUUID().toString();
+    }
+
 
     private void askForPermision(){
         ActivityCompat.requestPermissions(getActivity(), REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
@@ -201,15 +226,6 @@ public class Card extends Fragment {
 
     }
 
-    private String appendToDec(String toAppend){
-        String number = cardNumber.getText().toString();
-        String expiryDate = cardExpiryDate.getText().toString();
-        String name = cardName;
-        toAppend = toAppend + "Name=".concat(name).concat(";Number=").concat(number)
-                .concat(";ExpiryDate=").concat(expiryDate);
-        return toAppend;
-    }
-
     private boolean verify(EditText editText){
         boolean isEmpty = false;
         if(editText.getText().toString().isEmpty()){
@@ -247,12 +263,10 @@ public class Card extends Fragment {
         for(String splits : split){
             if(Pattern.compile("[0-9]{1,2}[/][0-9]{1,2}").matcher(splits).find()){
                 cardExpiryDate.setText(splits);
-                Log.i("Heloo", "Dedledplde");
             }
 
             if(Pattern.compile("[0-9]{16}").matcher(splits).find()){
                 cardNumber.setText(splits);
-                Log.i("Heloo", "Dedledplde");
             }
 
             if(splits.toLowerCase().contains("master")){

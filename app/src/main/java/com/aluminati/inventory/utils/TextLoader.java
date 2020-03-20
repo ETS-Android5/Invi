@@ -16,6 +16,7 @@ public class TextLoader {
     private int endTime = 0;
     private AtomicBoolean atomicBoolean;
     private Handler handler;
+    private Runnable runnable;
 
     public TextLoader() {
         this.atomicBoolean = new AtomicBoolean(true);
@@ -32,7 +33,7 @@ public class TextLoader {
 
 
 
-        handler.postDelayed(new Runnable() {
+        runnable = new Runnable() {
             @Override
             public void run() {
 
@@ -71,6 +72,12 @@ public class TextLoader {
 
 
             }
-        }, 1000);
+        };
+
+        handler.postDelayed(runnable, 1000);
+    }
+
+    public void stopLoader(){
+        handler.removeCallbacks(runnable);
     }
 }
