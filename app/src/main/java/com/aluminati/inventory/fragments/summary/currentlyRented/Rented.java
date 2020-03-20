@@ -71,7 +71,7 @@ public class Rented extends Fragment {
     private void populateAdapter(){
         DbHelper.getInstance().getCollection("rentals")
                 .document(firebaseUser.getUid())
-                .collection("returned")
+                .collection("items")
                 .get()
                 .addOnSuccessListener(success -> {
                     Log.i(TAG, "Successfully got collection");
