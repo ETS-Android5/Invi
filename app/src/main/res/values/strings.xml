@@ -195,4 +195,7 @@
     <string name="payment_type">Type</string>
     <string name="no_transactions">No Transactions</string>
     <string name="pay">Pay</string>
+    <string name="card_scan">Tap Card at the back to scan</string>
+    <string name="incorrect_expiry_date">Incorrect Expiry Date</string>
+    <string name="fill_in_fields">Please fill in details</string>
 </resources>

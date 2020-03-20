@@ -79,6 +79,11 @@ public class RecentFragment extends FloatingTitlebarFragment implements Products
             toaster.toastShort("You clicked" + item.getTitle());
         };
 
+        summary = new Summary();
+
+        getParentFragmentManager().beginTransaction()
+                .add(R.id.nav_host_fragment, summary)
+                .commit();
 
         setSwipeListeners();
         return root;
@@ -90,12 +95,13 @@ public class RecentFragment extends FloatingTitlebarFragment implements Products
         this.tescoApi = new TescoProductsApi();
         this.tescoApi.setProductsReady(this);
 
-        summary = new Summary();
 
-        getParentFragmentManager().beginTransaction()
-                .add(R.id.nav_host_fragment, summary)
-                .commit();
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @Override

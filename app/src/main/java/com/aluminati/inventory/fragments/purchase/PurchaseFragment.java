@@ -271,7 +271,7 @@ public class PurchaseFragment extends FloatingTitlebarFragment implements GetCar
             }
         }
 
-        Map<String, String> depts = depCount(deps);
+        Map<String, Long> depts = depCount(deps);
 
         dbHelper.addItem(String.format(Constants.FirestoreCollections.COMPLETED_USER_CART,
                 auth.getUid()), order)
@@ -292,8 +292,11 @@ public class PurchaseFragment extends FloatingTitlebarFragment implements GetCar
                                 Log.i(TAG, "Got user successfully");
                                 Map<String, Long> cats = (Map<String, Long>) success.get("items_categories");
 
-                                UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(), "items_categories", concat(cats, depts));
-
+                                if(cats != null) {
+                                    UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(), "items_categories", concat(cats, depts));
+                                }else{
+                                    UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(), "items_categories", depts);
+                                }
                             })
                             .addOnFailureListener(failure -> {
                                Log.i(TAG, "Failed to get user", failure);
@@ -319,16 +322,16 @@ public class PurchaseFragment extends FloatingTitlebarFragment implements GetCar
 
     }
 
-    private Map<String, Long> concat(Map<String, Long> catsCurrent, Map<String, String> catsNew){
+    private Map<String, Long> concat(Map<String, Long> catsCurrent, Map<String, Long> catsNew){
         Map<String, Long> newMap = new HashMap<>();
         Set<String> keys = catsNew.keySet();
         for(String key : keys){
             if(catsCurrent.containsKey(key)){
-                long catCount = (catsCurrent.get(key) + Integer.parseInt(catsNew.get(key)));
+                long catCount = (catsCurrent.get(key) + catsNew.get(key));
                 newMap.put(key, catCount);
                 catsCurrent.remove(key);
             }else{
-                newMap.put(key, Long.parseLong(catsNew.get(key)));
+                newMap.put(key, catsNew.get(key));
             }
         }
 
@@ -338,17 +341,17 @@ public class PurchaseFragment extends FloatingTitlebarFragment implements GetCar
     }
 
 
-    private Map<String, String> depCount(ArrayList<String> dep){
-        Map<String, String> counts = new HashMap<>();
+    private Map<String, Long> depCount(ArrayList<String> dep){
+        Map<String, Long> counts = new HashMap<>();
         Set<String> deps = new HashSet<>(dep);
         for(String depts : deps){
-            int counter = 0;
+            long counter = 0;
             for(int i = 0; i < dep.size(); i++){
                 Log.i(TAG, "Set " + (depts == null) + " array " + (dep.get(i) == null));
                 if(dep.get(i).equals(depts)){
                     counter++;
                 }
-                counts.put(depts, Integer.toString(counter));
+                counts.put(depts, counter);
                 counter = 0;
             }
         }

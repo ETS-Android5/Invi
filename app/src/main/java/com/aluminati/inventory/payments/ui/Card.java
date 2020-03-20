@@ -3,6 +3,10 @@ package com.aluminati.inventory.payments.ui;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.Editable;
@@ -13,6 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -53,6 +59,7 @@ public class Card extends Fragment {
     private int REQUEST_CODE_PERMISSIONS = 101;
     private HomeActivity.nfcCardScan nfcCardScan;
     private FirebaseUser firebaseUser;
+    private TextView errorText;
 
 
 
@@ -77,7 +84,7 @@ public class Card extends Fragment {
             askForPermision();
         }
 
-
+        errorText = view.findViewById(R.id.error_view);
         cardNumber = view.findViewById(R.id.card_number);
         cardExpiryDate = view.findViewById(R.id.card_expiry_date);
         cardImage = view.findViewById(R.id.card_logo);
@@ -103,35 +110,55 @@ public class Card extends Fragment {
         }
 
 
+        view.findViewById(R.id.clear_fields).setOnClickListener(click -> {
+            if(!cardExpiryDate.isEnabled()){
+                cardExpiryDate.setEnabled(true);
+                cardExpiryDate.setText("");
+            }
+
+            if(!cardNumber.isEnabled()){
+                cardNumber.setEnabled(true);
+                cardNumber.setText("");
+            }
+
+            if(errorText.getVisibility() == View.VISIBLE){
+                errorText.setVisibility(View.INVISIBLE);
+            }
+        });
+
         view.findViewById(R.id.add_card_button).setOnClickListener(click -> {
             if(!verify(cardNumber) && !verify(cardExpiryDate)){
+                if(Pattern.compile("[0-9]{1,2}[/][0-9]{1,2}").matcher(cardExpiryDate.getText()).find()) {
 
-                String uniqeCardRef = unqiueCardRef();
-                ArrayList<Payment> payments;
 
-                if(getDec(getArguments().containsKey("dec_string"))){
-                    String dec = getArguments().getString("dec_string");
-                    payments = Payment.stringToList(dec);
+                    String uniqeCardRef = unqiueCardRef();
+                    ArrayList<Payment> payments;
 
-                    if (contains(payments)) {
-                        Snackbar.make(cardNumber, "Card All ready Linked", BaseTransientBottomBar.LENGTH_INDEFINITE).show();
+                    if (getDec(getArguments().containsKey("dec_string"))) {
+                        String dec = getArguments().getString("dec_string");
+                        payments = Payment.stringToList(dec);
+
+                        if (contains(payments)) {
+                            Snackbar.make(cardNumber, "Card All ready Linked", BaseTransientBottomBar.LENGTH_INDEFINITE).show();
+                        } else {
+                            payments.add(new Payment(cardNumber.getText().toString()
+                                    , cardName, cardExpiryDate.getText().toString(), uniqeCardRef));
+                            UserFetch.createTransactionsDoc(uniqeCardRef, firebaseUser.getEmail(), initTransactionsMap());
+                            encryptPayments(payments, FirebaseAuth.getInstance().getCurrentUser());
+                        }
+
+
                     } else {
+                        payments = new ArrayList<>();
                         payments.add(new Payment(cardNumber.getText().toString()
                                 , cardName, cardExpiryDate.getText().toString(), uniqeCardRef));
-                        UserFetch.createTransactionsDoc(uniqeCardRef,firebaseUser.getEmail(),initTransactionsMap());
+                        UserFetch.createTransactionsDoc(uniqeCardRef, firebaseUser.getEmail(), initTransactionsMap());
+
                         encryptPayments(payments, FirebaseAuth.getInstance().getCurrentUser());
                     }
-
-
-                }else {
-                    payments = new ArrayList<>();
-                    payments.add(new Payment(cardNumber.getText().toString()
-                            , cardName, cardExpiryDate.getText().toString(), uniqeCardRef));
-                    UserFetch.createTransactionsDoc(uniqeCardRef,firebaseUser.getEmail(),initTransactionsMap());
-
-                    encryptPayments(payments, FirebaseAuth.getInstance().getCurrentUser());
+                }else{
+                    errorText.setText(R.string.incorrect_expiry_date);
                 }
-
 
             }else {
                 Log.w(TAG, "Card empty");
@@ -230,7 +257,8 @@ public class Card extends Fragment {
         boolean isEmpty = false;
         if(editText.getText().toString().isEmpty()){
             isEmpty = true;
-            editText.setHint("Please fill in cardNumber");
+            errorText.setText(R.string.fill_in_fields);
+            errorText.setVisibility(View.VISIBLE);
         }
 
         return isEmpty;
@@ -245,16 +273,51 @@ public class Card extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.length()%4 == 0){
-                    cardNumber.append(" ",charSequence.length(), charSequence.length());
+                if(charSequence.length() == 2){
+                    fillCardFilter(charSequence.toString());
                 }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-
+                if(editable.length() == 16){
+                    cardNumber.setEnabled(false);
+                    formatString(editable.toString());
+                }
             }
         });
+
+        cardExpiryDate.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(editable.length() == 5){
+                    cardExpiryDate.setEnabled(false);
+                }
+            }
+        });
+    }
+
+    private void fillCardFilter(String text){
+        if(text.startsWith("4")){
+            cardName = "visa";
+            cardImage.setImageDrawable(getResources().getDrawable(R.drawable.visa));
+        }else if(text.startsWith("5")){
+            cardName = "mastercard";
+            cardImage.setImageDrawable(getResources().getDrawable(R.drawable.master_card));
+        }else{
+            cardName = "default";
+            cardImage.setImageDrawable(getResources().getDrawable(R.drawable.logo_invi));
+        }
     }
 
     private void fillFiled(String resultFromAnalysis){
@@ -275,6 +338,9 @@ public class Card extends Fragment {
             }else if(splits.toLowerCase().contains("visa")){
                 cardName = "visa";
                 cardImage.setImageDrawable(getResources().getDrawable(R.drawable.visa));
+            }else{
+                cardName = "default";
+                cardImage.setImageDrawable(getResources().getDrawable(R.drawable.logo_invi));
             }
         }
 
@@ -286,6 +352,7 @@ public class Card extends Fragment {
             cardNumber.setText("Failed to get expiry date Enter manually");
         }
     }
+
 
     private void formatString(String string){
         StringBuilder stringBuilder = new StringBuilder();
