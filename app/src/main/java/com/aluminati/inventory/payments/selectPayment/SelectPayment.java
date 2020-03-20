@@ -85,8 +85,8 @@ public class SelectPayment extends DialogFragment {
                         try {
                             if(result.contains("cidi")){
                                 String cidi = (String)result.get("cidi");
-                                if(cidi != null && !cidi.isEmpty()) {
-                                    String pid = (String) result.get("pid");
+                                String pid = (String) result.get("pid");
+                                if((cidi != null && pid != null) && (!cidi.isEmpty() && !pid.isEmpty())) {
                                     new PhoneAESDecryption(cidi, pid, (dec) -> {
                                         if (dec != null) {
                                             decCrypt = dec;

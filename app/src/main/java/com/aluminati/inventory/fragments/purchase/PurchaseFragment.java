@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -23,8 +24,10 @@ import com.aluminati.inventory.adapters.swipelisteners.ItemSwipe;
 import com.aluminati.inventory.fragments.recent.RecentFragment;
 import com.aluminati.inventory.helpers.DbHelper;
 import com.aluminati.inventory.helpers.DialogHelper;
+import com.aluminati.inventory.login.authentication.encryption.PhoneAESDecryption;
 import com.aluminati.inventory.payments.model.Payment;
 import com.aluminati.inventory.payments.selectPayment.SelectPayment;
+import com.aluminati.inventory.payments.ui.PaymentAdapter;
 import com.aluminati.inventory.users.User;
 import com.aluminati.inventory.utils.Toaster;
 import com.google.firebase.auth.FirebaseAuth;
@@ -190,9 +193,7 @@ public class PurchaseFragment extends FloatingTitlebarFragment implements GetCar
                     @Override
                     public void onAction() {
                         //TODO: @Bart do whatever here then call completeOrder();
-                        SelectPayment selectPayment = SelectPayment.getInstance();
-                                      selectPayment.setGetCardRefNumber(PurchaseFragment.this);
-                        selectPayment.show(getParentFragmentManager(), "select_payment");
+                        decryptPayments(firebaseUser);
                     }
 
                     @Override
@@ -201,6 +202,35 @@ public class PurchaseFragment extends FloatingTitlebarFragment implements GetCar
                     }
                 }).show();
 
+    }
+
+    private void decryptPayments(FirebaseUser firebaseUser){
+        if(firebaseUser != null){
+            UserFetch.getUser(firebaseUser.getEmail())
+                    .addOnSuccessListener(result -> {
+                        Log.i(TAG, "Got Payment Successfully");
+                        try {
+                            if(result.contains("cidi") && result.contains("pid")){
+                                String cidi = (String)result.get("cidi");
+                                String pid = (String) result.get("pid");
+                                if((cidi != null && pid != null) && (!cidi.isEmpty() && !pid.isEmpty())) {
+                                    SelectPayment selectPayment = SelectPayment.getInstance();
+                                    selectPayment.setGetCardRefNumber(PurchaseFragment.this);
+                                    selectPayment.show(getParentFragmentManager(), "select_payment");
+                                }else{
+                                    Toast.makeText(getContext(),"No Payments Cards Added", Toast.LENGTH_LONG ).show();
+                                }
+                            }else{
+                                Toast.makeText(getContext(),"No Payments Cards Added", Toast.LENGTH_LONG ).show();
+                            }
+                        }catch (Exception e){
+                            Log.w(TAG, "Failed to decrypt phone number", e);
+                        }
+                    })
+                    .addOnFailureListener(result -> {
+                        Log.w(TAG, "Failed to retrieve payment", result);
+                    });
+        }
     }
 
 
