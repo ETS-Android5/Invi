@@ -40,6 +40,7 @@ public class Rented extends Fragment {
     private static RecyclerView.Adapter adapter;
     private FirebaseUser firebaseUser;
     private TextView placholder, totalRents;
+    private RentalBinder rentalBinder;
 
     @Nullable
     @Override
@@ -57,6 +58,7 @@ public class Rented extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        rentalBinder = new RentalBinder();
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -75,7 +77,7 @@ public class Rented extends Fragment {
                     Log.i(TAG, "Successfully got collection");
                     ArrayList<RentalItem> arrayList = new ArrayList<>();
                     for(DocumentSnapshot documentSnapshot : success.getDocuments()){
-                        arrayList.add(new RentalItem(documentSnapshot));
+                        arrayList.add(documentSnapshot.toObject(RentalItem.class));
                     }
 
                     if(!arrayList.isEmpty()) {
@@ -93,8 +95,8 @@ public class Rented extends Fragment {
 
     private void loadPurchaseItems(List<RentalItem> purchaseItems) {
         recyclerView.setAdapter(new ItemAdapter<>(purchaseItems,
-                new RentalBinder(),
-                R.layout.base_item,
+                rentalBinder,
+                R.layout.rental_item,
                 getActivity()));
     }
 
