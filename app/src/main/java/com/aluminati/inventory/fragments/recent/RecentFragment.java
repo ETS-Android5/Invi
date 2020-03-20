@@ -95,8 +95,6 @@ public class RecentFragment extends FloatingTitlebarFragment implements Products
         this.tescoApi = new TescoProductsApi();
         this.tescoApi.setProductsReady(this);
 
-
-
     }
 
     @Override

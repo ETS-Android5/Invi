@@ -243,6 +243,7 @@ public class PurchaseFragment extends FloatingTitlebarFragment implements GetCar
         order.put("quantity", currentQuantity);
         order.put("total", currentTotal);
         order.put("rental", false);
+        final double copyTotal = currentTotal;
 
         ArrayList<String> deps = new ArrayList<>();
 
@@ -282,29 +283,31 @@ public class PurchaseFragment extends FloatingTitlebarFragment implements GetCar
                             + "/%s",
                             auth.getUid(),id));
 
-                    UserFetch.getTransactionsDoc(cardRef == null ? "cash" : cardRef, auth.getCurrentUser().getEmail(),
-                            Payment.addTransaction(Double.toString(currentTotal),type,
-                                    cardRef, String.format(Constants.FirestoreCollections.RECEIPTS_TEST,
-                                    auth.getCurrentUser().getUid())));
-
-                    UserFetch.getUser(firebaseUser.getEmail())
-                            .addOnSuccessListener(success -> {
-                                Log.i(TAG, "Got user successfully");
-                                Map<String, Long> cats = (Map<String, Long>) success.get("items_categories");
-
-
-                                UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(),
-                                        "items_categories", cats != null ? concat(cats, depts): depts);
-
-                            })
-                            .addOnFailureListener(failure -> {
-                               Log.i(TAG, "Failed to get user", failure);
-                            });
-
-
                     dbHelper.addItem(String.format(Constants.FirestoreCollections.RECEIPTS_TEST,
                             auth.getCurrentUser().getUid()), order)
-                            .addOnSuccessListener(result -> {Log.d(TAG, "receipt created: " + id);});
+                            .addOnSuccessListener(result -> {
+
+                                UserFetch.getTransactionsDoc(cardRef == null ? "cash" : cardRef, auth.getCurrentUser().getEmail(),
+                                        Payment.addTransaction(Double.toString(copyTotal),type,
+                                                cardRef, String.format(Constants.FirestoreCollections.RECEIPTS_TEST,
+                                                        auth.getCurrentUser().getUid())));
+
+                                UserFetch.getUser(firebaseUser.getEmail())
+                                        .addOnSuccessListener(success -> {
+                                            Log.i(TAG, "Got user successfully");
+                                            Map<String, Long> cats = (Map<String, Long>) success.get("items_categories");
+
+
+                                            UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(),
+                                                    "items_categories", cats != null ? concat(cats, depts): depts);
+
+                                        })
+                                        .addOnFailureListener(failure -> {
+                                            Log.i(TAG, "Failed to get user", failure);
+                                        });
+
+                                Log.d(TAG, "receipt created: " + id);
+                            });
 
                     toaster.toastShort("Payment Successful");
                     currentQuantity = 0;
