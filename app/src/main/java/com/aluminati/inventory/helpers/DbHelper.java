@@ -42,6 +42,10 @@ public class DbHelper {
                 .get();
     }
 
+    public Task<DocumentSnapshot> getItem(String docId) {
+        return db.document(docId).get();
+    }
+
     public Task<Void> setItem(String collectionName, String docId, Object item) {
         return db.collection(collectionName)
                 .document(docId)

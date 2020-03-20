@@ -9,8 +9,16 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.aluminati.inventory.R;
+import com.aluminati.inventory.adapters.ItemAdapter;
+import com.aluminati.inventory.binders.ReceiptDialogBinder;
+import com.aluminati.inventory.fragments.receipt.ReceiptListItem;
 import com.bumptech.glide.Glide;
+
+import java.util.List;
 
 public class DialogHelper {
     private static DialogHelper instance;
@@ -85,6 +93,25 @@ public class DialogHelper {
         ((TextView)v.findViewById(R.id.dialogMessage)).setText(message);
         Glide.with(context).load(imgUrl).into((ImageView) v.findViewById(R.id.dialogImageHolder));
 
+        return v;
+    }
+
+
+    public View buildReceiptView(List<ReceiptListItem> items) {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+
+        View v = layoutInflater.inflate(R.layout.dialog_receipt_list, null);
+        RecyclerView recViewReceiptList = v.findViewById(R.id.recViewReceiptList);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context,
+                LinearLayoutManager.VERTICAL, false);
+        recViewReceiptList.setLayoutManager(layoutManager);
+
+
+        recViewReceiptList.setAdapter(new ItemAdapter<>(items,
+                null,
+                new ReceiptDialogBinder(),
+                R.layout.receipt_dialog_item,
+                context));
         return v;
     }
 

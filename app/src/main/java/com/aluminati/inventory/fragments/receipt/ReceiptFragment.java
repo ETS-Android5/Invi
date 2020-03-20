@@ -22,6 +22,7 @@ import com.aluminati.inventory.utils.Toaster;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +67,37 @@ public class ReceiptFragment extends FloatingTitlebarFragment {
         revViewReceipts.setLayoutManager(layoutManager);
 
         itemClickListener = item -> {
-            toaster.toastShort(item.getItemref());
+
+            dbHelper.getItem(item.getItemref())
+                    .addOnSuccessListener( snapshot -> {
+
+                        if(snapshot != null) {
+                            List<ReceiptListItem> items = new ArrayList<>();
+
+                            List<String> results = (List<String>)snapshot.get("items");
+                            Gson gson = new Gson();
+
+                            if(results!= null) {
+                                for(String json : results) {
+                                    ReceiptListItem li = gson.fromJson(json, ReceiptListItem.class);
+                                    if(li != null) {
+                                        items.add(li);
+                                    }
+                                }
+                            }
+
+                            if(items.size() > 0) {
+                                dialogHelper.createDialog(dialogHelper.buildReceiptView(items)).setPositiveButton("Ok",
+                                        (dl , i) ->{
+                                            dl.dismiss();
+                                        }).show();
+                            }
+
+                        } else toaster.toastShort("Item is null");
+                    })
+                    .addOnFailureListener(ex -> {
+                        toaster.toastShort(ex.getMessage());
+                    });
         };
 
         reloadItems(null);
