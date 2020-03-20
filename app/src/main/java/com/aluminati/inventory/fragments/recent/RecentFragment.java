@@ -112,6 +112,8 @@ public class RecentFragment extends FloatingTitlebarFragment implements Products
                         .add(R.id.nav_host_fragment, summary)
                         .commit();
             }
+
+            recViewRecent.setAdapter(null);
         }else {
             getParentFragmentManager().beginTransaction().remove(summary).commit();
         }
@@ -126,7 +128,12 @@ public class RecentFragment extends FloatingTitlebarFragment implements Products
                     if (snapshot.isEmpty()) {
                         Log.d(TAG, "onSuccess -> onTextChanged: no items");
                         //recViewRecent.setAdapter(null);
-                                 tescoApi.getProducts(searchText);
+                        if(!searchText.isEmpty()) {
+                            tescoApi.getProducts(searchText);
+                        } else {
+                            recViewRecent.setAdapter(null);
+                        }
+
                     } else {
                         loadPurchaseItems(initItems(snapshot.getDocuments()));
                     }
@@ -181,7 +188,6 @@ public class RecentFragment extends FloatingTitlebarFragment implements Products
     }
 
     private void loadPurchaseItems(List<BaseItem> purchaseItems) {
-        recViewRecent.setAdapter(null);
         recViewRecent.setAdapter(new ItemAdapter<>(purchaseItems,
                 itemClickListener,
                 baseBinder,
@@ -197,10 +203,9 @@ public class RecentFragment extends FloatingTitlebarFragment implements Products
 
     @Override
     public void getProducts(ArrayList<Product> products) {
+        recViewRecent.setAdapter(null);
         if(products.size() > 0){
             loadPurchaseItems(toPurchaseItmes(products));
-        }else{
-            recViewRecent.setAdapter(null);
         }
     }
 
