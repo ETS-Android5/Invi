@@ -69,7 +69,6 @@ public class PurchaseCategories extends Fragment {
                             view.findViewById(R.id.purchase_categories_placeholder).setVisibility(View.INVISIBLE);
                             PieChartData pieChartData = new PieChartData(pieData);
                             pieChartData.setHasLabels(true).setValueLabelTextSize(14);
-                            pieChartData.setHasLabelsOutside(true);
                             pieChartData.setHasCenterCircle(true).setCenterText1("Summary").setCenterText1FontSize(20).setCenterText1Color(Color.parseColor("#0097A7"));
                             pieChartView.setPieChartData(pieChartData);
                         }
