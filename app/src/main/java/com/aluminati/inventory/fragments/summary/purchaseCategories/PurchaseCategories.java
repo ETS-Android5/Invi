@@ -58,7 +58,11 @@ public class PurchaseCategories extends Fragment {
                                 slice = cats.get(key);
                                 result = ((slice/total)*360);
                                 Log.i(TAG, "Result " + result + " slice " + slice + " total " + total);
-                                pieData.add(new SliceValue(result, randColor()).setLabel(key.concat(":").concat(Float.toString(result))));
+                                if(key.contains(" ")){
+                                    pieData.add(new SliceValue(result, randColor()).setLabel(key.split(" ")[0].concat(" : ").concat(Float.toString(slice))));
+                                }else{
+                                    pieData.add(new SliceValue(result, randColor()).setLabel(key.concat(" : ").concat(Float.toString(slice))));
+                                }
                             }
                         }
                         if(!pieData.isEmpty()){
