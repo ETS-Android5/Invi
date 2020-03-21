@@ -289,8 +289,10 @@ public class PurchaseFragment extends FloatingTitlebarFragment implements GetCar
 
                                 UserFetch.getTransactionsDoc(cardRef == null ? "cash" : cardRef, auth.getCurrentUser().getEmail(),
                                         Payment.addTransaction(Double.toString(copyTotal),type,
-                                                cardRef, String.format(Constants.FirestoreCollections.RECEIPTS_TEST,
-                                                        auth.getCurrentUser().getUid())));
+                                                cardRef,
+                                                String.format(Constants.FirestoreCollections.COMPLETED_USER_CART
+                                                                + "/%s",
+                                                        auth.getUid(),id)));
 
                                 UserFetch.getUser(firebaseUser.getEmail())
                                         .addOnSuccessListener(success -> {
