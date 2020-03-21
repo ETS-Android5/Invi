@@ -25,9 +25,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ReceiptFragment extends FloatingTitlebarFragment {
+    private static final String TAG  = ReceiptFragment.class.getName();
     private RecyclerView revViewReceipts;
     private ItemAdapter.OnItemClickListener<ReceiptItem> itemClickListener;
     private ReceiptsBinder receiptBinder;
@@ -36,6 +38,7 @@ public class ReceiptFragment extends FloatingTitlebarFragment {
     private FirebaseFirestore firestore;
     private FirebaseAuth auth;
     private Toaster toaster;
+    private double currentTotal;
 
     public ReceiptFragment(DrawerLayout drawer) {
         super(drawer);
@@ -53,8 +56,8 @@ public class ReceiptFragment extends FloatingTitlebarFragment {
 
         receiptBinder = new ReceiptsBinder();
         //How to programmatically set icons on floating action bar
-        floatingTitlebar.setRightToggleIcons(R.drawable.ic_dollar, R.drawable.ic_dollar);
-        floatingTitlebar.setLeftToggleIcons(R.drawable.ic_search, R.drawable.ic_side_list_blue);
+        floatingTitlebar.setRightToggleIcons(R.drawable.ic_search, R.drawable.ic_dollar);
+        floatingTitlebar.setLeftToggleIcons(R.drawable.ic_side_list_blue, R.drawable.ic_side_list_blue);
         floatingTitlebar.setToggleActive(true);
         floatingTitlebar.showTitleTextBar();
 
@@ -87,8 +90,8 @@ public class ReceiptFragment extends FloatingTitlebarFragment {
                             }
 
                             if(items.size() > 0) {
-                                dialogHelper.createDialog(dialogHelper.buildReceiptView(items)).setPositiveButton("Ok",
-                                        (dl , i) ->{
+                                dialogHelper.createDialog(dialogHelper.buildReceiptView(items))
+                                        .setPositiveButton("Ok", (dl , i) ->{
                                             dl.dismiss();
                                         }).show();
                             }
@@ -106,12 +109,12 @@ public class ReceiptFragment extends FloatingTitlebarFragment {
     }
 
     private void setUpReceiptListener() {
-        firestore.collection(String.format(Constants.FirestoreCollections.RECEIPTS_TEST,
+        dbHelper.getCollection(String.format(Constants.FirestoreCollections.RECEIPTS_TEST,
                 FirebaseAuth.getInstance().getUid()))
                 .addSnapshotListener((snapshot, e) -> {
             if(snapshot != null && snapshot.size() > 0) {
                 loadPurchaseItems(initReceiptItems(snapshot.getDocuments(), null));
-                Log.d(ReceiptFragment.class.getName(), "addSnapshotListener: Items found " + snapshot.size());
+                Log.d(TAG, "addSnapshotListener: Items found " + snapshot.size());
             } else {
                 revViewReceipts.setAdapter(null);
                 floatingTitlebar.setTitleText("");
@@ -121,25 +124,6 @@ public class ReceiptFragment extends FloatingTitlebarFragment {
 
     }
 
-    private void reloadItems(String filter) {
-
-        dbHelper.getCollection(String.format(Constants.FirestoreCollections.RECEIPTS_TEST,
-                FirebaseAuth.getInstance().getUid()))
-                .get()
-                .addOnSuccessListener(snapshot -> {
-
-                    if (snapshot.isEmpty()) {
-                        Log.d(ReceiptFragment.class.getName(), "onSuccess: no items");
-                        toaster.toastShort(getResources().getString(R.string.no_receipts));
-                    } else {
-                        loadPurchaseItems(initReceiptItems(snapshot.getDocuments(), filter));
-                    }
-                }).addOnFailureListener(fail -> {
-            toaster.toastShort(getResources().getString(R.string.error_getting_receipts));
-            Log.d(ReceiptFragment.class.getName(), fail.getMessage());
-        });
-
-    }
 
     private void loadPurchaseItems(List<ReceiptItem> receiptItems) {
         revViewReceipts.setAdapter(new ItemAdapter<ReceiptItem>(receiptItems,
@@ -151,16 +135,61 @@ public class ReceiptFragment extends FloatingTitlebarFragment {
 
     private List<ReceiptItem> initReceiptItems(List<DocumentSnapshot> snapshots, String filter) {
         List<ReceiptItem> pItems = new ArrayList<>();
-
+        currentTotal = 0;
         for(DocumentSnapshot obj : snapshots) {
-            pItems.add(obj.toObject(ReceiptItem.class));
+            ReceiptItem item  = obj.toObject(ReceiptItem.class);
+            currentTotal += item.getTotal();
+            if(filter == null || filter.isEmpty()) {
+                pItems.add(item);
+            } else {
+                String f = filter.toLowerCase();
+                if(f.contains("pur") && !item.isRental()) {
+                    pItems.add(item);
+                } else if(f.contains("ren") && item.isRental()) {
+                    pItems.add(item);
+                } else if(new Date(Long.parseLong(item.getTimestamp())).toString().contains(filter)
+                || String.valueOf(item.getTotal()).contains(filter)){
+                    pItems.add(item);
+                }
+            }
+
         }
+
+        floatingTitlebar.setTitleText(String.format("Total: €%.2f", currentTotal > 0 ? currentTotal : 0));
 
         return pItems;
     }
     @Override
     public void onTextChanged(String searchText) {
+        reloadItems(searchText);
+    }
+
+    private void reloadItems(String filter) {
+
+        dbHelper.getCollection(String.format(Constants.FirestoreCollections.RECEIPTS_TEST,
+                FirebaseAuth.getInstance().getUid()))
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.isEmpty()) {
+                        Log.d(TAG, "onSuccess: no items");
+                        toaster.toastShort(getResources().getString(R.string.no_receipts));
+                    } else {
+                        loadPurchaseItems(initReceiptItems(snapshot.getDocuments(), filter));
+                    }
+                }).addOnFailureListener(fail -> {
+            toaster.toastShort(getResources().getString(R.string.error_purchase_cart_items));
+            Log.d(TAG, fail.getMessage());
+        });
 
     }
 
+    @Override
+    public void onRightButtonToggle(boolean isActive) {
+        super.onRightButtonToggle(isActive);
+        if(isActive) {
+            floatingTitlebar.showSearchBar();
+        } else {
+            floatingTitlebar.showTitleTextBar();
+        }
+    }
 }
