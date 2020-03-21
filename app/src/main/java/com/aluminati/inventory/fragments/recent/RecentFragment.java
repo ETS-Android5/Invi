@@ -63,7 +63,7 @@ public class RecentFragment extends FloatingTitlebarFragment implements Products
         dbHelper = DbHelper.getInstance();
         baseBinder = new BaseBinder();
         //How to programmatically set icons on floating action bar
-        floatingTitlebar.setRightToggleIcons(R.drawable.ic_toggle_list, R.drawable.ic_toggle_grid);
+        floatingTitlebar.setRightToggleIcons(R.drawable.ic_side_profile_blue, R.drawable.ic_side_profile_blue);
         floatingTitlebar.setToggleActive(true);
 
         firestore = FirebaseFirestore.getInstance();
