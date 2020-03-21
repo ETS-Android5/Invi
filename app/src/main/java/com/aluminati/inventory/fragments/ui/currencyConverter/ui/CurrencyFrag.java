@@ -18,11 +18,17 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.aluminati.inventory.Constants;
 import com.aluminati.inventory.R;
+import com.aluminati.inventory.fragments.purchase.PurchaseItem;
 import com.aluminati.inventory.fragments.ui.currencyConverter.Currency;
 import com.aluminati.inventory.fragments.ui.currencyConverter.converterApi.CurrencyConverter;
 import com.aluminati.inventory.fragments.ui.currencyConverter.CurrencyResult;
+import com.aluminati.inventory.helpers.DbHelper;
 import com.aluminati.inventory.login.authentication.verification.VerificationStatus;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 
@@ -34,23 +40,86 @@ import io.reactivex.schedulers.Schedulers;
 
 public class CurrencyFrag extends Fragment{
 
-
+    private static final String TAG = CurrencyFrag.class.getName();
     private static RecyclerView.Adapter adapter;
-    private RecyclerView.LayoutManager layoutManager;
     private static RecyclerView recyclerView;
     private static ArrayList<Currency> data;
-    private static ArrayList<Integer> removedItems;
     private CompositeDisposable compositeDisposable;
     private TextView dateOfConversion;
     private Spinner baseCurrency;
+    private FirebaseUser firebaseUser;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        return inflater.inflate(getResources().getLayout(R.layout.currencies), container, false);
+    }
 
-        View view = inflater.inflate(getResources().getLayout(R.layout.currencies), container, false);
-        layoutManager = new LinearLayoutManager(getContext());
+
+    private void getFlags(CurrencyConverter currencyConverter){
+        this.compositeDisposable = new CompositeDisposable();
+                currencyConverter.getData()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<CurrencyResult>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        compositeDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onSuccess(CurrencyResult currencyResult) {
+                        data = currencyConverter.toCurrencyArray(currencyResult, VerificationStatus.CURRENCY_SIGN_FILTER);
+
+                        dateOfConversion.setText("Conversion on " + currencyResult.getDate());
+                        setUpCartListener(currencyResult, null);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.w(CurrencyConverter.class.getName(), "Failed to get currency rates", e);
+                    }
+                });
+
+    }
+
+    private void setUpCartListener(CurrencyResult currencyResult, String filter) {
+        DbHelper.getInstance().getCollection(String.format(Constants.FirestoreCollections.LIVE_USER_CART,
+                FirebaseAuth.getInstance().getUid())).addSnapshotListener((snapshot, e) -> {
+            if(snapshot != null && snapshot.size() > 0) {
+                Log.d(TAG, "addSnapshotListener: Items found " + snapshot.size());
+                float currentTotal = 0;
+                for(DocumentSnapshot obj : snapshot) {
+                    PurchaseItem p = obj.toObject(PurchaseItem.class);
+                    currentTotal += (p.getPrice() * p.getQuantity());
+                }
+                adapter = new CurrencyAdapter(currencyResult.getBase(),data, getActivity(), Float.toString(currentTotal));
+                recyclerView.setAdapter(adapter);
+            } else {
+                adapter = new CurrencyAdapter(currencyResult.getBase(),data, getActivity(), "");
+                recyclerView.setAdapter(adapter);
+            }
+
+        });
+
+    }
+
+
+    @Override
+    public void onDestroy() {
+        if(compositeDisposable != null && !compositeDisposable.isDisposed()){
+            compositeDisposable.dispose();
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
 
 
         recyclerView = view.findViewById(R.id.currencies_recycler_view);
@@ -74,54 +143,6 @@ public class CurrencyFrag extends Fragment{
             }
         });
 
-
-
-
-        removedItems = new ArrayList<>();
-
-
-        return view;
-    }
-
-    private void getFlags(CurrencyConverter currencyConverter){
-        this.compositeDisposable = new CompositeDisposable();
-                currencyConverter.getData()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<CurrencyResult>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        compositeDisposable.add(d);
-                    }
-
-                    @Override
-                    public void onSuccess(CurrencyResult currencyResult) {
-                        data = currencyConverter.toCurrencyArray(currencyResult, VerificationStatus.CURRENCY_FLAGS_FILTER);
-                        adapter = new CurrencyAdapter(currencyResult.getBase(),data, getActivity());
-                        recyclerView.setAdapter(adapter);
-                        dateOfConversion.setText("Conversion on " + currencyResult.getDate());
-                        //baseCurrency.setText("Base Currency " + currencyResult.getBase());
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.w(CurrencyConverter.class.getName(), "Failed to get currency rates", e);
-                    }
-                });
-
-    }
-
-    @Override
-    public void onDestroy() {
-        if(compositeDisposable != null && !compositeDisposable.isDisposed()){
-            compositeDisposable.dispose();
-        }
-        super.onDestroy();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
     }
 
 

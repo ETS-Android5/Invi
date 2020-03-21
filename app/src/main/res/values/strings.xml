@@ -198,4 +198,6 @@
     <string name="card_scan">Tap Card at the back to scan</string>
     <string name="incorrect_expiry_date">Incorrect Expiry Date</string>
     <string name="fill_in_fields">Please fill in details</string>
+    <string name="converted">Converted :</string>
+    <string name="cart_total">Cart Total :</string>
 </resources>

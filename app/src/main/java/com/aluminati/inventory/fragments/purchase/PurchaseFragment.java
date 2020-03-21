@@ -300,6 +300,7 @@ public class PurchaseFragment extends FloatingTitlebarFragment implements GetCar
                                             Map<String, Long> cats = (Map<String, Long>) success.get("items_categories");
 
 
+<<<<<<< Updated upstream
                                             UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(),
                                                     "items_categories", cats != null ? concat(cats, depts): depts);
 
@@ -310,6 +311,12 @@ public class PurchaseFragment extends FloatingTitlebarFragment implements GetCar
 
                                 Log.d(TAG, "receipt created: " + id);
                             });
+=======
+                    dbHelper.addItem(String.format(Constants.FirestoreCollections.RECEIPTS_TEST,
+                            auth.getCurrentUser().getUid()), order)
+                            .addOnSuccessListener(result ->
+                            {Log.d(TAG, "receipt created: " + id);});
+>>>>>>> Stashed changes
 
                     toaster.toastShort("Payment Successful");
                     currentQuantity = 0;
