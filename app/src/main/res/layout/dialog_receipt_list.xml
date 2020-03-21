@@ -30,7 +30,7 @@
                     android:lines="2"
                     android:maxLines="2"
                     android:minLines="2"
-                    android:text="Order Items"
+                    android:text="@string/order_items"
                     android:textColor="@color/edittext_tinti"
                     android:textSize="24sp"
                     android:textStyle="bold" />

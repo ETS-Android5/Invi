@@ -1,50 +1,29 @@
 package com.aluminati.inventory;
 
-import androidx.annotation.NonNull;
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.SystemClock;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.util.AttributeSet;
-import android.util.Base64;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.aluminati.inventory.login.authentication.LogInActivity;
+import com.aluminati.inventory.login.authentication.password.PassWordReset;
 import com.aluminati.inventory.login.authentication.verification.VerificationStatus;
 import com.aluminati.inventory.login.authentication.verification.VerifyUser;
-import com.aluminati.inventory.login.authentication.password.PassWordReset;
 import com.aluminati.inventory.offline.ConnectivityCheck;
 import com.aluminati.inventory.utils.TextLoader;
-import com.aluminati.inventory.widgets.MagicTextView;
 import com.google.firebase.auth.ActionCodeResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthActionCodeException;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class MainActivity extends AppCompatActivity{
@@ -100,12 +79,8 @@ public class MainActivity extends AppCompatActivity{
         alertDialog = new AlertDialog.Builder(this)
                 .setView(R.layout.offline_dialog)
                 .setCancelable(true)
-                .setPositiveButton("Ok", (dialog, i) -> {
-                            dialog.dismiss();
-                        }
-                ).setNegativeButton("Settings", (dialog, i) -> {
-                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), ACTION_SETTINGS);
-                }).create();
+                .setPositiveButton("Ok", (dialog, i) -> dialog.dismiss()
+                ).setNegativeButton("Settings", (dialog, i) -> startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), ACTION_SETTINGS)).create();
 
     }
 

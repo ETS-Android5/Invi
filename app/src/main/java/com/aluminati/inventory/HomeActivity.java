@@ -187,9 +187,7 @@ public class HomeActivity extends AppCompatActivity implements CardNfcAsyncTask.
         alertDialog = new AlertDialog.Builder(this)
                 .setView(R.layout.offline_dialog)
                 .setCancelable(false)
-                .setPositiveButton("Settings", (dialog, i) -> {
-                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), ACTION_SETTINGS);
-                }).create();
+                .setPositiveButton("Settings", (dialog, i) -> startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), ACTION_SETTINGS)).create();
 
         alertDialog.setCanceledOnTouchOutside(false);
 
@@ -220,9 +218,7 @@ public class HomeActivity extends AppCompatActivity implements CardNfcAsyncTask.
     @Override
     protected void onPause() {
         super.onPause();
-        if (mAdapter != null) {
-           cardNfcUtils.disableDispatch();
-        }
+        if (mAdapter != null) cardNfcUtils.disableDispatch();
     }
 
     public void loadFrag(Fragment frag) {

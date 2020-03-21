@@ -19,7 +19,7 @@ import com.aluminati.inventory.adapters.ItemAdapter;
 import com.aluminati.inventory.adapters.swipelisteners.ItemSwipe;
 import com.aluminati.inventory.binders.RentalBinder;
 import com.aluminati.inventory.fragments.FloatingTitlebarFragment;
-import com.aluminati.inventory.helpers.DbHelper;
+import com.aluminati.inventory.firestore.DbHelper;
 import com.aluminati.inventory.helpers.DialogHelper;
 import com.aluminati.inventory.utils.Toaster;
 import com.google.firebase.auth.FirebaseAuth;

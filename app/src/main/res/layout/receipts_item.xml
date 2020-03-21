@@ -32,7 +32,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
                         android:fontFamily="@font/alfa_slab_one"
-                        android:text="TextView" />
+                       />
                 </TableRow>
 
                 <TableRow
@@ -44,7 +44,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
-                        android:text="TextView" />
+                         />
                 </TableRow>
 
                 <TableRow
@@ -56,7 +56,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight=".1"
-                        android:text="Qty"
+                        android:text="@string/qty"
                         android:textColor="#000"
                         android:textStyle="bold" />
 
@@ -65,14 +65,14 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight=".4"
-                        android:text="TextView" />
+                       />
 
                     <TextView
                         android:id="@+id/textView13"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight=".1"
-                        android:text="Total"
+                        android:text="@string/total"
                         android:textColor="#000" />
 
                     <TextView
@@ -80,7 +80,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.4"
-                        android:text="TextView" />
+                        />
                 </TableRow>
 
                 <TableRow

@@ -23,7 +23,7 @@ import com.aluminati.inventory.fragments.googleMaps.customMarker.CustomMarker;
 import com.aluminati.inventory.fragments.tesco.TescoStoreApi;
 import com.aluminati.inventory.fragments.tesco.listeners.StoresReady;
 import com.aluminati.inventory.fragments.tesco.objects.Store;
-import com.aluminati.inventory.helpers.DbHelper;
+import com.aluminati.inventory.firestore.DbHelper;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -132,6 +132,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Locati
                         location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
                         if(location != null) {
                             String locality = getLocality(getContext(), location.getLatitude(), location.getLongitude());
+                            Log.i("GoogleMaps", locality);
                             if(locality != null){
 
                                 TescoStoreApi tescoStoreApi = new TescoStoreApi(locality);

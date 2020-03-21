@@ -22,13 +22,10 @@ import com.aluminati.inventory.R;
 import com.aluminati.inventory.adapters.ItemAdapter;
 import com.aluminati.inventory.adapters.swipelisteners.ItemSwipe;
 import com.aluminati.inventory.fragments.recent.RecentFragment;
-import com.aluminati.inventory.helpers.DbHelper;
+import com.aluminati.inventory.firestore.DbHelper;
 import com.aluminati.inventory.helpers.DialogHelper;
-import com.aluminati.inventory.login.authentication.encryption.PhoneAESDecryption;
 import com.aluminati.inventory.payments.model.Payment;
 import com.aluminati.inventory.payments.selectPayment.SelectPayment;
-import com.aluminati.inventory.payments.ui.PaymentAdapter;
-import com.aluminati.inventory.users.User;
 import com.aluminati.inventory.utils.Toaster;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -257,10 +254,10 @@ public class PurchaseFragment extends FloatingTitlebarFragment implements GetCar
                 deps.add(pi.getDep());
                 items.add(
                         String.format(Constants.PURCHASE_RECEIPT_ITEM,
-                        pi.getTitle(),
-                        pi.getImgLink(),
-                        pi.getPrice(),
-                        pi.getQuantity())
+                                pi.getTitle(),
+                                pi.getImgLink(),
+                                pi.getPrice(),
+                                pi.getQuantity())
                 );
 
                 dbHelper.deleteItem(String.format(Constants.FirestoreCollections.LIVE_USER_CART,
@@ -280,7 +277,7 @@ public class PurchaseFragment extends FloatingTitlebarFragment implements GetCar
                     String id = setResult.getId();
                     order.remove("items");
                     order.put("itemref", String.format(Constants.FirestoreCollections.COMPLETED_USER_CART
-                            + "/%s",
+                                    + "/%s",
                             auth.getUid(),id));
 
                     dbHelper.addItem(String.format(Constants.FirestoreCollections.RECEIPTS_TEST,
@@ -310,10 +307,6 @@ public class PurchaseFragment extends FloatingTitlebarFragment implements GetCar
 
                                 Log.d(TAG, "receipt created: " + id);
                             });
-                    dbHelper.addItem(String.format(Constants.FirestoreCollections.RECEIPTS_TEST,
-                            auth.getCurrentUser().getUid()), order)
-                            .addOnSuccessListener(result ->
-                            {Log.d(TAG, "receipt created: " + id);});
 
                     toaster.toastShort("Payment Successful");
                     currentQuantity = 0;

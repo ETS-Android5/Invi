@@ -1,40 +1,18 @@
-package com.aluminati.inventory.ageVerification;
+package com.aluminati.inventory.fragments.ageVerification;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.media.Image;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.camera.core.ImageAnalysis;
-import androidx.camera.core.ImageProxy;
 import androidx.fragment.app.Fragment;
 
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.Utils;
-import com.aluminati.inventory.payments.ui.Payments;
 import com.aluminati.inventory.payments.ui.PaymentsFrag;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.ml.vision.FirebaseVision;
-import com.google.firebase.ml.vision.common.FirebaseVisionImage;
-import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata;
-import com.google.firebase.ml.vision.face.FirebaseVisionFace;
-import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetector;
-import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions;
-
-import java.util.List;
-
-import static com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions.ALL_CONTOURS;
 
 public class FaceComparison extends AppCompatActivity implements View.OnClickListener{
 

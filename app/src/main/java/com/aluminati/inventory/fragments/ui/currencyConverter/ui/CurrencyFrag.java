@@ -24,7 +24,7 @@ import com.aluminati.inventory.fragments.purchase.PurchaseItem;
 import com.aluminati.inventory.fragments.ui.currencyConverter.Currency;
 import com.aluminati.inventory.fragments.ui.currencyConverter.converterApi.CurrencyConverter;
 import com.aluminati.inventory.fragments.ui.currencyConverter.CurrencyResult;
-import com.aluminati.inventory.helpers.DbHelper;
+import com.aluminati.inventory.firestore.DbHelper;
 import com.aluminati.inventory.login.authentication.verification.VerificationStatus;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

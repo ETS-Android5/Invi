@@ -16,17 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.adapters.ItemAdapter;
-import com.aluminati.inventory.binders.BaseBinder;
 import com.aluminati.inventory.binders.RentalBinder;
-import com.aluminati.inventory.fragments.purchase.PurchaseItem;
 import com.aluminati.inventory.fragments.rental.RentalItem;
-import com.aluminati.inventory.helpers.DbHelper;
-import com.aluminati.inventory.model.BaseItem;
+import com.aluminati.inventory.firestore.DbHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;

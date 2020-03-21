@@ -2,20 +2,12 @@ package com.aluminati.inventory;
 
 
 import android.app.Activity;
-
+import android.util.Log;
+import android.view.View;
+import androidx.appcompat.app.AlertDialog;
 import com.aluminati.inventory.fragments.rental.RentalItem;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-
-import android.content.Context;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.View;
-import android.widget.FrameLayout;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-
 import java.util.Calendar;
 import java.util.Date;
 
@@ -39,9 +31,7 @@ public class Utils {
             new AlertDialog
                     .Builder(activity)
                     .setView(R.layout.invinfo)
-                    .setPositiveButton(activity.getResources().getText(R.string.ok), ((dialogInterface, i) -> {
-                        dialogInterface.dismiss();
-                    }))
+                    .setPositiveButton(activity.getResources().getText(R.string.ok), ((dialogInterface, i) -> dialogInterface.dismiss()))
                     .create()
                     .show();
 

@@ -90,7 +90,7 @@
             android:layout_gravity="center"
             android:layout_margin="20dp"
             android:textColor="@color/text_color"
-            android:text="No email ?"
+            android:text="@string/no_email"
             android:textSize="20sp"
             />
 

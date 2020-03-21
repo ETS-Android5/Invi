@@ -77,8 +77,7 @@
                         android:layout_weight=".9"
                         android:gravity="start|center_vertical"
                         android:maxLines="2"
-                        android:paddingRight="3dp"
-                        android:text="Test"
+                        android:paddingEnd="3dp"
                         android:textColor="#000"
                         android:textSize="24sp"
                         android:textStyle="bold" />
@@ -97,8 +96,7 @@
                         android:gravity="start|center_vertical"
                         android:maxLines="3"
                         android:minLines="3"
-                        android:paddingRight="3dp"
-                        android:text="Test"
+                        android:paddingEnd="3dp"
                         android:textColor="#000"
                         android:textSize="14sp" />
                 </TableRow>
@@ -113,7 +111,7 @@
                         android:id="@+id/tvRentalUnit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Price Per "
+                        android:text="@string/price_per_hr"
                         android:textColor="#000"
                         android:textStyle="bold" />
 
@@ -123,8 +121,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight=".2"
                         android:gravity="start|center_vertical"
-                        android:paddingLeft="3dp"
-                        android:text="Test"
+                        android:paddingStart="3dp"
                         android:textColor="#000"
                         android:textSize="14sp" />
 
@@ -132,7 +129,7 @@
                         android:id="@+id/tvRentalBalance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Balance"
+                        android:text="@string/balance"
                         android:textColor="#000"
                         android:textStyle="bold" />
 
@@ -142,8 +139,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight=".2"
                         android:gravity="start|center_vertical"
-                        android:paddingLeft="3dp"
-                        android:text="€0.00"
+                        android:paddingStart="3dp"
                         android:textColor="#000"
                         android:textSize="14sp" />
 
