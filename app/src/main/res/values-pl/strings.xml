@@ -98,7 +98,7 @@
         <string name="reset_password">Zapomniane hasło</string>
         <string name="save">Zapisz</string>
         <string name="select_country">Zaznacz kraj</string>
-        <string name="send_code">Wyślij</string>
+        <string name="send_code">Wyślij ponownie</string>
         <string name="settings">Ustawienia</string>
         <string name="show_password">Krótkie hasło</string>
         <string name="signin_with_twitter">Zarejestrój się poprzez Twitter</string>
@@ -136,4 +136,6 @@
         <string name = "google_client_id"> 617397433442-urgnv43j7ik4obmqvoemf1huiv0pcnl1.apps.googleusercontent.com </string>
         <string name = "twitter_consumer_key" translatable = "false"> rot5O7aYRSHm8wZW9sDnzs2FL </string>
         <string name = "twitter_consumer_secret" translatable = "false"> LWMKBJ8aQwpyFYgenwjGPBySNOXGYAOuH2Civ7Qw4Cnat6T8YJ </string>
+        <string name="user_name">Imię użytkownika</string>
+        <string name="user_email">Email</string>
 </resources>

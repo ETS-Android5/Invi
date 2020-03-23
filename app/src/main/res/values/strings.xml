@@ -137,12 +137,10 @@
     <string name="failed_log_in">Failed Log In</string>
     <string name="inccorect_phone_number">Incorrect Phone Number</string>
     <string name="to_many_requests">To many attempts, phone temporally blocked\n try again in few minutes</string>
-    <string name="user_name">Imię użytkownika</string>
     <string name="user_email">Address email</string>
-    <string name="title_activity_maps"></string>
+    <string name="title_activity_maps">Maps</string>
     <string name="options">Options</string>
     <string name="google_maps">Maps</string>
-    <string name="resend"> Wyślij ponownie </string>
     <string name="converions">Conversions</string>
     <string name="payments" translatable="false">Payments</string>
     <string name="no_items_in_cart">You have mo items in your cart</string>
@@ -211,4 +209,6 @@
     <string name="no_items_on_loan">No Items On Loan</string>
     <string name="convert">Convert</string>
     <string name="no_email">No email ?</string>
+    <string name="user_name">User name</string>
+    <string name="resend">Resend</string>
 </resources>
