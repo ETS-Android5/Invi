@@ -159,6 +159,7 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
 
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.i(TAG, "CAMERA permission has now been granted. Showing preview.");
+                setScannerFragment();
                 //loadFrag(fragMap.get(R.id.nav_scanner));
             } else {
                 Log.i(TAG, "CAMERA permission was NOT granted.");
@@ -169,6 +170,12 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
                 }).show();
             }
         }
+    }
+
+    private void setScannerFragment(){
+        this.scannerFragment = new ScannerFragment();
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.nav_host_fragment, scannerFragment, "scanner_frag").addToBackStack("scanner_frag").commit();
     }
 
 
@@ -188,10 +195,7 @@ public class CustomFloatingActionButton extends Fragment implements View.OnClick
                 if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                     requestCameraPermission();
                 } else {
-
-                    this.scannerFragment = new ScannerFragment();
-                    FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.add(R.id.nav_host_fragment, scannerFragment, "scanner_frag").addToBackStack("scanner_frag").commit();
+                    setScannerFragment();
                 }
                 closeFABMenu();
                 break;

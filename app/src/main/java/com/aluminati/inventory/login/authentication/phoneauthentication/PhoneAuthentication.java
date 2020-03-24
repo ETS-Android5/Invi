@@ -23,6 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.aluminati.inventory.Constants;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.utils.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
@@ -261,7 +262,6 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
 
                 @Override
                 public void onTick(long l) {
-                    Log.i(TAG, "time " + l / 1000);
                     countDownLabel.setText(Long.toString(l / 1000));
                 }
 
@@ -367,8 +367,15 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
                     })
                     .addOnFailureListener(result -> {
                         Log.w(TAG, "linkWithCreditential:failed", result);
-                        setResult(Activity.RESULT_CANCELED, new Intent());
-                        finish();
+
+                        if(result instanceof FirebaseException){
+                            setResult(Constants.PHONE_NUMBER_LINKED, new Intent());
+                            finish();
+                        }else{
+                            setResult(Activity.RESULT_CANCELED, new Intent());
+                            finish();
+                        }
+
                     });
     }
 

@@ -183,13 +183,7 @@ public class UserDetails extends Fragment implements View.OnClickListener {
                 break;
             }
             case R.id.phone_number_change: {
-                changeAttribute(phoneNumber, phoneChange, () -> {
-                    if (!phoneNumber.getText().toString().isEmpty() && !tmp.equals(phoneNumber.getText().toString())) {
-                        UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(), "is_phone_verified", false);
-                        startActivityForResult(new Intent(getContext(), PhoneAuthentication.class), VerificationStatus.PHONE_VERIFICATION);
-                    }
-                    return null;
-                });
+                startActivityForResult(new Intent(getContext(), PhoneAuthentication.class), VerificationStatus.PHONE_VERIFICATION);
                 break;
             }
             case R.id.change_email: {

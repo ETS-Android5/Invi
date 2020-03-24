@@ -26,6 +26,7 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 
 import java.util.regex.Pattern;
 
@@ -94,6 +95,8 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
                 Utils.makeSnackBarWithButtons(getResources().getString(R.string.phone_successfully_linked), verifyPhone, this);
             }else if(resultCode == Activity.RESULT_CANCELED){
                 Utils.makeSnackBarWithButtons(getResources().getString(R.string.phone_verification_canceled), verifyPhone, this);
+            }else if(resultCode == Constants.PHONE_NUMBER_LINKED){
+                Utils.makeSnackBarWithButtons(getResources().getString(R.string.phone_already_linked), verifyPhone, this);
             }
         }
     }
@@ -111,14 +114,23 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
                     emailVerified.setText(getResources().getString(R.string.veirified));
                     verifyEmail.setVisibility(View.INVISIBLE);
                     contineButton.setEnabled(true);
-                    if(user.getProviderId().equals(Constants.GoogleProviderId)){
+                    if(contains(user)){
                         googleInfo();
                     }
                 } else {
                     Log.i(TAG, "Not verified");
                 }
-            }).addOnFailureListener(result -> Log.w(TAG, "Failed to check verifiy user", result));
+            }).addOnFailureListener(result -> Log.w(TAG, "Failed to check verify user", result));
         }
+    }
+
+    private boolean contains(FirebaseUser firebaseUser){
+        for(UserInfo userInfo : firebaseUser.getProviderData()){
+            if(userInfo.getProviderId().equals(Constants.GoogleProviderId)){
+                return true;
+            }
+        }
+        return false;
     }
 
     private void alerDialog(String title, String message){
@@ -131,9 +143,9 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
     }
 
     private void googleInfo(){
-        Snackbar.make(verifyEmail, "Google Email Instant Verification", BaseTransientBottomBar.LENGTH_LONG)
+        Snackbar.make(verifyEmail, "Email Was Instantly Verified", BaseTransientBottomBar.LENGTH_LONG)
                 .setAction(getResources().getString(R.string.info), click -> {
-                    alerDialog("Google Instant Verification","Invi uses Googles Firebase, when signing up using Firebase your email will be instantly verified");
+                    alerDialog("Google Instant Verification","Invi uses Googles Firebase, when signing up using Google your email will be instantly verified");
                 }).show();
     }
 

@@ -220,4 +220,5 @@
     <string name="enter_phone_number">Enter Phone Number</string>
     <string name="enter_correct_phone_number">Enter Correct Phone Number</string>
     <string name="no_code">No Code ?</string>
+    <string name="phone_already_linked">Phone Linked With Another Account</string>
 </resources>

@@ -64,7 +64,6 @@ public class UserProfile extends AppCompatActivity{
 
 
     private void onConnected(boolean connected){
-        if(connected) Utils.makeSnackBar(getResources().getString(R.string.connected),findViewById(R.id.name),this);
     }
 
 

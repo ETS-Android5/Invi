@@ -121,36 +121,35 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Locati
                         Log.w(TAG, "Failed to get store collection", failure);
                     });
 
-            if (locationManager != null) {
-                if (!allPermissionsGranted()) {
-                    askForPermision();
-                } else {
-                    if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        askForPermision();
-                    }else {
-                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME, LOCATION_REFRESH_DISTANCE, this);
-                        location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-                        if(location != null) {
-                            String locality = getLocality(getContext(), location.getLatitude(), location.getLongitude());
-                            Log.i("GoogleMaps", locality);
-                            if(locality != null){
+            setTescoMarkers();
 
-                                TescoStoreApi tescoStoreApi = new TescoStoreApi(locality);
-                                tescoStoreApi.getStores();
-                                tescoStoreApi.setStoresReady(this);
-                            }
+        }
+
+    }
+
+    private void setTescoMarkers(){
+        if (locationManager != null) {
+            if (!allPermissionsGranted()) {
+                askForPermision();
+            } else {
+                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    askForPermision();
+                }else {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME, LOCATION_REFRESH_DISTANCE, this);
+                    location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+                    if(location != null) {
+                        String locality = getLocality(getContext(), location.getLatitude(), location.getLongitude());
+                        Log.i("GoogleMaps", locality);
+                        if(locality != null){
+                            TescoStoreApi tescoStoreApi = new TescoStoreApi(locality);
+                            tescoStoreApi.getStores();
+                            tescoStoreApi.setStoresReady(this);
                         }
                     }
                 }
             }
         }
-
     }
-
-
-
-
-
 
     private void askForPermision(){
         ActivityCompat.requestPermissions(getActivity(), REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
@@ -167,6 +166,8 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Locati
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (!allPermissionsGranted()) {
                 Toast.makeText(getContext(), "Permissions not granted by the user.", Toast.LENGTH_SHORT).show();
+            }else{
+                setTescoMarkers();
             }
         }
     }
