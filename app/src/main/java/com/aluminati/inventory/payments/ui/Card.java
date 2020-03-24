@@ -139,7 +139,7 @@ public class Card extends Fragment {
                         payments = Payment.stringToList(dec);
 
                         if (contains(payments)) {
-                            Snackbar.make(cardNumber, "Card All ready Linked", BaseTransientBottomBar.LENGTH_INDEFINITE).show();
+                            Snackbar.make(cardNumber, getResources().getString(R.string.card_linked), BaseTransientBottomBar.LENGTH_INDEFINITE).show();
                         } else {
                             payments.add(new Payment(cardNumber.getText().toString()
                                     , cardName, cardExpiryDate.getText().toString(), uniqeCardRef));
@@ -204,7 +204,7 @@ public class Card extends Fragment {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (!allPermissionsGranted()) {
-                Toast.makeText(getContext(), "Permissions not granted by the user.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getResources().getString(R.string.permission_not_granted), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -257,7 +257,7 @@ public class Card extends Fragment {
         boolean isEmpty = false;
         if(editText.getText().toString().isEmpty()){
             isEmpty = true;
-            errorText.setText(R.string.fill_in_fields);
+            errorText.setText(getResources().getString(R.string.fill_in_fields));
             errorText.setVisibility(View.VISIBLE);
         }
 
