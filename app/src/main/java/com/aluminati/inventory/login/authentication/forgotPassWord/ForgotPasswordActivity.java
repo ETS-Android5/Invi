@@ -35,7 +35,9 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
     public void onClick(View view) {
         if(view.getId() == R.id.send_email){
             if(!emailField.getText().toString().isEmpty()){
-                if(validateEmailInput(emailField.getText().toString())){
+                if (!validateEmailInput(emailField.getText().toString())) {
+                    emailSent.setText(getResources().getString(R.string.invalid_email));
+                } else {
                     UserFetch.getUser(emailField.getText().toString()).addOnCompleteListener(result -> {
                        if(result.isSuccessful() && result.getResult() != null){
                                if(result.getResult().exists()){
@@ -50,8 +52,6 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
                        }
                     });
                     emailSent.setText(getResources().getString(R.string.email_sent_info));
-                }else{
-                    emailSent.setText(getResources().getString(R.string.invalid_email));
                 }
             }else{
                 emailSent.setText(getResources().getString(R.string.empty_email));
