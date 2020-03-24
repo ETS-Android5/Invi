@@ -1,51 +1,24 @@
 package com.aluminati.inventory.userprofile;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
-import android.view.Gravity;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-
-import com.aluminati.inventory.fragments.fragmentListeners.socialAccounts.ReloadImageResponse;
-import com.aluminati.inventory.login.authentication.LogInActivity;
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.Utils;
-import com.aluminati.inventory.firestore.UserFetch;
-import com.aluminati.inventory.fragments.DeleteUser;
-import com.aluminati.inventory.login.authentication.verification.VerificationStatus;
-import com.aluminati.inventory.login.authentication.verification.VerifyUser;
-import com.aluminati.inventory.login.authentication.password.PassWordReset;
-import com.aluminati.inventory.login.authentication.phoneauthentication.PhoneAuthentication;
+import com.aluminati.inventory.utils.Utils;
+import com.aluminati.inventory.fragments.fragmentListeners.socialAccounts.ReloadImageResponse;
 import com.aluminati.inventory.offline.ConnectivityCheck;
-import com.aluminati.inventory.users.User;
-import com.facebook.login.LoginManager;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
-
-import java.util.Calendar;
-import java.util.concurrent.Callable;
 
 public class UserProfile extends AppCompatActivity{
 
@@ -54,10 +27,8 @@ public class UserProfile extends AppCompatActivity{
 
 
     private FirebaseUser firebaseUser;
-    private FirebaseAuth firebaseAuth;
     private ConnectivityCheck connection;
     private ReloadImageResponse reloadImageResponse;
-    private LinearLayout baseLayOut;
     private AlertDialog alertDialog;
     private static final int ACTION_SETTINGS = 0;
 
@@ -70,9 +41,8 @@ public class UserProfile extends AppCompatActivity{
 
         connetionInfo();
 
-        firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        baseLayOut = findViewById(R.id.base_layout);
+        LinearLayout baseLayOut = findViewById(R.id.base_layout);
 
         ((TextView)findViewById(R.id.name)).setText(firebaseUser.getDisplayName());
         ((TextView)findViewById(R.id.email)).setText(firebaseUser.getEmail());
@@ -92,8 +62,9 @@ public class UserProfile extends AppCompatActivity{
 
     }
 
-    private void onConnected(boolean connected){
 
+    private void onConnected(boolean connected){
+        if(connected) Utils.makeSnackBar(getResources().getString(R.string.connected),findViewById(R.id.name),this);
     }
 
 
@@ -173,10 +144,6 @@ public class UserProfile extends AppCompatActivity{
     @Override
     public void onStateNotSaved() {
         super.onStateNotSaved();
-    }
-
-    private String getYear(){
-        return Integer.toString(Calendar.getInstance().get(Calendar.YEAR));
     }
 
     @Override

@@ -8,7 +8,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.Utils;
+import com.aluminati.inventory.utils.Utils;
 import com.aluminati.inventory.fragments.rental.RentalItem;
 import com.bumptech.glide.Glide;
 

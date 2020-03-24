@@ -14,10 +14,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.Utils;
+import com.aluminati.inventory.utils.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.login.authentication.LogInActivity;
-import com.github.mrengineer13.snackbar.SnackBar;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;

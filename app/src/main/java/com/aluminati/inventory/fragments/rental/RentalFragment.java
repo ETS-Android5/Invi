@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.aluminati.inventory.Constants;
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.Utils;
+import com.aluminati.inventory.utils.Utils;
 import com.aluminati.inventory.adapters.ItemAdapter;
 import com.aluminati.inventory.adapters.swipelisteners.ItemSwipe;
 import com.aluminati.inventory.binders.RentalBinder;

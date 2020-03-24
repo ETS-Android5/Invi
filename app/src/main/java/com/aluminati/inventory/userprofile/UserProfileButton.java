@@ -65,10 +65,10 @@ public class UserProfileButton extends Fragment implements View.OnClickListener{
                 if (LoginManager.getInstance() != null) {
                     LoginManager.getInstance().logOut();
                 }
+                getActivity().finish();
                 Intent logout = new Intent(getActivity(),  LogInActivity.class);
                 logout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(logout);
-                getActivity().finish();
                 break;
             }
         }

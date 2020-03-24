@@ -2,7 +2,6 @@ package com.aluminati.inventory.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.aluminati.inventory.login.authentication.LogInActivity;
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.Utils;
-import com.aluminati.inventory.firestore.UserFetch;
 import com.ebanx.swipebtn.SwipeButton;
-import com.google.firebase.auth.FirebaseAuth;
-
 
 
 public class DeleteUser extends DialogFragment {

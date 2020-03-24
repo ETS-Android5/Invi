@@ -86,6 +86,8 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.6.0'
     implementation  'com.squareup.okhttp3:okhttp:3.6.0'
     implementation 'com.github.lecho:hellocharts-library:1.5.8@aar'
+    compile group: 'com.googlecode.libphonenumber', name: 'libphonenumber', version: '8.4.2'
+
 
 
     //Testing

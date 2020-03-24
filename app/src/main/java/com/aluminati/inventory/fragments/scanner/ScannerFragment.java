@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import com.aluminati.inventory.Constants;
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.Utils;
+import com.aluminati.inventory.utils.Utils;
 import com.aluminati.inventory.fragments.tesco.TescoProductsApi;
 import com.aluminati.inventory.fragments.tesco.objects.Product;
 import com.aluminati.inventory.fragments.tesco.listeners.ProductReady;

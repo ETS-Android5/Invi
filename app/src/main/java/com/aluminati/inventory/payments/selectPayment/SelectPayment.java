@@ -1,7 +1,6 @@
 package com.aluminati.inventory.payments.selectPayment;
 
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,19 +15,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.fragments.purchase.GetCardRefNumber;
-import com.aluminati.inventory.fragments.tesco.objects.StandardOpeningHours;
 import com.aluminati.inventory.login.authentication.encryption.PhoneAESDecryption;
 import com.aluminati.inventory.payments.model.Payment;
 import com.aluminati.inventory.payments.ui.PaymentAdapter;
-import com.aluminati.inventory.utils.Toaster;
-import com.github.mrengineer13.snackbar.SnackBar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class SelectPayment extends DialogFragment {

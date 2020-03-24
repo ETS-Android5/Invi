@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.Utils;
+import com.aluminati.inventory.utils.Utils;
 import com.aluminati.inventory.fragments.languageSelect.LanguageSelection;
 import com.aluminati.inventory.login.authentication.forgotPassWord.ForgotPasswordActivity;
 import com.aluminati.inventory.login.authentication.verification.VerificationStatus;

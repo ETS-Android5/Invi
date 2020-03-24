@@ -1,10 +1,12 @@
-package com.aluminati.inventory;
+package com.aluminati.inventory.utils;
 
 
 import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 import androidx.appcompat.app.AlertDialog;
+
+import com.aluminati.inventory.R;
 import com.aluminati.inventory.fragments.rental.RentalItem;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;

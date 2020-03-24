@@ -6,20 +6,28 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.aluminati.inventory.Constants;
 import com.aluminati.inventory.HomeActivity;
 import com.aluminati.inventory.login.authentication.LogInActivity;
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.Utils;
+import com.aluminati.inventory.utils.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.login.authentication.phoneauthentication.PhoneAuthentication;
 import com.aluminati.inventory.login.authentication.verification.VerifyUser;
 import com.aluminati.inventory.users.User;
+import com.github.mrengineer13.snackbar.SnackBar;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.regex.Pattern;
 
 
 public class AuthenticationActivity extends AppCompatActivity implements View.OnClickListener{
@@ -84,6 +92,8 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
                 phoneVerified.setText(getResources().getString(R.string.veirified));
                 UserFetch.update(FirebaseAuth.getInstance().getCurrentUser().getEmail(), "is_phone_verified", true);
                 Utils.makeSnackBarWithButtons(getResources().getString(R.string.phone_successfully_linked), verifyPhone, this);
+            }else if(resultCode == Activity.RESULT_CANCELED){
+                Utils.makeSnackBarWithButtons(getResources().getString(R.string.phone_verification_canceled), verifyPhone, this);
             }
         }
     }
@@ -101,11 +111,37 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
                     emailVerified.setText(getResources().getString(R.string.veirified));
                     verifyEmail.setVisibility(View.INVISIBLE);
                     contineButton.setEnabled(true);
+                    if(user.getProviderId().equals(Constants.GoogleProviderId)){
+                        googleInfo();
+                    }
                 } else {
-                    Log.i(TAG, "Not verifired");
+                    Log.i(TAG, "Not verified");
                 }
             }).addOnFailureListener(result -> Log.w(TAG, "Failed to check verifiy user", result));
         }
+    }
+
+    private void alerDialog(String title, String message){
+        new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setIcon(R.drawable.infoicon)
+                .setMessage(message)
+                .setPositiveButton("Ok", ((dialogInterface, i) -> dialogInterface.dismiss()))
+                .show();
+    }
+
+    private void googleInfo(){
+        Snackbar.make(verifyEmail, "Google Email Instant Verification", BaseTransientBottomBar.LENGTH_LONG)
+                .setAction(getResources().getString(R.string.info), click -> {
+                    alerDialog("Google Instant Verification","Invi uses Googles Firebase, when signing up using Firebase your email will be instantly verified");
+                }).show();
+    }
+
+    private void authenticationInfo(){
+        Snackbar.make(verifyEmail, "Email And Phone Verification", BaseTransientBottomBar.LENGTH_INDEFINITE)
+                .setAction(getResources().getString(R.string.info), click -> {
+                    alerDialog("Email And Phone Verification","Phone and Email needs to be verified to use Invi");
+                }).show();
     }
 
     @Override
@@ -127,9 +163,12 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
                     if (task.exists()) {
                         User user = new User(task);
                         if (user.isPhoneVerified() && user.isEmailVerified()) {
-                            LogInActivity.logInActivity.finish();
-                            startActivity(new Intent(AuthenticationActivity.this, HomeActivity.class));
+                            Intent intent = new Intent(AuthenticationActivity.this, HomeActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
                             finish();
+                        }else{
+                            authenticationInfo();
                         }
                     }
                 }).addOnFailureListener(task -> Log.w(TAG, "Failed to get user", task));
@@ -157,16 +196,12 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
                 break;
             }
             case R.id.info_icon_button:{
-                new AlertDialog.Builder(this)
-                        .setTitle("Verification")
-                        .setMessage("Email and Phone needs to be verified")
-                        .setPositiveButton(getResources().getText(R.string.ok), (dialog,id) -> {
-                            dialog.cancel();
-                        }).show();
-
+                alerDialog("Email And Phone Verification","Phone and Email needs to be verified to use Invi");
                 break;
             }
 
         }
     }
+
+
 }

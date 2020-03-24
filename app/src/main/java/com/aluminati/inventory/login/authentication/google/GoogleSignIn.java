@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment;
 
 import com.aluminati.inventory.login.authentication.LogInActivity;
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.Utils;
+import com.aluminati.inventory.utils.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.login.authentication.forgotPassWord.ForgotPasswordActivity;
 import com.aluminati.inventory.login.authentication.verification.VerificationStatus;
@@ -35,10 +35,11 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserInfo;
 
+import static com.aluminati.inventory.Constants.GoogleProviderId;
+
 public class GoogleSignIn extends Fragment implements View.OnClickListener, OnStateChangeListener {
 
     private static final String TAG = GoogleSignIn.class.getName();
-    private static final String GoogleProviderId = "google.com";
     private static final int RC_SIGN_IN = 9001;
 
     private GoogleSignInClient googleSignInClient;
@@ -122,7 +123,7 @@ public class GoogleSignIn extends Fragment implements View.OnClickListener, OnSt
             if(getContext() instanceof UserProfile){
                 linkAccounts(credential, getActivity(), "is_google_linked", TAG);
             }else {
-                alertDialog("Failed to LogIn", "Email is already registered, Login and link account or Recover Password")
+                alertDialog("Log In Error", "Account linked is associated with anther user\n\nLog in to link account or recover password")
                         .setPositiveButton("Ok", (dialog, id) -> dialog.cancel())
                         .setNegativeButton("Recover Password", (dialog, id) -> getContext().startActivity(new Intent(getContext(), ForgotPasswordActivity.class)))
                         .create()

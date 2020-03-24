@@ -1,6 +1,7 @@
 package com.aluminati.inventory.login.authentication.phoneauthentication;
 
 import android.os.Bundle;
+import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,12 @@ import androidx.fragment.app.Fragment;
 import com.aluminati.inventory.R;
 import com.aluminati.inventory.fragments.fragmentListeners.phone.PhoneVerificationSender;
 import com.aluminati.inventory.login.authentication.phoneauthentication.PhoneAuthentication;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 import com.hbb20.CountryCodePicker;
+
+import java.util.regex.Pattern;
 
 public class PhoneAuthenticationFragment extends Fragment {
 
@@ -37,12 +43,30 @@ public class PhoneAuthenticationFragment extends Fragment {
         return view;
     }
 
-    private String getPhoneNumber(){
+    private String getPhoneNumberWithCountryCode(){
         String phoneNumber = this.phoneNumber.getText().toString();
         String countryPrefix = this.countryCodePicker.getSelectedCountryCode();
         return phoneNumber.startsWith("0") ? "+".concat(countryPrefix.concat(phoneNumber.substring(1).replace(" ", "")))
                 : "+".concat(countryPrefix.concat(phoneNumber).replace(" ", ""));
 
+    }
+
+    private String getPhoneNunber(){
+        String phoneNumber = this.phoneNumber.getText().toString();
+        return phoneNumber.startsWith("0") ? phoneNumber.substring(1) : phoneNumber;
+    }
+
+    public boolean isPhoneNumberValidate(String number, String countryCode) {
+        Log.i(TAG, countryCode);
+
+        PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
+        try {
+            Phonenumber.PhoneNumber swissNumberProto = phoneNumberUtil.parse(number, countryCode);
+            return phoneNumberUtil.isValidNumber(swissNumberProto);
+        } catch (NumberParseException e) {
+            System.err.println("NumberParseException was thrown: " + e.toString());
+        }
+        return false;
     }
 
 
@@ -55,8 +79,16 @@ public class PhoneAuthenticationFragment extends Fragment {
 
     private void onCodeReceived(int code){
         if (code == 4001) {
-            Log.i(TAG, getPhoneNumber());
-            phoneVerificationSender.onPhoneNumberSend(getPhoneNumber());
+            Log.i(TAG, this.countryCodePicker.getSelectedCountryNameCode());
+            if(phoneNumber.getText().toString().isEmpty()){
+                phoneVerificationSender.onPhoneNumberSend("");
+            }else {
+                if(isPhoneNumberValidate(getPhoneNunber(), this.countryCodePicker.getSelectedCountryNameCode())){
+                    phoneVerificationSender.onPhoneNumberSend(getPhoneNumberWithCountryCode());
+                }else {
+                    phoneVerificationSender.onPhoneNumberSend("wrong_number");
+                }
+            }
         }
     }
 

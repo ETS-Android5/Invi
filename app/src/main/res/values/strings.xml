@@ -212,4 +212,12 @@
     <string name="user_name">User name</string>
     <string name="resend">Resend</string>
     <string name="item_is_null">Item is null</string>
+    <string name="registration_failed">Registration Failed</string>
+    <string name="connected">Connected</string>
+    <string name="phone_verification_canceled">Phone Verification Canceled</string>
+    <string name="inccorect_code">Wrong or expired code entered</string>
+    <string name="enter_ver_code">Enter verification text</string>
+    <string name="enter_phone_number">Enter Phone Number</string>
+    <string name="enter_correct_phone_number">Enter Correct Phone Number</string>
+    <string name="no_code">No Code ?</string>
 </resources>

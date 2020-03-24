@@ -66,7 +66,10 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.Payments
         ImageView cardIcon = holder.cardLogo;
         Button editCardButton = holder.editButton;
         if(activity instanceof Payments){
-            editCardButton.setOnClickListener(click -> editCard(cardNumber, cardExpiry, editCardButton));
+            editCardButton.setOnClickListener(click -> {
+                cardNumber.setSelection(0);
+                editCard(cardNumber, cardExpiry, editCardButton);
+            });
         }
         cardNumber.setText(formatString(dataSet.get(position).getNumber()));
         cardExpiry.setText(dataSet.get(position).getExpiryDate());

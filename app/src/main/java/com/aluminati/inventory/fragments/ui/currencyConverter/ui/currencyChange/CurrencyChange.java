@@ -1,8 +1,6 @@
 package com.aluminati.inventory.fragments.ui.currencyConverter.ui.currencyChange;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
@@ -20,18 +18,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.Utils;
+import com.aluminati.inventory.utils.Utils;
 import com.aluminati.inventory.fragments.languageSelect.LanguageCustomAdapter;
 import com.aluminati.inventory.fragments.ui.currencyConverter.Currency;
 import com.aluminati.inventory.fragments.ui.currencyConverter.CurrencyResult;
 import com.aluminati.inventory.fragments.ui.currencyConverter.converterApi.CurrencyConverter;
-import com.aluminati.inventory.fragments.ui.currencyConverter.ui.CurrencyAdapter;
 import com.aluminati.inventory.login.authentication.verification.VerificationStatus;
-import com.bumptech.glide.util.Util;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;

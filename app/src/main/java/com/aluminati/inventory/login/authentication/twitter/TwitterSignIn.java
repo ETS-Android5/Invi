@@ -13,7 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import com.aluminati.inventory.login.authentication.LogInActivity;
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.Utils;
+import com.aluminati.inventory.utils.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.login.authentication.verification.VerificationStatus;
 import com.aluminati.inventory.login.authentication.verification.VerifyUser;

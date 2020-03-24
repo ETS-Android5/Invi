@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.Utils;
+import com.aluminati.inventory.utils.Utils;
 import com.aluminati.inventory.fragments.fragmentListeners.password.PassWordListenerReciever;
 import com.aluminati.inventory.login.authentication.authentication.AuthenticationActivity;
 import com.aluminati.inventory.login.authentication.forgotPassWord.ForgotPasswordActivity;
@@ -38,7 +38,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText email;
     private EditText name;
     private EditText surName;
-    private TextView emailVerified;
     private int loginMethod;
 
     @Override
@@ -50,7 +49,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         name = findViewById(R.id.name_view);
         surName = findViewById(R.id.surname_view);
         email = findViewById(R.id.email_view);
-        emailVerified = findViewById(R.id.email_verified);
 
             addTextChangeListenet(name, surName,findViewById(R.id.name_required_view));
             addTextChangeListenet(surName, email, findViewById(R.id.surname_required_view));
@@ -277,7 +275,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 if (result instanceof FirebaseAuthUserCollisionException) {
                     showAlertDialog("Email is already registered, login " + " or recover password");
                 }
-                Utils.makeSnackBarWithButtons(getResources().getString(R.string.authentication_failed), name, this);
+                Utils.makeSnackBarWithButtons(getResources().getString(R.string.registration_failed), name, this);
             });
         }
     }

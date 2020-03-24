@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment;
 
 import com.aluminati.inventory.login.authentication.LogInActivity;
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.Utils;
+import com.aluminati.inventory.utils.Utils;
 import com.aluminati.inventory.firestore.UserFetch;
 import com.aluminati.inventory.login.authentication.forgotPassWord.ForgotPasswordActivity;
 import com.aluminati.inventory.login.authentication.verification.VerificationStatus;
@@ -28,7 +28,6 @@ import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
@@ -41,8 +40,6 @@ import com.google.firebase.auth.UserInfo;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class FaceBookSignIn extends Fragment implements View.OnClickListener, OnStateChangeListener {
@@ -168,7 +165,7 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener, On
         final AuthCredential authCredential = FacebookAuthProvider.getCredential(accessToken.getToken());
         if(firebaseAuth.getCurrentUser() != null){
             if(getContext() instanceof UserProfile){
-                Log.i(TAG, "Lonking Facebook");
+                Log.i(TAG, "Linking Facebook");
                 linkAccounts(authCredential);
             }
         }else {
@@ -177,12 +174,12 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener, On
                 VerifyUser.checkUser(firebaseAuth.getCurrentUser(), getActivity(), VerificationStatus.FACEBOOK);
                 accessTokenTracker.startTracking();
             }).addOnFailureListener(result -> {
-                Log.w(TAG, "Failed to LogIn With Google", result);
+                Log.w(TAG, "Log In With Go", result);
                 if (result instanceof FirebaseAuthUserCollisionException) {
-                    Log.d(TAG, "Failed to LogIn", result);
-                    alertDialog("Login Error", "Account linked is associated with anther user\n\n Log in to link account or recover password")
+                    Log.d(TAG, "Log In Failed", result);
+                    alertDialog("Log In Error", "Account linked is associated with anther user\n\nLog in to link account or recover password")
                             .setPositiveButton("Ok", (dialog, i) -> dialog.dismiss())
-                            .setNegativeButton("Recoverd Password", ((dialogInterface, i) -> {
+                            .setNegativeButton("Recover Password", ((dialogInterface, i) -> {
                                 startActivity(new Intent(getActivity(), ForgotPasswordActivity.class));
                             }))
                             .create()

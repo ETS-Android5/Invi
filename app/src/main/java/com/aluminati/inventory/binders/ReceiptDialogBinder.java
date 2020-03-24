@@ -1,16 +1,13 @@
 package com.aluminati.inventory.binders;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.Utils;
 import com.aluminati.inventory.fragments.receipt.ReceiptListItem;
-import com.aluminati.inventory.fragments.rental.RentalItem;
 import com.bumptech.glide.Glide;
 
 /*

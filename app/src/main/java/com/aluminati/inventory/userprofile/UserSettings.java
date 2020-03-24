@@ -18,7 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.Utils;
+import com.aluminati.inventory.utils.Utils;
 import com.aluminati.inventory.fragments.DeleteUser;
 import com.aluminati.inventory.fragments.languageSelect.LanguageSelection;
 import com.aluminati.inventory.fragments.ui.currencyConverter.ui.currencyChange.CurrencyChange;

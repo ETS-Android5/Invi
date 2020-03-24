@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.aluminati.inventory.fragments.PassWordReEnter;
 import com.aluminati.inventory.login.authentication.LogInActivity;
 import com.aluminati.inventory.R;
-import com.aluminati.inventory.Utils;
+import com.aluminati.inventory.utils.Utils;
 import com.aluminati.inventory.fragments.fragmentListeners.password.PassWordListenerReciever;
 import com.aluminati.inventory.users.User;
 import com.facebook.login.LoginManager;

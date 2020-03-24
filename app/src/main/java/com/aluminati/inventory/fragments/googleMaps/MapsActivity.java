@@ -236,6 +236,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Locati
     public String getLocality(Context context, double lat, double lng) {
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         try {
+
             return geocoder.getFromLocation(lat,lng,1).get(0).getLocality();
         } catch (IOException e) {
             Log.i(TAG, "Failed to get address",e);

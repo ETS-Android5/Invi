@@ -21,14 +21,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.aluminati.inventory.fragments.googleMaps.MapsActivity;
-import com.aluminati.inventory.fragments.summary.Summary;
 import com.aluminati.inventory.fragments.ui.currencyConverter.ui.CurrencyFrag;
 import com.aluminati.inventory.fragments.purchase.PurchaseFragment;
 import com.aluminati.inventory.fragments.receipt.ReceiptFragment;
 import com.aluminati.inventory.fragments.recent.RecentFragment;
 import com.aluminati.inventory.fragments.rental.RentalFragment;
 import com.aluminati.inventory.fragments.scanner.ScannerFragment;
-import com.aluminati.inventory.fragments.tools.ToolsFragment;
 
 import com.aluminati.inventory.login.authentication.LogInActivity;
 import com.aluminati.inventory.offline.ConnectivityCheck;
@@ -36,6 +34,7 @@ import com.aluminati.inventory.payments.ui.Card;
 import com.aluminati.inventory.payments.ui.Payments;
 import com.aluminati.inventory.payments.ui.PaymentsFrag;
 import com.aluminati.inventory.utils.Toaster;
+import com.aluminati.inventory.utils.Utils;
 import com.aluminati.inventory.widgets.ScannerFragContains;
 import com.facebook.login.LoginManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -164,10 +163,10 @@ public class HomeActivity extends AppCompatActivity implements CardNfcAsyncTask.
                     if(LoginManager.getInstance() != null){
                         LoginManager.getInstance().logOut();
                     }
+                    finish();
                     Intent logout = new Intent(getApplicationContext(), LogInActivity.class);
                     logout.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(logout);
-                    finish();
                     break;
                 }
                 default:

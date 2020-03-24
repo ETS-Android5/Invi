@@ -95,7 +95,7 @@ public class TescoStoreApi {
     public Single<Store> getSearchResult(){
         return TescoStoreApi
                 .getRetrofitInstance(Store.class, getStoreListResultDeserializer)
-                .create(TescoStores.class).getStoresList(getLocality());
+                .create(TescoStores.class).getStoresList(getLocality(), 20);
     }
 
     private static GsonConverterFactory createGsonConverter(Type type, Object typeAdapter) {
@@ -123,7 +123,7 @@ public class TescoStoreApi {
     public interface TescoStores {
         @Headers({"Ocp-Apim-Subscription-Key: cbc1fdf45b5a454cae665a1d34a8a094", "Cache-Control: no-cache"})
         @GET("search")
-        Single<Store> getStoresList(@Query("sort") String sort);
+        Single<Store> getStoresList(@Query("sort") String sort, @Query("limit") int limit);
 
     }
 
