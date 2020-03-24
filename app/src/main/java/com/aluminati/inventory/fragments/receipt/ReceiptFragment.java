@@ -96,7 +96,7 @@ public class ReceiptFragment extends FloatingTitlebarFragment {
                                         }).show();
                             }
 
-                        } else toaster.toastShort("Item is null");
+                        } else toaster.toastShort(getResources().getString(R.string.item_is_null));
                     })
                     .addOnFailureListener(ex -> {
                         toaster.toastShort(ex.getMessage());
