@@ -205,4 +205,6 @@
         <string name="no_email">Brak emaila?</string>
         <string name="resend">Wyślij ponownie</string>
         <string name="item_is_null">Nie ma takiego produktu</string>
+    <string name="permission_not_granted">Odmowa dostępu dla użytkownika</string>
+    <string name="card_linked">Karta już połączona</string>
 </resources>
