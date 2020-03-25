@@ -207,4 +207,27 @@
         <string name="item_is_null">Nie ma takiego produktu</string>
     <string name="permission_not_granted">Odmowa dostępu dla użytkownika</string>
     <string name="card_linked">Karta już połączona</string>
+    <string name="payments">Wpłaty</string>
+    <string name="converions">Przewalutowanie</string>
+    <string name="registration_failed">Rejestracja nieudana</string>
+    <string name="connected">Połączone</string>
+    <string name="phone_verification_canceled">Weryfikacja telefonu pezerwana</string>
+    <string name="inccorect_code">"Niepoprawny lub wygasły cod "</string>
+    <string name="enter_ver_code">Wpisz weryfikacyjne słowo</string>
+    <string name="enter_phone_number">Wpisz numer telefonu</string>
+    <string name="enter_correct_phone_number">Wpisz poprawny numer telefonu</string>
+    <string name="no_code">Brak kodu?</string>
+    <string name="phone_already_linked">Telefon już połączony z innym kontem</string>
+    <string name="camera_error">Błąd aparatu. Upewnij się że udzielono pozwolenia</string>
+    <string name="unknow_barcode">Nieznany format barcodu</string>
+    <string name="item_add">Produkt dodany do koszyka</string>
+    <string name="item_add_error">Dodanie do koszyka nieudane</string>
+    <string name="item_allready_rented">Produkt już jest wynajęty</string>
+    <string name="item_rent_allowed">Możesz wypożyczyć ten przedmiot</string>
+    <string name="rent_item">Wypożycz</string>
+    <string name="item_check">Chcesz sprawdzić ten produkt</string>
+    <string name="return_item">Zwróć przedmiot</string>
+    <string name="items_quantity_in">Masz już ,</string>
+    <string name="error">Błąd</string>
+    <string name="find_item_error">Przepraszamy, produkt nieznaleziony</string>
 </resources>

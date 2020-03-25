@@ -142,7 +142,7 @@
     <string name="options">Options</string>
     <string name="google_maps">Maps</string>
     <string name="converions">Conversions</string>
-    <string name="payments" translatable="false">Payments</string>
+    <string name="payments">Payments</string>
     <string name="no_items_in_cart">You have mo items in your cart</string>
     <string name="error_purchase_cart_items">Something went wrong accessing cart please try again</string>
     <string name="item_removed_from_cart">Item has been removed from cart</string>
@@ -231,5 +231,10 @@
     <string name="item_allready_rented">This item is all ready rented</string>
     <string name="item_rent_allowed">You can rent this item</string>
     <string name="rent_item">Rent Item</string>
-    <string name="out_of_date">checkedOutDate</string>
+    <string name="out_of_date" translatable="false">checkedOutDate</string>
+    <string name="item_check">Do you want to check in this item</string>
+    <string name="return_item">Return Item</string>
+    <string name="items_quantity_in">You have now checked in ,</string>
+    <string name="error">Error</string>
+    <string name="find_item_error">Sorry cannot find this product</string>
 </resources>

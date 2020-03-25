@@ -231,10 +231,10 @@ public class ScannerFragment extends Fragment implements ProductReady {
                                     if(uid != null && user != null) {
                                         if(uid.equals(user.getUid())) {
                                             color = Color.BLUE;
-                                            dialog.setMessage("Do you want to check in this item");
+                                            dialog.setMessage(getResources().getString(R.string.item_check));
                                         }
 
-                                        dialog.setPositiveButton("Return Item",
+                                        dialog.setPositiveButton(getResources().getString(R.string.return_item),
                                                 (dialogInterface, i) -> {
                                                     //move item we are checking in to archive
 
@@ -260,7 +260,7 @@ public class ScannerFragment extends Fragment implements ProductReady {
                                                     dbHelper.deleteItem(
                                                             String.format(Constants.FirestoreCollections.RENTALS, uid)
                                                             , docId).addOnSuccessListener( deleted -> {
-                                                                toaster.toastLong("You have now checked in " + item.getTitle());
+                                                                toaster.toastLong(getResources().getString(R.string.items_quantity_in) + item.getTitle());
                                                             });
                                                     dialogInterface.dismiss();
                                                 });
@@ -284,9 +284,9 @@ public class ScannerFragment extends Fragment implements ProductReady {
         dbHelper.setItem(String.format(Constants.FirestoreCollections.RENTALS,
                 FirebaseAuth.getInstance().getUid()),docId, scanResult)
                 .addOnSuccessListener(setResult ->{
-                    toaster.toastShort("Item added");
+                    toaster.toastShort(getResources().getString(R.string.item_add));
                 })
-                .addOnFailureListener(setFail ->{toaster.toastShort("Failed to add item");});
+                .addOnFailureListener(setFail ->{toaster.toastShort(getResources().getString(R.string.item_add_error));});
     }
 
     @Override
@@ -363,8 +363,8 @@ public class ScannerFragment extends Fragment implements ProductReady {
             progressBar.setVisibility(View.INVISIBLE);
 
         }else{
-            dialogHelper.createDialog("Error",
-                    "Sorry cannot find this product",
+            dialogHelper.createDialog(getResources().getString(R.string.error),
+                    getResources().getString(R.string.find_item_error),
                     null, null).show();
 
             progressBar.setVisibility(View.INVISIBLE);
