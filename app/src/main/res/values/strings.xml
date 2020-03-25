@@ -237,4 +237,8 @@
     <string name="items_quantity_in">You have now checked in ,</string>
     <string name="error">Error</string>
     <string name="find_item_error">Sorry cannot find this product</string>
+    <string name="clicked">You clicked</string>
+    <string name="completed_order_error">Failed to complete order</string>
+    <string name="payment_success">Payment Successful</string>
+    <string name="no_payment_cards_add">No Payments Cards Added</string>
 </resources>
