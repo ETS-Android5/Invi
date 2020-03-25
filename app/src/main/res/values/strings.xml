@@ -224,4 +224,12 @@
     <string name="enter_correct_phone_number">Enter Correct Phone Number</string>
     <string name="no_code">No Code ?</string>
     <string name="phone_already_linked">Phone Linked With Another Account</string>
+    <string name="camera_error">Error opening camera. Make sure permission is set</string>
+    <string name="unknow_barcode">Unknown barcode format</string>
+    <string name="item_add">Item added to cart</string>
+    <string name="item_add_error">Add to cart failed</string>
+    <string name="item_allready_rented">This item is all ready rented</string>
+    <string name="item_rent_allowed">You can rent this item</string>
+    <string name="rent_item">Rent Item</string>
+    <string name="out_of_date">checkedOutDate</string>
 </resources>

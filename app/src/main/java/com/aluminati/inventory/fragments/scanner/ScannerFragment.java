@@ -95,7 +95,7 @@ public class ScannerFragment extends Fragment implements ProductReady {
             scannerView.setOnClickListener(click -> mCodeScanner.startPreview());
 
         } catch (Exception ex) {
-            toaster.toastLong("Error opening camera. Make sure permission is set");
+            toaster.toastLong(getResources().getString(R.string.camera_error));
             Log.e(ScannerFragment.class.getSimpleName(), ex.toString());
 
         }
@@ -130,8 +130,8 @@ public class ScannerFragment extends Fragment implements ProductReady {
                        }
 
                } catch (JsonSyntaxException ex) {
-                   toaster.toastShort("Unknown barcode format");
-                   Log.e(TAG, "Unknown barcode format: " +  ex.getMessage());
+                   toaster.toastShort(getResources().getString(R.string.unknow_barcode));
+                   Log.e(TAG, getResources().getString(R.string.unknow_barcode) + " :" +  ex.getMessage());
                }
            }
 
@@ -187,10 +187,10 @@ public class ScannerFragment extends Fragment implements ProductReady {
 
         dbHelper.addItem(String.format(Constants.FirestoreCollections.LIVE_USER_CART, uid), item)
                 .addOnSuccessListener(setResult ->{
-                    toaster.toastShort("Item added to cart");
+                    toaster.toastShort(getResources().getString(R.string.item_add));
                 })
                 .addOnFailureListener(setFail ->{
-                    toaster.toastShort("Add to cart failed");
+                    toaster.toastShort(getResources().getString(R.string.item_add_error));
                 });
     }
 
@@ -214,13 +214,13 @@ public class ScannerFragment extends Fragment implements ProductReady {
                                 AlertDialog.Builder dialog = dialogHelper
                                         .createDialog(dialogHelper.buildRentalView(item.getTitle(),
                                                 "", item.getImgLink(), color));
-                                dialog.setMessage("This item is all ready rented");
+                                dialog.setMessage(getResources().getString(R.string.item_allready_rented));
 
                                 if(!res.exists()) { //if item isn't in rentals we can rent it
-                                    dialog.setMessage("You can rent this item");
-                                    dialog.setPositiveButton("Rent Item",
+                                    dialog.setMessage(getResources().getString(R.string.item_rent_allowed));
+                                    dialog.setPositiveButton(getResources().getString(R.string.rent_item),
                                             (dialogInterface, i) -> {
-                                                scanResult.put("checkedOutDate", Calendar.getInstance().getTime());
+                                                scanResult.put(getResources().getString(R.string.out_of_date), Calendar.getInstance().getTime());
                                                 scanResult.putAll(item.toMap());
                                                 rentItem(scanResult);
                                                 dialogInterface.dismiss();
