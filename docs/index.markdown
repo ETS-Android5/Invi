@@ -1,7 +1,7 @@
 ## Welcome To Invi
 
 
-![alt text](https://github.com/Bartekm1996/Inventory/blob/master/app/src/main/res/drawable/logo_invi.png "Invi Logo")
+![Invi Logo](https://github.com/Bartekm1996/Invi/blob/master/app/src/main/res/drawable/logo_invi.png "Invi Logo")
 
 • Paul Kinsella
 • Norbert Cholewka
