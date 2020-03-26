@@ -29,6 +29,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -246,9 +247,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     VerifyUser.verifyUser(user);
                     VerifyUser.verifyEmail().addOnSuccessListener(result -> {
                         Log.i(TAG, "Verification email sent");
+                        Toast.makeText(getApplicationContext(), "Registration Email Sent", Toast.LENGTH_LONG).show();
                     }).addOnFailureListener(result -> {
+                        Toast.makeText(getApplicationContext(), "Failed To Send Registration Email", Toast.LENGTH_LONG).show();
                         Log.w(TAG, "Failed to send verification email", result);
                     });
+
                     startActivity(new Intent(RegisterActivity.this, AuthenticationActivity.class));
                     finish();
                 }).addOnFailureListener(result -> {

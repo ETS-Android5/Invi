@@ -189,8 +189,8 @@ public class AuthenticationActivity extends AppCompatActivity implements View.On
             }
             case R.id.cancel_verify_button:{
                 FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(AuthenticationActivity.this, LogInActivity.class));
                 finish();
+                startActivity(new Intent(AuthenticationActivity.this, LogInActivity.class));
                 break;
             }
             case R.id.verify_phone: {
