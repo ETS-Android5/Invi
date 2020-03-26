@@ -1,6 +1,5 @@
 ## Welcome To Invi
 
-Demo barcodes https://idev.ie/demo
 
 ![alt text](https://github.com/Bartekm1996/Inventory/blob/master/app/src/main/res/drawable/logo_invi.png "Invi Logo")
 
@@ -18,6 +17,7 @@ Currently, Invi uses Firebase as it's the main framework for authentication, sto
 
 Once the user registers using his/her social platform accounts Invi checks if the user exists, if not it will take him/her to the registration page prefiling his/her name, surname and email requiring a password to be entered. Once that's done the user will then be taken to the verification page requiring the user to verify his phone and email, this page will persist not permitting the user to use the App until he/she verifies both. 
 
+Demo barcodes https://idev.ie/demo
 
 Latest signed APK
 
