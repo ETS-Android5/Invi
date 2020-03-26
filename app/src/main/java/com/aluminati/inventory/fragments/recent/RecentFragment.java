@@ -76,7 +76,7 @@ public class RecentFragment extends FloatingTitlebarFragment implements Products
 
         recViewRecent.setLayoutManager(layoutManager);
         itemClickListener = (ItemAdapter.OnItemClickListener<BaseItem>) item -> {
-            toaster.toastShort("You clicked" + item.getTitle());
+            toaster.toastShort(getResources().getString(R.string.clicked) + item.getTitle());
         };
 
         summary = new Summary();

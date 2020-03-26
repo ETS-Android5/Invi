@@ -157,7 +157,7 @@ public class Card extends Fragment {
                         encryptPayments(payments, FirebaseAuth.getInstance().getCurrentUser());
                     }
                 }else{
-                    errorText.setText(R.string.incorrect_expiry_date);
+                    errorText.setText(getResources().getString(R.string.incorrect_expiry_date));
                 }
 
             }else {

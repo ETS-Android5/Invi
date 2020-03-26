@@ -215,10 +215,10 @@ public class PurchaseFragment extends FloatingTitlebarFragment implements GetCar
                                     selectPayment.setGetCardRefNumber(PurchaseFragment.this);
                                     selectPayment.show(getParentFragmentManager(), "select_payment");
                                 }else{
-                                    Toast.makeText(getContext(),"No Payments Cards Added", Toast.LENGTH_LONG ).show();
+                                    Toast.makeText(getContext(),getResources().getString(R.string.no_payment_cards_add), Toast.LENGTH_LONG ).show();
                                 }
                             }else{
-                                Toast.makeText(getContext(),"No Payments Cards Added", Toast.LENGTH_LONG ).show();
+                                Toast.makeText(getContext(),getResources().getString(R.string.no_payment_cards_add), Toast.LENGTH_LONG ).show();
                             }
                         }catch (Exception e){
                             Log.w(TAG, "Failed to decrypt phone number", e);
@@ -308,7 +308,7 @@ public class PurchaseFragment extends FloatingTitlebarFragment implements GetCar
                                 Log.d(TAG, "receipt created: " + id);
                             });
 
-                    toaster.toastShort("Payment Successful");
+                    toaster.toastShort(getResources().getString(R.string.payment_success));
                     currentQuantity = 0;
                     currentTotal = 0;
 
@@ -317,7 +317,7 @@ public class PurchaseFragment extends FloatingTitlebarFragment implements GetCar
                             .commit();
                 })
                 .addOnFailureListener(setFail -> {
-                    toaster.toastShort("Failed to complete order");
+                    toaster.toastShort(getResources().getString(R.string.completed_order_error));
                 });
 
 

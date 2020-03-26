@@ -95,7 +95,7 @@ public class ScannerFragment extends Fragment implements ProductReady {
             scannerView.setOnClickListener(click -> mCodeScanner.startPreview());
 
         } catch (Exception ex) {
-            toaster.toastLong("Error opening camera. Make sure permission is set");
+            toaster.toastLong(getResources().getString(R.string.camera_error));
             Log.e(ScannerFragment.class.getSimpleName(), ex.toString());
 
         }
@@ -130,8 +130,8 @@ public class ScannerFragment extends Fragment implements ProductReady {
                        }
 
                } catch (JsonSyntaxException ex) {
-                   toaster.toastShort("Unknown barcode format");
-                   Log.e(TAG, "Unknown barcode format: " +  ex.getMessage());
+                   toaster.toastShort(getResources().getString(R.string.unknow_barcode));
+                   Log.e(TAG, getResources().getString(R.string.unknow_barcode) + " :" +  ex.getMessage());
                }
            }
 
@@ -187,10 +187,10 @@ public class ScannerFragment extends Fragment implements ProductReady {
 
         dbHelper.addItem(String.format(Constants.FirestoreCollections.LIVE_USER_CART, uid), item)
                 .addOnSuccessListener(setResult ->{
-                    toaster.toastShort("Item added to cart");
+                    toaster.toastShort(getResources().getString(R.string.item_add));
                 })
                 .addOnFailureListener(setFail ->{
-                    toaster.toastShort("Add to cart failed");
+                    toaster.toastShort(getResources().getString(R.string.item_add_error));
                 });
     }
 
@@ -214,13 +214,13 @@ public class ScannerFragment extends Fragment implements ProductReady {
                                 AlertDialog.Builder dialog = dialogHelper
                                         .createDialog(dialogHelper.buildRentalView(item.getTitle(),
                                                 "", item.getImgLink(), color));
-                                dialog.setMessage("This item is all ready rented");
+                                dialog.setMessage(getResources().getString(R.string.item_allready_rented));
 
                                 if(!res.exists()) { //if item isn't in rentals we can rent it
-                                    dialog.setMessage("You can rent this item");
-                                    dialog.setPositiveButton("Rent Item",
+                                    dialog.setMessage(getResources().getString(R.string.item_rent_allowed));
+                                    dialog.setPositiveButton(getResources().getString(R.string.rent_item),
                                             (dialogInterface, i) -> {
-                                                scanResult.put("checkedOutDate", Calendar.getInstance().getTime());
+                                                scanResult.put(getResources().getString(R.string.out_of_date), Calendar.getInstance().getTime());
                                                 scanResult.putAll(item.toMap());
                                                 rentItem(scanResult);
                                                 dialogInterface.dismiss();
@@ -231,10 +231,10 @@ public class ScannerFragment extends Fragment implements ProductReady {
                                     if(uid != null && user != null) {
                                         if(uid.equals(user.getUid())) {
                                             color = Color.BLUE;
-                                            dialog.setMessage("Do you want to check in this item");
+                                            dialog.setMessage(getResources().getString(R.string.item_check));
                                         }
 
-                                        dialog.setPositiveButton("Return Item",
+                                        dialog.setPositiveButton(getResources().getString(R.string.return_item),
                                                 (dialogInterface, i) -> {
                                                     //move item we are checking in to archive
 
@@ -260,7 +260,7 @@ public class ScannerFragment extends Fragment implements ProductReady {
                                                     dbHelper.deleteItem(
                                                             String.format(Constants.FirestoreCollections.RENTALS, uid)
                                                             , docId).addOnSuccessListener( deleted -> {
-                                                                toaster.toastLong("You have now checked in " + item.getTitle());
+                                                                toaster.toastLong(getResources().getString(R.string.items_quantity_in) + item.getTitle());
                                                             });
                                                     dialogInterface.dismiss();
                                                 });
@@ -284,9 +284,9 @@ public class ScannerFragment extends Fragment implements ProductReady {
         dbHelper.setItem(String.format(Constants.FirestoreCollections.RENTALS,
                 FirebaseAuth.getInstance().getUid()),docId, scanResult)
                 .addOnSuccessListener(setResult ->{
-                    toaster.toastShort("Item added");
+                    toaster.toastShort(getResources().getString(R.string.item_add));
                 })
-                .addOnFailureListener(setFail ->{toaster.toastShort("Failed to add item");});
+                .addOnFailureListener(setFail ->{toaster.toastShort(getResources().getString(R.string.item_add_error));});
     }
 
     @Override
@@ -363,8 +363,8 @@ public class ScannerFragment extends Fragment implements ProductReady {
             progressBar.setVisibility(View.INVISIBLE);
 
         }else{
-            dialogHelper.createDialog("Error",
-                    "Sorry cannot find this product",
+            dialogHelper.createDialog(getResources().getString(R.string.error),
+                    getResources().getString(R.string.find_item_error),
                     null, null).show();
 
             progressBar.setVisibility(View.INVISIBLE);
