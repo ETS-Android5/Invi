@@ -163,7 +163,7 @@ public class UserPhoto extends Fragment implements View.OnClickListener {
         if (ContextCompat.checkSelfPermission(getActivity(), permission) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{permission}, requestCode);
         } else {
-            Snackbar.make(userImageChange, " Permission already granted", BaseTransientBottomBar.LENGTH_LONG).show();
+            Snackbar.make(userImageChange, getResources().getString(R.string.permission_Allready_granted), BaseTransientBottomBar.LENGTH_LONG).show();
             pickImage();
         }
     }

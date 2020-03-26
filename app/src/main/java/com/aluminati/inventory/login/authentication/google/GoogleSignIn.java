@@ -176,7 +176,7 @@ public class GoogleSignIn extends Fragment implements View.OnClickListener, OnSt
                     })
                     .addOnFailureListener(activity, result -> {
                         if(result instanceof FirebaseAuthUserCollisionException){
-                            alertDialog("Failed To Link Accounts", "Google account is linked to another user")
+                            alertDialog(getResources().getString(R.string.login_error), getResources().getString(R.string.accout_linked_allready))
                                     .setPositiveButton("Ok", ((dialogInterface, i) -> dialogInterface.dismiss()))
                                     .create()
                                     .show();

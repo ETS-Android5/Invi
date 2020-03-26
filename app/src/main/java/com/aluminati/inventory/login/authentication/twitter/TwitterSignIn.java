@@ -122,7 +122,7 @@ public class TwitterSignIn extends Fragment implements View.OnClickListener, OnS
     }
 
     private void userExists(){
-        alertDialog("Login Error", "Account linked is associated with anther user\n\n Log in to link account or recover password")
+        alertDialog(getResources().getString(R.string.login_error), getResources().getString(R.string.accout_linked_allready))
                 .setPositiveButton("Ok", (dialog, i) -> dialog.dismiss())
                 .setNegativeButton("Recoverd Password", ((dialogInterface, i) -> {
                     startActivity(new Intent(getActivity(), PassWordReset.class));

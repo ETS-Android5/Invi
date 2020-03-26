@@ -177,7 +177,7 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener, On
                 Log.w(TAG, "Log In With Go", result);
                 if (result instanceof FirebaseAuthUserCollisionException) {
                     Log.d(TAG, "Log In Failed", result);
-                    alertDialog("Log In Error", "Account linked is associated with anther user\n\nLog in to link account or recover password")
+                    alertDialog(getResources().getString(R.string.login_error), getResources().getString(R.string.accout_linked_allready))
                             .setPositiveButton("Ok", (dialog, i) -> dialog.dismiss())
                             .setNegativeButton("Recover Password", ((dialogInterface, i) -> {
                                 startActivity(new Intent(getActivity(), ForgotPasswordActivity.class));

@@ -240,4 +240,7 @@
     <string name="completed_order_error">Failed to complete order</string>
     <string name="payment_success">Payment Successful</string>
     <string name="no_payment_cards_add">No Payments Cards Added</string>
+    <string name="permission_Allready_granted">Permission already granted</string>
+    <string name="login_error">Login Error</string>
+    <string name="accout_linked_allready">Account linked is associated with anther user. Log in to link account or recover password</string>
 </resources>
