@@ -110,6 +110,12 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
 
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         if(firebaseAuth.getCurrentUser() != null){

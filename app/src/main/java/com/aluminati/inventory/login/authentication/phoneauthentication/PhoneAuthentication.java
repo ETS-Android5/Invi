@@ -280,27 +280,27 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
         private void verifyCodeSent(boolean linkPhoneNumber, String codeSent, PhoneAuthCredential cred) {
 
 
-            String code = (codeSent == null ? verifyPhoneNumber.getText().toString() : codeSent);
-            PhoneAuthCredential credential = (codeSent == null ? cred : PhoneAuthProvider.getCredential(phoneAuthVerificationId, code));
+            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(phoneAuthVerificationId, codeSent);
 
-            Log.i(TAG, "code sent" + code);
+            Log.i(TAG, "code sent" + codeSent);
 
 
-            if(!code.isEmpty()) {
+
+            if(codeSent != null && !codeSent.isEmpty()) {
                 verifyPhoneNumber.setText(codeSent);
             }
 
-            Log.i(TAG, "Code sent " + codeSent );
+            Log.i(TAG, "Code sent " + codeSent);
 
-                if(verifyPhoneNumber.getText().toString().equals(codeSent)){
-                    checkCreditential(linkPhoneNumber,credential);
-                }else{
+            if(verifyPhoneNumber.getText().toString().equals(codeSent)) {
+                    checkCreditential(linkPhoneNumber, credential);
+            }else{
                     Snackbar snackbar = Snackbar.make(verifyPhoneNumberButton, getResources().getString(R.string.failed_to_verify_code), BaseTransientBottomBar.LENGTH_INDEFINITE);
                     snackbar.setAction(getResources().getString(R.string.ok), re -> {
                         snackbar.dismiss();
                     });
                     snackbar.show();
-                }
+            }
         }
 
         private void checkCreditential(boolean linkPhoneNumber, AuthCredential credential){
@@ -337,7 +337,7 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
                         Log.i(TAG, "Phone number " + verifyPhoneNumberButton.getText().toString());
                         if(!verifyPhoneNumber.getText().toString().isEmpty()) {
                             if(codeMatch(verifyPhoneNumber.getText().toString())) {
-                                verifyCodeSent(this.enablePhoneLogin.isChecked(), null, null);
+                                verifyCodeSent(this.enablePhoneLogin.isChecked(), verifyPhoneNumber.getText().toString(), null);
                             }else{
                                 errorLabel.setText(R.string.inccorect_code);
                             }
