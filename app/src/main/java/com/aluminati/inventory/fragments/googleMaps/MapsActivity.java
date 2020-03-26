@@ -139,7 +139,6 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Locati
                     location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
                     if(location != null) {
                         String locality = getLocality(getContext(), location.getLatitude(), location.getLongitude());
-                        Log.i("GoogleMaps", locality);
                         if(locality != null){
                             TescoStoreApi tescoStoreApi = new TescoStoreApi(locality);
                             tescoStoreApi.getStores();
