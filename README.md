@@ -2,7 +2,7 @@
 
 Demo barcodes https://idev.ie/demo
 
-![alt text](Invi/blob/master/app/src/main/res/drawable/logo_invi.png "Invi Logo")
+![alt text](/blob/master/app/src/main/res/drawable/logo_invi.png)
 
 • Paul Kinsella
 • Norbert Cholewka
