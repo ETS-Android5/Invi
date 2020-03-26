@@ -1,7 +1,7 @@
 ## Welcome To Invi
 
 
-![Invi](/blob/master/Screenshot_20200315_232812_com.aluminati.inventory%20(1).jpg "Invi Logo")
+![Invi](Invi/blob/master/Screenshot_20200315_232812_com.aluminati.inventory%20(1).jpg "Invi Logo")
 
 • Paul Kinsella
 • Norbert Cholewka
