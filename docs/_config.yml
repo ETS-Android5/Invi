@@ -26,7 +26,9 @@ description: >- # this means to ignore newlines until "baseurl:"
   Google search results) and in your feed.xml site description.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://www.invi.store/" # the base hostname & protocol for your site, e.g. http://example.com
-github_username:  Bartekm1996, pk-development, nch-development
+github_username:  Bartekm1996
+github-username:  pk-development
+github-username:  nch-development
 
 # Build settings
 theme: minima
