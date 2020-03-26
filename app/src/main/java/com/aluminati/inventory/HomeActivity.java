@@ -223,11 +223,15 @@ public class HomeActivity extends AppCompatActivity implements CardNfcAsyncTask.
     public void loadFrag(Fragment frag) {
         //Hide fab if scanner
 //        fab.setVisibility(frag instanceof ScannerFragment ? View.GONE : View.VISIBLE);
+
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.nav_host_fragment, frag).commit();
-        if(!(frag instanceof ScannerFragment)){
-            //scannerFragContains.contiansScannerFrag(frag);
+
+        if(getSupportFragmentManager().getFragments().contains(frag)){
+            ft.detach(frag).attach(frag).commit();
+        }else {
+            ft.replace(R.id.nav_host_fragment, frag).commit();
         }
+
         lastOpenFrag = frag;//catch back press when camera is open
     }
     public void closeDrawer() {

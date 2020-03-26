@@ -36,10 +36,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RecentFragment extends FloatingTitlebarFragment implements ProductsReady {
     private static final String TAG = RecentFragment.class.getSimpleName();
-    private FirebaseFirestore firestore;
     private Toaster toaster;
     private DbHelper dbHelper;
     private ItemAdapter.OnItemClickListener itemClickListener;
@@ -47,6 +47,7 @@ public class RecentFragment extends FloatingTitlebarFragment implements Products
     private RecyclerView recViewRecent;
     private TescoProductsApi tescoApi;
     private Summary summary;
+    private AtomicBoolean atomicBoolean;
 
 //Update
     public RecentFragment() {}
@@ -66,7 +67,7 @@ public class RecentFragment extends FloatingTitlebarFragment implements Products
         floatingTitlebar.setRightToggleIcons(R.drawable.ic_side_profile_blue, R.drawable.ic_side_profile_blue);
         floatingTitlebar.setToggleActive(true);
 
-        firestore = FirebaseFirestore.getInstance();
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         toaster = Toaster.getInstance(getActivity());
 
         recViewRecent = root.findViewById(R.id.recViewRecent);
@@ -80,19 +81,38 @@ public class RecentFragment extends FloatingTitlebarFragment implements Products
 
         summary = new Summary();
 
-        getParentFragmentManager().beginTransaction()
-                .add(R.id.nav_host_fragment, summary)
-                .commit();
+
 
         setSwipeListeners();
         return root;
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         this.tescoApi = new TescoProductsApi();
         this.tescoApi.setProductsReady(this);
+
+        atomicBoolean = new AtomicBoolean(true);
+
+        if(!getParentFragmentManager().getFragments().contains(summary)) {
+            getParentFragmentManager().beginTransaction()
+                    .add(R.id.nav_host_fragment, summary).addToBackStack("summary")
+                    .commitAllowingStateLoss();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(getParentFragmentManager().getFragments().contains(summary)) {
+            try {
+                getParentFragmentManager().popBackStack();
+            }catch (IllegalStateException e){
+                Log.i(TAG, "Caought", e);
+            }
+        }
 
     }
 
@@ -103,47 +123,62 @@ public class RecentFragment extends FloatingTitlebarFragment implements Products
 
     @Override
     public void onTextChanged(String searchText) {
+
+        Log.i(TAG, "Search text" + searchText);
+
+
         /*
             Firebase doesn't have search by case sensitivity. Another flaw in this
             framework. Downloading every item to search isn't practical so we have
             to make tags lower case.
          */
 
-        if(searchText.isEmpty()){
+        if(searchText.trim().isEmpty()){
+            recViewRecent.setAdapter(null);
             if(!getParentFragmentManager().getFragments().contains(summary)){
                 getParentFragmentManager().beginTransaction()
                         .add(R.id.nav_host_fragment, summary)
                         .commit();
             }
 
-            recViewRecent.setAdapter(null);
-        }else {
-            getParentFragmentManager().beginTransaction().remove(summary).commit();
+            atomicBoolean.set(false);
+
+        }else{
+            atomicBoolean.set(true);
         }
 
 
-        dbHelper.getCollection(Constants.FirestoreCollections.STORE_ITEMS)
-                .whereArrayContains("tags", searchText.toLowerCase().trim())
-                .orderBy("title")
-                .get()
-                .addOnSuccessListener(snapshot -> {
+            dbHelper.getCollection(Constants.FirestoreCollections.STORE_ITEMS)
+                    .whereArrayContains("tags", searchText.toLowerCase().trim())
+                    .orderBy("title")
+                    .get()
+                    .addOnSuccessListener(snapshot -> {
+                        if (snapshot.isEmpty()) {
+                            Log.d(TAG, "onSuccess -> onTextChanged: no items");
+                            //recViewRecent.setAdapter(null);
+                            if (!searchText.isEmpty()) {
+                                Log.i(TAG, "Called from tesco " + searchText);
+                                tescoApi.getProducts(searchText);
+                                getParentFragmentManager().beginTransaction().remove(summary).commit();
 
-                    if (snapshot.isEmpty()) {
-                        Log.d(TAG, "onSuccess -> onTextChanged: no items");
-                        //recViewRecent.setAdapter(null);
-                        if(!searchText.isEmpty()) {
-                            tescoApi.getProducts(searchText);
+                            } else {
+                                recViewRecent.setAdapter(null);
+                                if(!getParentFragmentManager().getFragments().contains(summary)){
+                                    getParentFragmentManager().beginTransaction()
+                                            .add(R.id.nav_host_fragment, summary)
+                                            .commit();
+                                }
+                            }
+
                         } else {
-                            recViewRecent.setAdapter(null);
+                            Log.i(TAG, "Called from loadpurchaseitems");
+                            loadPurchaseItems(initItems(snapshot.getDocuments()));
                         }
-
-                    } else {
-                        loadPurchaseItems(initItems(snapshot.getDocuments()));
-                    }
-                }).addOnFailureListener(fail -> {
+                    }).addOnFailureListener(fail -> {
                 toaster.toastShort(getResources().getString(R.string.error_getting_searchitems));
-            Log.d(TAG, fail.getMessage());
-        });
+                Log.d(TAG, fail.getMessage());
+            });
+
     }
 
     private void setSwipeListeners() {
@@ -207,8 +242,10 @@ public class RecentFragment extends FloatingTitlebarFragment implements Products
     @Override
     public void getProducts(ArrayList<Product> products) {
         recViewRecent.setAdapter(null);
-        if(products.size() > 0){
-            loadPurchaseItems(toPurchaseItmes(products));
+        if(atomicBoolean.get()) {
+            if (products.size() > 0) {
+                loadPurchaseItems(toPurchaseItmes(products));
+            }
         }
     }
 

@@ -186,7 +186,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Locati
         mMap = googleMap;
 
         if(location != null && contains){
-                getmMap().animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 7.0f));
+            getmMap().animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 7.0f));
         }
 
         mMap.setOnInfoWindowClickListener(this);
@@ -224,7 +224,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Locati
 
             if(index < documentSnapshot.size()){
                 CustomMarker customMarkerView = CustomMarker.newInstance("Map Marker", new Store(documentSnapshot.get(index)), placesClient);
-                                 customMarkerView.show(getChildFragmentManager(), "map_marker");
+                customMarkerView.show(getChildFragmentManager(), "map_marker");
             }else{
 
                 index = (index - documentSnapshot.size());

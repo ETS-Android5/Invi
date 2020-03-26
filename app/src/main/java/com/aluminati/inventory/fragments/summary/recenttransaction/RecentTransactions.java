@@ -70,39 +70,41 @@ public class RecentTransactions extends Fragment {
 
         Date date = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        UserFetch.getTransactions(firebaseUser.getEmail())
-                .addOnSuccessListener(doc -> {
-                    ArrayList<Transaction> transactions = new ArrayList<>();
-                    for(DocumentSnapshot documentSnapshot : doc){
-                        Log.i(TAG, documentSnapshot.getId());
-                        List<Map<String, Object>> trans = (List<Map<String, Object>>)documentSnapshot.get("transactions");
-                        for(Map<String, Object> tr : trans){
-                            amount += Double.parseDouble((String) tr.get("amount"));
-                            try {
-                                Date cmpDate = simpleDateFormat.parse((String) tr.get("date"));
-                                long dif = (date.getTime() - cmpDate.getTime())/(1000 * 60 * 60 * 24);
-                                if(dif < 10) {
-                                    transactions.add(new Transaction((String) tr.get("amount"), (String) tr.get("date"), documentSnapshot.getId().equals("cash") ? "cash" : "card"));
+        if(firebaseUser != null) {
+            UserFetch.getTransactions(firebaseUser.getEmail())
+                    .addOnSuccessListener(doc -> {
+                        ArrayList<Transaction> transactions = new ArrayList<>();
+                        for (DocumentSnapshot documentSnapshot : doc) {
+                            Log.i(TAG, documentSnapshot.getId());
+                            List<Map<String, Object>> trans = (List<Map<String, Object>>) documentSnapshot.get("transactions");
+                            for (Map<String, Object> tr : trans) {
+                                amount += Double.parseDouble((String) tr.get("amount"));
+                                try {
+                                    Date cmpDate = simpleDateFormat.parse((String) tr.get("date"));
+                                    long dif = (date.getTime() - cmpDate.getTime()) / (1000 * 60 * 60 * 24);
+                                    if (dif < 10) {
+                                        transactions.add(new Transaction((String) tr.get("amount"), (String) tr.get("date"), documentSnapshot.getId().equals("cash") ? "cash" : "card"));
+                                    }
+                                } catch (ParseException e) {
+                                    Log.i(TAG, "Failed to parse date", e);
                                 }
-                            }catch (ParseException e){
-                                Log.i(TAG, "Failed to parse date", e);
                             }
                         }
-                    }
 
-                    ((TextView)view.findViewById(R.id.total_spent)).setText(NumberFormat.getCurrencyInstance(new Locale("en", "IE")).format(amount));
+                        ((TextView) view.findViewById(R.id.total_spent)).setText(NumberFormat.getCurrencyInstance(new Locale("en", "IE")).format(amount));
 
-                    if(!transactions.isEmpty()){
-                        view.findViewById(R.id.recent_transaction_recycler_view_placeholder).setVisibility(View.INVISIBLE);
-                    }
+                        if (!transactions.isEmpty()) {
+                            view.findViewById(R.id.recent_transaction_recycler_view_placeholder).setVisibility(View.INVISIBLE);
+                        }
 
-                    adapter = new TransactionAdapter(transactions, this);
-                    recyclerView.setAdapter(adapter);
+                        adapter = new TransactionAdapter(transactions, this);
+                        recyclerView.setAdapter(adapter);
 
-                })
-                .addOnFailureListener(failure -> {
-                    Log.i(TAG, "Failed to get transactions", failure);
-                });
+                    })
+                    .addOnFailureListener(failure -> {
+                        Log.i(TAG, "Failed to get transactions", failure);
+                    });
+        }
     }
 
 

@@ -211,7 +211,6 @@
     <string name="no_email">No email ?</string>
     <string name="user_name">User name</string>
     <string name="resend">Resend</string>
-    <string name="item_is_null" >Item is null</string>
     <string name="permission_not_granted">Permissions not granted by the user</string>
     <string name="card_linked">Card Already Linked</string>
     <string name="item_is_null">Item is null</string>
