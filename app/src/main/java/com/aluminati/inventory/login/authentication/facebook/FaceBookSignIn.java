@@ -235,7 +235,7 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener, On
             UserFetch.update(firebaseAuth.getCurrentUser().getEmail(), "is_facebook_linked", false);
             reload();
         }).addOnFailureListener(result -> {
-            Utils.makeSnackBarWithButtons("Failed to Unlink FaceBook", facebookLogin, getActivity());
+            Utils.makeSnackBarWithButtons(getResources().getString(R.string.failed_unlink_account), facebookLogin, getActivity());
             Log.w(TAG, "Failed to unlink Facebook", result);
         });
 

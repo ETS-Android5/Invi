@@ -155,12 +155,12 @@ public class GoogleSignIn extends Fragment implements View.OnClickListener, OnSt
             firebaseAuth.getCurrentUser().unlink(GoogleProviderId).addOnSuccessListener(getActivity(), result -> {
                 UserFetch.update(firebaseAuth.getCurrentUser().getEmail(), "is_google_linked", false);
                 googleButton.setText(getResources().getString(R.string.login_google));
-                Utils.makeSnackBarWithButtons("Unlinked Google", googleButton, getActivity());
+                Utils.makeSnackBarWithButtons(getResources().getString(R.string.google_unlinked), googleButton, getActivity());
                 Log.d(TAG, "Google Unlinked");
                 reload();
             }).addOnFailureListener(result -> {
                 Log.w(TAG, "Failed to Unlink Google", result);
-                Utils.makeSnackBarWithButtons("Failed to Unlink Google", googleButton, getActivity());
+                Utils.makeSnackBarWithButtons(getResources().getString(R.string.failed_unlink_account), googleButton, getActivity());
             });
         }
     }
@@ -211,7 +211,7 @@ public class GoogleSignIn extends Fragment implements View.OnClickListener, OnSt
             if (googleButton.getText().toString().equals(getResources().getString(R.string.link_google))) {
                 signIn();
             } else if (googleButton.getText().toString().equals(getResources().getString(R.string.unlink_google))) {
-                alertDialog("Unlink Google", "Are you sure to unlink your Google Account ?")
+                alertDialog(getResources().getString(R.string.unlink_google), getResources().getString(R.string.unlink_google_msg))
                         .setPositiveButton("Yes", (dialog, id) -> unlinkGoogle())
                         .setNegativeButton("No", (dialog, id) -> dialog.dismiss())
                         .create()

@@ -108,7 +108,7 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
                                     }
                                 } else {
                                     verifyCodeSent(enablePhoneLogin.isChecked(), credential.getSmsCode(), credential);
-                                    Toast.makeText(getApplicationContext(), "Phone recognised : Instant Log In", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.phone_recognised), Toast.LENGTH_LONG).show();
                                 }
                             }
                         });
@@ -126,7 +126,7 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
                         Log.w(TAG, "Failed ", e);
                         //replaceFragment(linearLayout, verifyPhoneNumber);
                         //verifyPhoneNumberButton.setText(getResources().getString(R.string.verify_button));
-                        Snackbar.make(verifyPhoneNumberButton,"Incorrect Phone Number", BaseTransientBottomBar.LENGTH_LONG).show();
+                        Snackbar.make(verifyPhoneNumberButton,getResources().getString(R.string.incorrect_phone_nr), BaseTransientBottomBar.LENGTH_LONG).show();
                     } else if (e instanceof FirebaseTooManyRequestsException) {
                         Log.w(TAG, "Failed ", e);
                         setResult(VerificationStatus.TOO_MANY_REQUESTS);
@@ -251,7 +251,7 @@ public class PhoneAuthentication extends AppCompatActivity implements View.OnCli
                     this,
                     callbacks
             );
-            Utils.makeSnackBarWithButtons("Code Sent", verifyPhoneNumberButton, this);
+            Utils.makeSnackBarWithButtons(getResources().getString(R.string.code_sent), verifyPhoneNumberButton, this);
         }
 
         private void countDown(){

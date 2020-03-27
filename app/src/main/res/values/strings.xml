@@ -245,4 +245,10 @@
     <string name="accout_linked_allready">Account linked is associated with anther user. Log in to link account or recover password</string>
     <string name="failed_to_link_account">Failed to Link Account</string>
     <string name="account_linked">Account Linked Successfully</string>
+    <string name="failed_unlink_account">Failed to unlink account</string>
+    <string name="unlink_google_msg">Are you sure to unlink your Google Account ?</string>
+    <string name="google_unlinked">Unlinked Google</string>
+    <string name="code_sent">Code Sent</string>
+    <string name="incorrect_phone_nr">Incorrect Phone Number</string>
+    <string name="phone_recognised">Phone recognised : Instant Log In</string>
 </resources>

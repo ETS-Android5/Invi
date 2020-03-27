@@ -95,7 +95,7 @@ public class TwitterSignIn extends Fragment implements View.OnClickListener, OnS
                     userExists();
                 }
                 Log.w(TAG, "Failed to login Twitter", e);
-                Utils.makeSnackBar("Failed to Login", twitterSwipeButton, getActivity());
+                Utils.makeSnackBar(getResources().getString(R.string.login_error), twitterSwipeButton, getActivity());
             });
         } else {
             firebaseAuth.startActivityForSignInWithProvider(getActivity(), provider.build())
@@ -108,7 +108,7 @@ public class TwitterSignIn extends Fragment implements View.OnClickListener, OnS
                        userExists();
                    }
                    Log.w(TAG, "Failed to login Twitter", e);
-                   Utils.makeSnackBar("Failed to Login", twitterSwipeButton, getActivity());
+                   Utils.makeSnackBar(getResources().getString(R.string.login_error), twitterSwipeButton, getActivity());
                });
         }
     }
@@ -172,7 +172,7 @@ public class TwitterSignIn extends Fragment implements View.OnClickListener, OnS
                         Utils.makeSnackBar("Twitter unlinked", twitterButton, getActivity());
                     }).addOnFailureListener(result -> {
                         Log.w(TAG, "Failed to unlink Twitter account", result);
-                        Utils.makeSnackBarWithButtons("Failed to unlink Twitter", twitterButton, getActivity());
+                        Utils.makeSnackBarWithButtons(getResources().getString(R.string.failed_unlink_account), twitterButton, getActivity());
             });
         }
     }

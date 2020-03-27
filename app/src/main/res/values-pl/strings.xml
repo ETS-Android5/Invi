@@ -230,4 +230,19 @@
     <string name="items_quantity_in">Masz już ,</string>
     <string name="error">Błąd</string>
     <string name="find_item_error">Przepraszamy, produkt nieznaleziony</string>
+    <string name="clicked">Kliknołeś</string>
+    <string name="completed_order_error">Nieudane zakończenie transakcji</string>
+    <string name="payment_success">Zapłata zakończona sukcesem</string>
+    <string name="no_payment_cards_add">Nie dodano karty do płatności</string>
+    <string name="permission_Allready_granted">Pozwolenie zostało juz udzielone</string>
+    <string name="login_error">Błąd logowania</string>
+    <string name="accout_linked_allready">Konto jest już połączone z innym użytkownikiem. Zalogój ponownie lub odzyskaj hasło</string>
+    <string name="failed_to_link_account">Nieudane połączenie z kontem</string>
+    <string name="account_linked">Połączenie z kontem zakończone sukcesem</string>
+    <string name="failed_unlink_account">Nieudane odłączenie od konta</string>
+    <string name="unlink_google_msg">Jesteś pewny że chcesz odłączyć konto Google?</string>
+    <string name="google_unlinked">Google odłączone</string>
+    <string name="code_sent">Kod wysłany</string>
+    <string name="incorrect_phone_nr">Nieprawidłowy numer telefonu</string>
+    <string name="phone_recognised">Telefon rozpoznany: natychmiastowe logowanie</string>
 </resources>
