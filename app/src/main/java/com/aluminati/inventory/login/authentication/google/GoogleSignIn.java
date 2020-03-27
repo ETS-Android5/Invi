@@ -123,7 +123,7 @@ public class GoogleSignIn extends Fragment implements View.OnClickListener, OnSt
             if(getContext() instanceof UserProfile){
                 linkAccounts(credential, getActivity(), "is_google_linked", TAG);
             }else {
-                alertDialog("Log In Error", "Account linked is associated with anther user\n\nLog in to link account or recover password")
+                alertDialog(getResources().getString(R.string.login_error), getResources().getString(R.string.accout_linked_allready))
                         .setPositiveButton("Ok", (dialog, id) -> dialog.cancel())
                         .setNegativeButton("Recover Password", (dialog, id) -> getContext().startActivity(new Intent(getContext(), ForgotPasswordActivity.class)))
                         .create()
@@ -136,7 +136,7 @@ public class GoogleSignIn extends Fragment implements View.OnClickListener, OnSt
             }).addOnFailureListener(result -> {
                 Log.w(TAG, "Failed to Log In", result);
                 if (result instanceof FirebaseAuthUserCollisionException) {
-                    alertDialog("Failed to sign ", "User already registered")
+                    alertDialog(getResources().getString(R.string.login_error), getResources().getString(R.string.accout_linked_allready))
                             .setPositiveButton("Ok", ((dialogInterface, i) -> dialogInterface.dismiss()))
                             .create()
                             .show();

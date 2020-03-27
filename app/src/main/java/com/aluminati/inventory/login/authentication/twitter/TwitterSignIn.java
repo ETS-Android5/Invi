@@ -151,12 +151,12 @@ public class TwitterSignIn extends Fragment implements View.OnClickListener, OnS
                     .addOnSuccessListener(
                             authResult -> {
                                 Log.i(TAG, "Twitter account linked");
-                                Utils.makeSnackBar("Twitter Account Linked", twitterButton, getActivity());
+                                Utils.makeSnackBar(getResources().getString(R.string.account_linked), twitterButton, getActivity());
                                 UserFetch.update(firebaseUser.getEmail(), "is_twitter_linked", true);
                             })
                     .addOnFailureListener(result -> {
                         Log.w(TAG, "Failed to linke Twitter", result);
-                        Utils.makeSnackBar("Failed to Link Twitter", twitterButton, getActivity());
+                        Utils.makeSnackBar(getResources().getString(R.string.failed_to_link_account), twitterButton, getActivity());
                     });
 
         }

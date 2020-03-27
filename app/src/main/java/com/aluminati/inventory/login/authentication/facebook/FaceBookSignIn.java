@@ -208,7 +208,7 @@ public class FaceBookSignIn extends Fragment implements View.OnClickListener, On
                         Log.d(TAG, "linkWithCrediential:success");
                         facebookLogin.setText(getResources().getString(R.string.unlink_facebook));
                         UserFetch.update(firebaseAuth.getCurrentUser().getEmail(), "is_facebook_linked", true);
-                        Utils.makeSnackBar("Facebook Linked", facebookLogin, getActivity());
+                        Utils.makeSnackBar(getResources().getString(R.string.account_linked), facebookLogin, getActivity());
                         accessTokenTracker.startTracking();
                     })
                     .addOnFailureListener(getActivity(), result -> {

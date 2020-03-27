@@ -243,4 +243,6 @@
     <string name="permission_Allready_granted">Permission already granted</string>
     <string name="login_error">Login Error</string>
     <string name="accout_linked_allready">Account linked is associated with anther user. Log in to link account or recover password</string>
+    <string name="failed_to_link_account">Failed to Link Account</string>
+    <string name="account_linked">Account Linked Successfully</string>
 </resources>
