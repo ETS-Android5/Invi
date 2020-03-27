@@ -20,43 +20,42 @@ your_city                                 : Limerick
 
 
 
-# Feature List                            Edit, add or remove features to be presented.
 features                                  :
 
   - title                                 : Qr Code / EAN-13 Scanner
-    description                           : 
+    description                           : Invi uses recognises both Qr Code and EAN-13 barcodes for product checkout or item rental
     fontawesome_icon_name                 : qrcode
     
   - title                                 : Store Receipts on Your Phone
-    description                           : 
+    description                           : Once a transaction is complete, Invi automatically generates a receipt and stores it on your phone
     fontawesome_icon_name                 : receipt
 
   - title                                 : Register Using Your Soical Media
-    description                           : 
+    description                           : Invi has social media signup integrated for users convenience
     fontawesome_icon_name                 : google
 
   - title                                 : Check Stores Based on Locality
-    description                           : 
+    description                           : Invi checks the users location and maps nearby stores on Google Maps
     fontawesome_icon_name                 : map-marker-alt
 
   - title                                 : Check Latest Conversion Rates
-    description                           : 
+    description                           : With Invi the user can check the latest conversion rates
     fontawesome_icon_name                 : sync
   
   - title                                 : Search for Products
-    description                           : 
+    description                           : The use can search for all available products on Invi's database
     fontawesome_icon_name                 : search
 
   - title                                 : Check Product Prices
-    description                           : 
+    description                           : Scan or search for a product usign its barcode number to check it's price
     fontawesome_icon_name                 : dollar-sign
 
   - title                                 : Cart Total Automatically Converted
-    description                           : 
+    description                           : Each time a product is added to the cart Invi automatically converts the total to different currencies
     fontawesome_icon_name                 : sync
 
   - title                                 : Summary of Purchases
-    description                           : 
+    description                           : Invi splits the products according to their category and presents the result on a pie chart
     fontawesome_icon_name                 : chart-pie
 
   - title                                 : # New Feature Title
@@ -70,7 +69,7 @@ topbar_color                              : "#000000"
 topbar_transparency                       : 0.1
 topbar_title_color                        : "#ffffff"
 
-cover_image                               : assets/headerimage.png                    # Replace with alternative image path or image URL.
+cover_image                               : assets/headerimage.jpg                    # Replace with alternative image path or image URL.
 cover_overlay_color                       : "#363b3d"
 cover_overlay_transparency                : 0.8
 
@@ -94,6 +93,7 @@ social_icons_foreground_color             : "#666666"
 social_icons_background_color             : "#e6e6e6"
 
 footer_text_color                         : "#666666"
+footer_color                              : "#ffffff"
 
 
 
@@ -117,7 +117,6 @@ sass:
 
 # Exclude these files from your production _site
 exclude:
-  - LICENSE
   - README.md
   - CNAME
 
