@@ -1,6 +1,6 @@
 ## Invi
 
-#Invi Website - www.invi.store
+Invi Website - www.invi.store
 
 Demo barcodes https://idev.ie/demo
 
