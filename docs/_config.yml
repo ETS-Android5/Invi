@@ -32,7 +32,7 @@ features                                  :
 
   - title                                 : Register Using Your Soical Media
     description                           : Invi has social media signup integrated for users convenience
-    fontawesome_icon_name                 : google
+    fontawesome_icon_name                 : fa-google
 
   - title                                 : Check Stores Based on Locality
     description                           : Invi checks the users location and maps nearby stores on Google Maps
