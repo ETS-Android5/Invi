@@ -4,7 +4,7 @@ title: Api's
 include_in_header: true
 ---
 
-###Invi makes use of several Api and Frameworks which are listed below along with their owners and briefs
+##Invi makes use of several Api and Frameworks which are listed below along with their owners and briefs
 
 | Name | Owner | API | Library | Framework |
 |---|:---:|:---:|:---:|:---:|
@@ -30,9 +30,9 @@ include_in_header: true
 
 <b>Definitions</b><br>
 <hr>
-<b>Framework</b><br>A framework, or software framework, is a platform for developing software applications. It provides a foundation on which software developers can build programs for a specific platform.
-<b>Library</b><br>In programming, a library is a collection of precompiled routines that a program can use.
-<b>Api (Application Programming Interface)</b><br>An application programming interface is a computing interface to a software component or a system, that defines how other components or systems can use it. It defines the kinds of calls or requests that can be made, how to make them, the data formats that should be used.
+<b>Framework</b><br>A framework, or software framework, is a platform for developing software applications. It provides a foundation on which software developers can build programs for a specific platform.<br>
+<b>Library</b><br>In programming, a library is a collection of precompiled routines that a program can use.<br>
+<b>Api (Application Programming Interface)</b><br>An application programming interface is a computing interface to a software component or a system, that defines how other components or systems can use it. It defines the kinds of calls or requests that can be made, how to make them, the data formats that should be used.<br>
 
 
 <strong>Google Maps</strong>
@@ -65,11 +65,11 @@ The sub modules used from Firebase are
 
 <strong>CreditCardNfcReader</strong>
 <br><strong>Owner</strong>: Pro100svitlo Github
-<p>Use for reading payment card details using the device NFC reader</pr>
+<p>Use for reading payment card details using the device NFC reader</p>
 
 <strong>RxJava</strong>
 <br><strong>Owner</strong>: OpenSource Github
-<p>RxJava is a Java VM implementation of Reactive Extensions: a library for composing asynchronous and event-based programs by using observable sequences.</pr>
+<p>RxJava is a Java VM implementation of Reactive Extensions: a library for composing asynchronous and event-based programs by using observable sequences.</p>
 
 <strong>Retrofit</strong>
 <br><strong>Owner</strong>: Github Open source
