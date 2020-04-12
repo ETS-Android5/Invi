@@ -10,7 +10,7 @@
 	<title class="pageTitle">Invi, Your Shopping friend</title>
 	<meta name="description" content="Invi is a mobile application which allows users to self-checkout using their smartphone. Invi also enables clubs or stores to track their equipment using Qr Code tags. Invi aims to reduce ques, and improve shopping and retning experience.">
 
-    <link rel="shortcut icon" href="assets/logo_invi.png">
+	<link rel="shortcut icon" href="assets/logo_invi.png">
 
 	<!-- Smart App Banner -->
 	
@@ -18,58 +18,251 @@
 	
 
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-	<link rel="stylesheet" href="/main.css">
-	<link rel="stylesheet" href="main.css">
 	<link rel="stylesheet" href="../main.css">
 </head>
 
-<body class="subPageBody">
+<body class="subPageBody" >
     <div class="headerBackground subPageHeaderBackground">
-        <div class="container subPageContainer">
-        <header>
-	<div class="logo">
-		<div class="appIconShadow">
-			<svg width="0" height="0">
-				<defs>
-					<clipPath id="shape">
-							<path id="shape" class="cls-1" d="M6181.23,233.709v-1.792c0-.5-0.02-1-0.02-1.523a24.257,24.257,0,0,0-.28-3.3,11.207,11.207,0,0,0-1.04-3.132,10.683,10.683,0,0,0-1.95-2.679,10.384,10.384,0,0,0-2.68-1.943,10.806,10.806,0,0,0-3.13-1.038,19.588,19.588,0,0,0-3.3-.285c-0.5-.017-1-0.017-1.52-0.017h-22.39c-0.51,0-1.01.017-1.53,0.017a24.041,24.041,0,0,0-3.3.285,11.009,11.009,0,0,0-3.13,1.038,10.491,10.491,0,0,0-4.62,4.622,10.893,10.893,0,0,0-1.04,3.132,19.2,19.2,0,0,0-.28,3.3c-0.02.5-.02,1-0.02,1.523v22.392c0,0.5.02,1,.02,1.524a24.257,24.257,0,0,0,.28,3.3,10.9,10.9,0,0,0,1.04,3.132,10.491,10.491,0,0,0,4.62,4.622,11.04,11.04,0,0,0,3.13,1.038,19.891,19.891,0,0,0,3.3.285c0.51,0.017,1.01.017,1.53,0.017h22.39c0.5,0,1-.017,1.52-0.017a24.221,24.221,0,0,0,3.3-.285,10.836,10.836,0,0,0,3.13-1.038,10.408,10.408,0,0,0,2.68-1.943,10.683,10.683,0,0,0,1.95-2.679,11.217,11.217,0,0,0,1.04-3.132,20.257,20.257,0,0,0,.28-3.3c0.02-.5.02-1,0.02-1.524v-20.6h0Z" transform="translate(-6131 -218)"/>
-					</clipPath>
-				</defs>
-			</svg>
-
-            <img class="headerIcon" src="https://github.com/Bartekm1996/Invi/blob/master/docs/assets/logo_invi.png">
-			
-			<div class="divider"></div>
-		</div>
-		<p class="headerName">Invi</p>
-	</div>
-	<nav class="scroll">
-		<ul>
-			
-				
-				<li><a href="/apis/" target="_self">Api's</a></li>
-				
-			
-				
-				<li><a href="/authors/" target="_self">Authors</a></li>
-				
-			
-				
-				<li><a href="/discoverInvi/" target="_self">Discover Invi</a></li>
-				
-			
-		</ul>
-	</nav>
+        <header style="background: gray; width: 100%; padding-left: 25px; padding-right: 25px; color: white;">
+    <div class="logo">
+        <div class="appIconShadow">
+            <svg width="0" height="0">
+                <defs>
+                    <clipPath id="shape">
+                        <path id="shape" class="cls-1" d="M6181.23,233.709v-1.792c0-.5-0.02-1-0.02-1.523a24.257,24.257,0,0,0-.28-3.3,11.207,11.207,0,0,0-1.04-3.132,10.683,10.683,0,0,0-1.95-2.679,10.384,10.384,0,0,0-2.68-1.943,10.806,10.806,0,0,0-3.13-1.038,19.588,19.588,0,0,0-3.3-.285c-0.5-.017-1-0.017-1.52-0.017h-22.39c-0.51,0-1.01.017-1.53,0.017a24.041,24.041,0,0,0-3.3.285,11.009,11.009,0,0,0-3.13,1.038,10.491,10.491,0,0,0-4.62,4.622,10.893,10.893,0,0,0-1.04,3.132,19.2,19.2,0,0,0-.28,3.3c-0.02.5-.02,1-0.02,1.523v22.392c0,0.5.02,1,.02,1.524a24.257,24.257,0,0,0,.28,3.3,10.9,10.9,0,0,0,1.04,3.132,10.491,10.491,0,0,0,4.62,4.622,11.04,11.04,0,0,0,3.13,1.038,19.891,19.891,0,0,0,3.3.285c0.51,0.017,1.01.017,1.53,0.017h22.39c0.5,0,1-.017,1.52-0.017a24.221,24.221,0,0,0,3.3-.285,10.836,10.836,0,0,0,3.13-1.038,10.408,10.408,0,0,0,2.68-1.943,10.683,10.683,0,0,0,1.95-2.679,11.217,11.217,0,0,0,1.04-3.132,20.257,20.257,0,0,0,.28-3.3c0.02-.5.02-1,0.02-1.524v-20.6h0Z" transform="translate(-6131 -218)"/>
+                    </clipPath>
+                </defs>
+            </svg>
+            
+            <a href="../" target="_self"><img class="headerIcon" src="../../assets/logo_invi.png"></a>
+            
+            <div class="divider"></div>
+        </div>
+        <p class="headerName" style="color: white;">Invi</p>
+    </div>
+    <nav class="scroll">
+        <ul>
+            
+            
+            <li><a href="/apis/" style="color: white;" target="_self">Api's</a></li>
+            
+            
+            
+            <li><a href="/authors/" style="color: white;" target="_self">Authors</a></li>
+            
+            
+            
+            <li><a href="/discoverInvi/" style="color: white;" target="_self">Discover Invi</a></li>
+            
+            
+        </ul>
+    </nav>
 </header>
+        <div class="container subPageContainer">
             <article class="page markdown-body">
-                
+                <p>Invi was initailly an idea for inventory management for one of the University Of Limerick Clubs,
+but we quickly realised it’s potential and transformed it into self check out App. Currently
+with the help on Invi the user is able to check prices of several products in real-time. It uses
+the EAN number from the barcode and queries Tesco’s Api for the result. The price returned can be
+than quickly converted at current currency exchange rates into several currencies. Invi also allows to
+self check out rent items by scanning their QR Code it than tracks the time on lease and applies the
+applicable daily rates. It has been proven very useful even for our selves. Being able to price check
+within the store is an enormous convenience.</p>
+
+<p>This guide is to guide the potential user on how to use Invi and show it’s attached benefits.</p>
+
+<p>Currently Invi supports two methods or registration</p>
+
+<h2 id="1-using-social-media-accounts-including-facebook-twitter-and-instagram">1. Using Social Media Accounts Including Facebook, Twitter and Instagram</h2>
+<h2 id="2-using-email-address">2. Using Email Address</h2>
+
+<h3 id="the-login-screen">The Login Screen</h3>
+
+<p align="center">
+<img src="../images/login.jpg" width="333" />
+</p>
+
+<p>However, when signing up using one of the mentioned social accounts, the user still needs to verify both
+your email and phone number. Invi requires email and phone verification to make the account more secure
+but also to verify that it’s a real user signing up to the service. Another benefit of registering using
+social media accounts is that information such as the users profile photo, name and email address will be
+used by Invi.</p>
+
+<p>If the user decided to sign up with his social media account, he will be redirected to a permission screen
+by the chosen social media to grant Invi permission to use his details -</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Email
+Name
+Profile Photo
+</code></pre></div></div>
+
+<p>Once permission is granted the user will be then redirected to the registration screen where details such
+as his name and email will be perilled. The user is required than to enter a username and a password
+which has to meet Invi requirements, alternatively his/she can use Invi password generator.</p>
+
+<p>Upon successful registration the user will be sent a verification email and an (OTP) One Time Password to his/her
+phone to verify their humanity. Until verified successfully the user will be presented with verification is complete.</p>
+
+<p>Once verified the user will be able to also Log In using his phone number as Invi will send an (OTP) One Time
+Password to the users device, which is then valid for the duration of five minutes.
+Which is an attractive feature to many users as it takes the burden away of remembering the password.
+Using social media also offers this benefit or password less singing as the user is verified by his social
+media account.</p>
+
+<p>Upon successful verification, the user will be welcomed by the home screen. Which shows a summary of recent
+transaction with the sum spent to date with along with the payment form of the transaction,
+items currently rented and a pie chart summarising the categories of the items the user recently
+purchased. The user will also be asked to grant permission for Invi to have access to the devices</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Camera
+NFC (Near Field Communication)
+Network &amp; Gps Localizing Service
+</code></pre></div></div>
+
+<p>Invi uses localization to show the user nearby stores, at the moment it shows nearby Tesco stores
+as well as stores that are stored on the database.</p>
+
+<p>Swiping right you will be presented with the App’s navigation drawer which allows the user to navigate
+between different screens.</p>
+
+<h3 id="quick-sidebar-menu-access">Quick sidebar menu access</h3>
+
+<p>.</p>
+<p align="center">
+<img src="../images/sidebar.jpg" alt="Invi Image Sidebar" width="333" />
+</p>
+
+<p>.</p>
+
+<p>On the bottom right corner, their is a Floating Action Button which will expand on click. Once it expands
+it gives the user access to the Barcode / Qr code Scanner, the live cart which also shows the current number
+of items in the cart and the real time currency exchange.</p>
+
+<p>Once the user click on the Qr Code icon, he/she will be then redirected to scanner screen. Here the user
+can scan either items to check their price, where once the product is successfully found by Invi the user
+will be show with a dialog giving the products image, price and description. The user will also have the
+option to increase the amount of this items he/she wish to add to their cart.</p>
+
+<h3 id="check-stores-based-on-locality">Check Stores Based on Locality</h3>
+
+<p>Invi checks the users location and maps nearby stores on Google Maps</p>
+
+<p>.</p>
+<p align="center">
+<img src="../images/maps.jpg" width="333" />
+</p>
+
+<p>.</p>
+
+<h3 id="qr-code--ean-13-scanner">Qr Code / EAN-13 Scanner</h3>
+
+<p>Invi uses recognises both Qr Code and EAN-13 barcodes for product checkout or item rental.</p>
+
+<p>.</p>
+<p align="center">
+<img src="../images/scanner.jpg" width="333" />
+</p>
+
+<p>.</p>
+
+<p>.</p>
+<p align="center">
+<img src="../images/rent_item.jpg" width="333" />
+</p>
+
+<p>.</p>
+
+<h3 id="search-for-products">Search for Products</h3>
+
+<p>The user can search for all available products on Invi’s database</p>
+
+<p>.</p>
+<p align="center">
+<img src="../images/search.jpg" width="333" />
+</p>
+
+<p>.</p>
+
+<h3 id="check-product-prices">Check Product Prices</h3>
+
+<p>Scan or search for a product usign its barcode number to check it’s price</p>
+
+<p>.</p>
+<p align="center">
+<img src="../images/items1.jpg" width="333" />
+</p>
+
+<p>.</p>
+
+<h3 id="store-receipts-on-your-phone">Store Receipts on Your Phone</h3>
+
+<p>Once a transaction is complete, Invi automatically generates a receipt and stores it on your phone.</p>
+
+<p>.</p>
+<p align="center">
+<img src="../images/receips.jpg" width="333" />
+</p>
+
+<p>.</p>
+
+<h3 id="check-latest-conversion-rates">Check Latest Conversion Rates</h3>
+
+<p>With Invi the user can check the latest conversion rates.</p>
+
+<h3 id="cart-total-automatically-converted">Cart Total Automatically Converted</h3>
+
+<p>Each time a product is added to the cart Invi automatically converts the total to different currencies.</p>
+
+<p>.</p>
+<p align="center">
+<img src="../images/currece.jpg" width="333" />
+</p>
+
+<p>.</p>
+
+<h3 id="summary-of-purchases">Summary of Purchases</h3>
+
+<p>Invi splits the products according to their category and presents the result on a pie chart.</p>
+
+<p>.</p>
+<p align="center">
+<img src="../images/summary.jpg" width="333" />
+</p>
+
+<p>.</p>
+
+<p>.</p>
+<p align="center">
+<img src="../images/order.jpg" width="333" />
+</p>
+
+<p>.</p>
+
+<h3 id="recent-transaction">Recent transaction</h3>
+
+<p>Invi shows recent transaction.</p>
+
+<p>.</p>
+<p align="center">
+<img src="../images/resent%20rented2.jpg" width="333" />
+</p>
+
+<p>.</p>
+<h3 id="user-profile">User Profile</h3>
+
+<p>Edit your details whenever you want.</p>
+
+<p>.</p>
+<p align="center">
+<img src="../images/profile.jpg" width="333" />
+</p>
+
+<p>.</p>
 
             </article>
         </div>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-
-
     </div>
+
 </body>
 
 </html>

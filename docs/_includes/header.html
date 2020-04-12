@@ -1,4 +1,4 @@
-<header>
+<header >
 	<div class="logo">
 		<div class="appIconShadow">
 			<svg width="0" height="0">
@@ -9,13 +9,13 @@
 				</defs>
 			</svg>
 			{% if page.url != '/' %}
-				<a href="../" target="_self"><img class="headerIcon" src="{{ site.app_icon }}"></a>
+				<a href="../" target="_self"><img class="headerIcon" src="../../{{ site.app_icon }}"></a>
 			{% else %}
-				<img class="headerIcon" src="{{ site.app_icon }}">
+				<img class="headerIcon" src="../{{ site.app_icon}}">
 			{% endif %}
 			<div class="divider"></div>
 		</div>
-		<p class="headerName">{{ site.app_name }}</p>
+		<p class="headerName" style="color: white;">{{ site.app_name }}</p>
 	</div>
 	<nav class="scroll">
 		<ul>

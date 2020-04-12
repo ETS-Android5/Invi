@@ -23,7 +23,7 @@ Currently Invi supports two methods or registration
 ### The Login Screen
 
 <p align="center">
-<img src="https://github.com/Bartekm1996/Invi/blob/master/docs/_pages/images/login.jpg" width="333">
+<img src="../images/login.jpg" width="333">
 </p>
 
 However, when signing up using one of the mentioned social accounts, the user still needs to verify both
@@ -71,7 +71,7 @@ between different screens.
 
 .
 <p align="center">
-<img src="https://github.com/Bartekm1996/Invi/blob/master/docs/_pages/images/sidebar.jpg" width="333">
+<img src="../images/sidebar.jpg" alt="Invi Image Sidebar" width="333">
 </p>
 
 
@@ -100,7 +100,7 @@ Invi checks the users location and maps nearby stores on Google Maps
 
 .
 <p align="center">
-<img src="https://github.com/Bartekm1996/Invi/blob/master/docs/_pages/images/maps.jpg" width="333">
+<img src="../images/maps.jpg" width="333">
 </p>
 
 
@@ -112,7 +112,7 @@ Invi uses recognises both Qr Code and EAN-13 barcodes for product checkout or it
 
 .
 <p align="center">
-<img src="https://github.com/Bartekm1996/Invi/blob/master/docs/_pages/images/scanner.jpg" width="333">
+<img src="../images/scanner.jpg" width="333">
 </p>
 
 
@@ -120,7 +120,7 @@ Invi uses recognises both Qr Code and EAN-13 barcodes for product checkout or it
 
 .
 <p align="center">
-<img src="https://github.com/Bartekm1996/Invi/blob/master/docs/_pages/images/rent_item.jpg" width="333">
+<img src="../images/rent_item.jpg" width="333">
 </p>
 
 
@@ -134,7 +134,7 @@ The user can search for all available products on Invi's database
 
 .
 <p align="center">
-<img src="https://github.com/Bartekm1996/Invi/blob/master/docs/_pages/images/search.jpg" width="333">
+<img src="../images/search.jpg" width="333">
 </p>
 
 
@@ -147,7 +147,7 @@ Scan or search for a product usign its barcode number to check it's price
 
 .
 <p align="center">
-<img src="https://github.com/Bartekm1996/Invi/blob/master/docs/_pages/images/items1.jpg" width="333">
+<img src="../images/items1.jpg" width="333">
 </P>
 
 .
@@ -158,7 +158,7 @@ Once a transaction is complete, Invi automatically generates a receipt and store
 
 .
 <p align="center">
-<img src="https://github.com/Bartekm1996/Invi/blob/master/docs/_pages/images/receips.jpg" width="333">
+<img src="../images/receips.jpg" width="333">
 </p>
 
 .
@@ -173,7 +173,7 @@ Each time a product is added to the cart Invi automatically converts the total t
 
 .
 <p align="center">
-<img src="https://github.com/Bartekm1996/Invi/blob/master/docs/_pages/images/currece.jpg" width="333">
+<img src="../images/currece.jpg" width="333">
 </P>
 
 .
@@ -184,14 +184,14 @@ Invi splits the products according to their category and presents the result on 
 
 .
 <p align="center">
-<img src="https://github.com/Bartekm1996/Invi/blob/master/docs/_pages/images/summary.jpg" width="333">
+<img src="../images/summary.jpg" width="333">
 </P>
 
 .
 
 .
 <p align="center">
-<img src="https://github.com/Bartekm1996/Invi/blob/master/docs/_pages/images/order.jpg" width="333">
+<img src="../images/order.jpg" width="333">
 </P>
 
 .
@@ -203,7 +203,7 @@ Invi shows recent transaction.
 
 .
 <p align="center">
-<img src="https://github.com/Bartekm1996/Invi/blob/master/docs/_pages/images/resent%20rented2.jpg" width="333">
+<img src="../images/resent%20rented2.jpg" width="333">
 </P>
 
 .
@@ -213,7 +213,7 @@ Edit your details whenever you want.
 
 .
 <p align="center">
-<img src="https://github.com/Bartekm1996/Invi/blob/master/docs/_pages/images/profile.jpg" width="333">
+<img src="../images/profile.jpg" width="333">
 </P>
 
 .
