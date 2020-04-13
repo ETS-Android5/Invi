@@ -16,6 +16,7 @@ This guide will cover installation of Invi Application show a step by step guide
 ## Test Barcodes
 
 <p align="center">
+  Here is a list of barcodes for the invi store and also some known barcodes that were taking from tesco products
 <table>
   <tr>
     <th colspan="3">Invi Rental Items</th>
