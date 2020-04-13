@@ -44,16 +44,14 @@
     <nav class="scroll">
         <ul>
             
-            
-            <li><a href="/apis/" style="color: white;" target="_self">Api's</a></li>
-            
-            
-            
-            <li><a href="/authors/" style="color: white;" target="_self">Authors</a></li>
-            
-            
-            
-            <li><a href="/discoverInvi/" style="color: white;" target="_self">Discover Invi</a></li>
+            			{% for page in site.pages %}
+				{% if page.include_in_header == true %}
+			<li><i class="{{page.icon}}"></i><a href="{{ page.url | relative_url }}" target="_self"> {{ page.title }}</a></li>
+				{% endif %}
+			{% endfor %}
+           <!-- <li><a href="/apis/" style="color: white;" target="_self">Api's</a></li>-->
+           <!-- <li><a href="/authors/" style="color: white;" target="_self">Authors</a></li>-->
+           <!-- <li><a href="/discoverInvi/" style="color: white;" target="_self">Discover Invi</a></li>-->
             
             
         </ul>
