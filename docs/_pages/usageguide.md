@@ -70,10 +70,19 @@ Because this app is not signed by google play store you will have to allow 3rd p
     <div class="post-thumb"><img src="../images/screen_cart2.jpg" width="250px" height="350px"/></div>
     <div class="post-content">
         <h3 class="post-title">Scanner Screen</h3>
-        <p>Invi allows 2 types of item scans. Items that can be purchased and items that can be rented. To start scanning click on the blue button on the bottom right of screen then click the QR icon which will bring you to the scanning screen as seen in image on the left. Please use the test barcodes below to start scanning rental items, purchase items or tesco items. You can also try tesco products you have at home. <br><br><b>Tesco api doesn't allow verbose product detect so some items will not be picked up from the tesco api</b></p>
-       
+        <p>Invi allows 2 types of item scans. Items that can be purchased and items that can be rented. To start scanning click on the blue button on the bottom right of screen then click the QR icon which will bring you to the scanning screen as seen in image on the left. Please use the test barcodes below to start scanning rental items, purchase items or tesco items. You can also try tesco products you have at home. <br><br><b>Tesco api doesn't allow verbose product detection so some items will not be picked up from the tesco api</b></p>
  </div>
 </div>
+
+<div class="post-container">                
+    <div class="post-thumb"><img src="../images/screen_rent1.jpg" width="250px" height="350px"/></div>
+    <div class="post-content">
+        <h3 class="post-title">Rental Checkout Screen</h3>
+        <p>If you scan a rentable item and that current item is not out on rent you will be greeted with the rent dialog. The rent to currently scanned item click the rent item.
+        <br><br></p>
+ </div>
+</div>
+
 ## Test Barcodes
 
 <p align="center">
