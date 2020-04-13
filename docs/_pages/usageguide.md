@@ -48,7 +48,6 @@ This guide will cover installation of Invi Application show a step by step guide
     <td><img src="../images/headp.gif"/>Invi Mask</td>
     <td></td>
   </tr>
-    </tr>
     <tr>
     <th colspan="3">Tesco Items</th>
   </tr>
