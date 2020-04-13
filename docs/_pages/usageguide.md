@@ -18,6 +18,9 @@ This guide will cover installation of Invi Application show a step by step guide
 <p align="center">
 <table>
   <tr>
+    <th colspan="6">Invi Rental Items</th>
+  </tr>
+  <tr>
     <td><img src="../images/mask1.gif"/>Mask 1</td>
     <td><img src="../images/mask2.gif"/>Mask 2</td>
     <td><img src="../images/mask3.gif"/>Mask 3</td>
@@ -33,9 +36,15 @@ This guide will cover installation of Invi Application show a step by step guide
     <td><img src="../images/mask2.gif"/>Mask 2</td>
     <td><img src="../images/mask3.gif"/>Mask 3</td>
   </tr>
+    <tr>
+    <th colspan="6">Invi Purchase Items</th>
+  </tr>
   <tr>
-    <td><img src="../images/divingsuit.gif"/>Diving Suit purchase Item</td>
-    <td><img src="../images/headp.gif"/>Mask purchase Item</td>
+    <td><img src="../images/divingsuit.gif"/>Invi Diving Suit</td>
+    <td><img src="../images/headp.gif"/>Invi Mask</td>
+    <td><img src="../images/wipes.gif"/>Tesco Cleaning wipes</td>
+    <td><img src="../images/tuna.gif"/>Tesco Tuna</td>
+    <td><img src="../images/sweetcorn.gif"/>Tesco Sweet Corn</td>
     <td></td>
   </tr>
 </table>
