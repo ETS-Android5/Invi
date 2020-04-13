@@ -22,7 +22,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
 <div class="post-container">                
     <div class="post-thumb"><img src="/assets/screenshot/yourscreenshot.jpg" width="250px" height="350px"/></div>
     <div class="post-content">
-        <h3 class="post-title">Post title</h3>
+        <h3 class="post-title">Login & Registration Screen</h3>
         <p>Once app is installed a blue icon with the title "Invi" will appear on the apps section of your phone. Open the app and you will be presented this the the screen below.</p></div>
 </div>
 
