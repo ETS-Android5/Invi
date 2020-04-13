@@ -11,6 +11,9 @@ This guide will cover installation of Invi Application show a step by step guide
 
 ## Installation
 
+To install invi on your phone please type this url into your phone browser https://shorturl.at/elnzB
+
+Once file is downloaded it will be in the downlaods folder on your phone and the file will be names app-release.apk
 ## User Registration
 
 ## User Login
