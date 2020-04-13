@@ -89,7 +89,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
     <div class="post-content">
         <h3 class="post-title">Rental Items List</h3>
         <p>To view current rented items and your current cost please click on the side menu and click rentals. You will be greeted with this screen where you can see the details and total cost of your rented items
-        <br><br>You can also search through your rented items if you have a larage list by clicking he search icon on the top right and entering a search term</p>
+        <br><br>You can also search through your rented items if you have a large list by clicking he search icon on the top right and entering a search term</p>
  </div>
 </div>
 
@@ -123,8 +123,22 @@ Because this app is not signed by google play store you will have to allow 3rd p
     <div class="post-thumb"><img src="../images/screen_plist.jpg" width="250px" height="350px"/></div>
     <div class="post-content">
         <h3 class="post-title">Cart List</h3>
-        <p>To open your cart to see current items click on the left nav menu you click on the cart icon button</p>
+        <p>To open your cart to see current items click on the left nav menu you click on the cart icon button.<br><br>You can also search through your cart items if you have a large list by clicking he search icon on the top right and entering a search term</p>
  </div>
+</div>
+
+<div class="post-container">                
+    <div class="post-thumb"><img src="../images/screen_return.jpg" width="250px" height="350px"/></div>
+    <div class="post-content">
+        <h3 class="post-title">Cart Item Return</h3>
+        <p>To return an item in your list please swipe left on the item as see in image</div>
+</div>
+
+<div class="post-container">                
+    <div class="post-thumb"><img src="../images/screen_plist.jpg" width="250px" height="350px"/></div>
+    <div class="post-content">
+        <h3 class="post-title">Cart Payment</h3>
+        <p>To pay for items in your cart click on the dollar sign icon on the title bar at top of screen. You can pay for items with cash of card. <b>Please add a card or you will not be allowed to pay for items with card option</b>. A fake card number is ok for the test.<br><br>Once items are paid for they will appear in your reciepts list.</div>
 </div>
 
 
