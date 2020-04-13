@@ -27,9 +27,9 @@ Because this app is not signed by google play store you will have to allow 3rd p
     <p>If you want to register with Google, Twitter or Facebook please slide the icon to the right. To begin registering with an email click on the registration link on the bottom left</p>
     </div>
 </div>
-</br>
+<br>
 <div class="post-container">                
-    <div class="post-thumb"><img src="/assets/screenshot/yourscreenshot.jpg" width="250px" height="350px"/></div>
+    <div class="post-thumb"><img src="../images/screen_reg.jpg" width="250px" height="350px"/></div>
     <div class="post-content">
         <h3 class="post-title">Registration Screen</h3>
         <p>Please enter your first name, last name, email and enter a password then click the register button</p>
