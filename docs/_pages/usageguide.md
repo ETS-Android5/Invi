@@ -13,7 +13,7 @@ This guide will cover installation of Invi Application show a step by step guide
 
 To install invi on your phone please type this url into your phone browser https://shorturl.at/elnzB
 
-Once file is downloaded it will be in the downlaods folder on your phone and the file will be names app-release.apk
+Once the file is downloaded it will be in the downloads folder on your phone and the file will be names app-release.apk
 
 Because this app is not signed by google play store you will have to allow 3rd party app install in the settings on your phone or when you are prompted by the package installer during open of the apk file.
 
@@ -59,13 +59,14 @@ Because this app is not signed by google play store you will have to allow 3rd p
     <div class="post-thumb"><img src="../images/screen_login2.jpg" width="250px" height="350px"/></div>
     <div class="post-content">
         <h3 class="post-title">Login Screen</h3>
-        <p>To login to app simply enter you email the password and you should be greeted with the home screen</p>
+        <p>To login to app simply enter your email & password and you should be greeted with the home screen</p>
        
  </div>
 </div>
 
 ## Start Scanning
 
+### Scan Rental Items
 <div class="post-container">                
     <div class="post-thumb"><img src="../images/screen_cart2.jpg" width="250px" height="350px"/></div>
     <div class="post-content">
@@ -87,7 +88,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
     <div class="post-thumb"><img src="../images/screen_rent2.jpg" width="250px" height="350px"/></div>
     <div class="post-content">
         <h3 class="post-title">Rental Items List</h3>
-        <p>To view current rented items and your currnet cost please click on the side menu and click rentals. You will be greeted with this screen where you can see the details and total cost of your rented items
+        <p>To view current rented items and your current cost please click on the side menu and click rentals. You will be greeted with this screen where you can see the details and total cost of your rented items
         <br><br></p>
  </div>
 </div>
@@ -100,6 +101,16 @@ Because this app is not signed by google play store you will have to allow 3rd p
         <br><br></p>
  </div>
 </div>
+
+### Scan Purcahse Items
+<div class="post-container">                
+    <div class="post-thumb"><img src="../images/screen_cart2.jpg" width="250px" height="350px"/></div>
+    <div class="post-content">
+        <h3 class="post-title">Scanner Screen</h3>
+        <p>Invi allows 2 types of item scans. Items that can be purchased and items that can be rented. To start scanning click on the blue button on the bottom right of screen then click the QR icon which will bring you to the scanning screen as seen in image on the left. Please use the test barcodes below to start scanning rental items, purchase items or tesco items. You can also try tesco products you have at home. <br><br><b>Tesco api doesn't allow verbose product detection so some items will not be picked up from the tesco api</b></p>
+ </div>
+</div>
+
 
 ## Test Barcodes
 
