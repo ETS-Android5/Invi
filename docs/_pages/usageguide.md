@@ -2,6 +2,7 @@
 layout: page
 title: Users Guide
 include_in_header: true
+icon: fa fa-user
 ---
 
 This guide will cover installation of Invi Application show a step by step guide on usings its features
