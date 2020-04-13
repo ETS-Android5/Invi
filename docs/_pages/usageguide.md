@@ -14,6 +14,8 @@ This guide will cover installation of Invi Application show a step by step guide
 ## User Login
 
 ## Test Barcodes
+
+.
         <table class="tables" >
 		<tr>
 		<td><img src="../images/mask1.gif"/>Mask 1</td>
@@ -41,3 +43,4 @@ This guide will cover installation of Invi Application show a step by step guide
 		<td></td>
 		</tr>
 		</table>
+.
