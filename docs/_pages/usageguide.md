@@ -47,14 +47,33 @@ Because this app is not signed by google play store you will have to allow 3rd p
 <div class="post-container">                
     <div class="post-thumb"><img src="../images/screen_ver2.jpg" width="250px" height="350px"/></div>
     <div class="post-content">
-        <h3 class="post-title">Verify Phone Screen</h3>
-        <p>When you click the verify phone button you will be greeted by this screen. To verify your phone please select country code and enter your phone number then click send code which will send an sms code to your device. Once phone and email is verified your login should be automatic<br><b>*** Please be aware this api from google is buggy and sometimes does not send a code so please contact support at Invi to fix ***</b></p>
+        <h3 class="post-title">Verify Number Screen</h3>
+        <p>When you click the verify phone button you will be greeted by this screen. To verify your phone please select country code and enter your phone number then click send code which will send an sms code to your device. Once phone and email is verified your login should be automatic.<br><b>*** Please be aware this api from google is buggy and sometimes does not send a code so please contact support at Invi to fix ***</b></p>
        
  </div>
 </div>
 
 ## User Login
 
+<div class="post-container">                
+    <div class="post-thumb"><img src="../images/screen_login2.jpg" width="250px" height="350px"/></div>
+    <div class="post-content">
+        <h3 class="post-title">Login Screen</h3>
+        <p>To login to app simply enter you email the password and you should be greeted with the home screen</p>
+       
+ </div>
+</div>
+
+## Start Scanning
+
+<div class="post-container">                
+    <div class="post-thumb"><img src="../images/screen_cart2.jpg" width="250px" height="350px"/></div>
+    <div class="post-content">
+        <h3 class="post-title">Scanner Screen</h3>
+        <p>Invi allows 2 types of item scans. Items that can be purchased and items that can be rented. To start scanning click on the blue button on the bottom right of screen then click the QR icon which will bring you to the scanning screen as seen in image on the left. Please use the test barcodes below to start scanning rental items, purchase items or tesco items. You can also try tesco products you have at home. <br><br><b>Tesco api doesn't allow verbose product detect so some items will not be picked up from the tesco api</b></p>
+       
+ </div>
+</div>
 ## Test Barcodes
 
 <p align="center">
