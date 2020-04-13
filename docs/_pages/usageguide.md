@@ -83,6 +83,24 @@ Because this app is not signed by google play store you will have to allow 3rd p
  </div>
 </div>
 
+<div class="post-container">                
+    <div class="post-thumb"><img src="../images/screen_rent2.jpg" width="250px" height="350px"/></div>
+    <div class="post-content">
+        <h3 class="post-title">Rental Items List</h3>
+        <p>To view current rented items and your currnet cost please click on the side menu and click rentals. You will be greeted with this screen where you can see the details and total cost of your rented items
+        <br><br></p>
+ </div>
+</div>
+
+<div class="post-container">                
+    <div class="post-thumb"><img src="../images/screen_rent4.jpg" width="250px" height="350px"/></div>
+    <div class="post-content">
+        <h3 class="post-title">Rental Checkin Screen</h3>
+        <p>To check back in a rented item just scan the barcode and you will be present with the screen on the left. When the item is checked back in you will have a reciept of the cost in the reciepts page.
+        <br><br></p>
+ </div>
+</div>
+
 ## Test Barcodes
 
 <p align="center">
