@@ -35,6 +35,22 @@ Because this app is not signed by google play store you will have to allow 3rd p
         <p>Please enter your first name, last name, email and enter a password then click the register button</p>
     </div>
 </div>
+<br>
+<div class="post-container">                
+    <div class="post-thumb"><img src="../images/screen_ver1.jpg" width="250px" height="350px"/></div>
+    <div class="post-content">
+        <h3 class="post-title">Verify Screen</h3>
+        <p>In order to use Invi your email and phone must be verfied. If you click on (Verify Email) this will send an email with a link to verify to your email address. </p>
+    </div>
+</div>
+<br>
+<div class="post-container">                
+    <div class="post-thumb"><img src="../images/screen_ver2.jpg" width="250px" height="350px"/></div>
+    <div class="post-content">
+        <h3 class="post-title">Verify Phone Screen</h3>
+        <p>When you click the verify phone button you will be greeted by this screen. To verify your phone please select country code and enter your phone number then click send code which will send an sms code to your device. <b>*** Please be aware this api for google is buggy and sometimes does not send a code so please contact support at Invi to fix ***</b> </p>
+    </div>
+</div>
 
 ## User Login
 
