@@ -111,6 +111,22 @@ Because this app is not signed by google play store you will have to allow 3rd p
  </div>
 </div>
 
+<div class="post-container">                
+    <div class="post-thumb"><img src="../images/screen_p1.jpg" width="250px" height="350px"/></div>
+    <div class="post-content">
+        <h3 class="post-title">Purcahse Item</h3>
+        <p>When you scan a purchase item either invi your tesco you will be greeted with this screen. Choose the quantity and click add to cart. The items will be added to your cart which you can click the cart icon or menu to open the cart list</p>
+ </div>
+</div>
+
+<div class="post-container">                
+    <div class="post-thumb"><img src="../images/screen_plist.jpg" width="250px" height="350px"/></div>
+    <div class="post-content">
+        <h3 class="post-title">Cart List</h3>
+        <p>To open your cart to see current items click on the left nav menu you click on the cart icon button</p>
+ </div>
+</div>
+
 
 ## Test Barcodes
 
