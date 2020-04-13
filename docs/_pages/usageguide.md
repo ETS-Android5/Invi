@@ -15,7 +15,7 @@ This guide will cover installation of Invi Application show a step by step guide
 
 ## Test Barcodes
 
-.
+
 <table class="tables" >
 <tr>
 <td><img src="../images/mask1.gif"/>Mask 1</td>
@@ -29,7 +29,7 @@ This guide will cover installation of Invi Application show a step by step guide
 <td><img src="../images/drill1.gif"/>Drill 1</td>
 <td><img src="../images/drill2.gif"/>Drill 2</td>
 <td><img src="../images/drill3.gif"/>Drill 3</td>
-<td><img src="imgs/mask1.gif"/>Mask 1</td>
+<td><img src="../images/mask1.gif"/>Mask 1</td>
 <td><img src="../images/mask2.gif"/>Mask 2</td>
 <td><img src="../images/mask3.gif"/>Mask 3</td>
 </tr>
@@ -39,4 +39,3 @@ This guide will cover installation of Invi Application show a step by step guide
 <td></td>
 </tr>
 </table>
-.
