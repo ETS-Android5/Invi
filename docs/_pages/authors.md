@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Authors
+icon: fa fa-users
 include_in_header: true
 ---
 
