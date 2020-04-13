@@ -18,10 +18,10 @@ This guide will cover installation of Invi Application show a step by step guide
 <p align="center">
 <table>
   <tr>
-    <td><img src="images/mask1.gif"/>Mask 1</td>
-    <td><img src="images/mask2.gif"/>Mask 2</td>
-    <td><img src="images/mask3.gif"/>Mask 3</td>
-    <td><img src="images/bike1.gif"/>Bike 1</td>
+    <td><img src="../images/mask1.gif"/>Mask 1</td>
+    <td><img src="images/assetsmask2.gif"/>Mask 2</td>
+    <td><img src="assets/mask3.gif"/>Mask 3</td>
+    <td><img src="../images/assets/bike1.gif"/>Bike 1</td>
     <td><img src="images/bike2.gif"/>Bike 2</td>
     <td><img src="images/bike3.gif"/>Bike 3</td>
   </tr>
