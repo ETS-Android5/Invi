@@ -19,11 +19,10 @@ Because this app is not signed by google play store you will have to allow 3rd p
 
 ## User Registration
 
+<div class="imgDes">
+  <img src="/assets/screenshot/yourscreenshot.jpg" width="250px" height="350px"/>
 Once app is installed a blue icon with the title "Invi" will appear on the apps section of your phone. Open the app and you will be presented this the the screen below.
-<p align="center">
-<img src="/assets/screenshot/yourscreenshot.jpg" width="250px" height="350px"/>
-</p>
-  
+</div>
 ## User Login
 
 ## Test Barcodes
