@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Discover Invi
+icon: fa fa-info-circle
 include_in_header: true
 ---
 
