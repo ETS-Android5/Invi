@@ -10,4 +10,5 @@ Invi was created by the collaboration of three students of University Of Limeric
 <li>Bartlomiej Mlynarkiewicz</li>
 <li>Paul Kinsella</li>
 <li>Norbert Cholewka</li>
+  <li>Test</li>
 </ul>
