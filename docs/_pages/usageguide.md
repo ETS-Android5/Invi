@@ -35,7 +35,7 @@ This guide will cover installation of Invi Application show a step by step guide
   </tr>
   <tr>
     <td><img src="images/divingsuit.gif"/>Diving Suit purchase Item</td>
-    <td><img src="images/headp.gif"/>Mask purchase Item</td></td>
+    <td><img src="images/headp.gif"/>Mask purchase Item</td>
     <td></td>
   </tr>
 </table>
