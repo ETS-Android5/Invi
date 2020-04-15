@@ -135,7 +135,8 @@ Because this app is not signed by google play store you will have to allow 3rd p
 </div>
 
 <div class="post-container">                
-    <div class="post-thumb"><img src="../images/screen_plist.jpg" width="250px" height="350px"/></div>
+    <div class="post-thumb"><img src="../images/screen_plist.jpg" width="150px" height="250px"/></div>
+    <div class="post-thumb"><img src="../images/screen_cardpay.jpg" width="150px" height="250px"/></div>
     <div class="post-content">
         <h3 class="post-title">Cart Payment</h3>
         <p>To pay for items in your cart click on the dollar sign icon on the title bar at top of screen. You can pay for items with cash of card. <b>Please add a card or you will not be allowed to pay for items with card option</b>. A fake card number is ok for the test. <br><br>Once items are paid for they will appear in your reciepts list.</p>
