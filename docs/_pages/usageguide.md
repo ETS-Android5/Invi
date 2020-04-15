@@ -20,7 +20,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
 ## User Registration
 
 <div class="post-container">                
-    <div class="post-thumb"><img src="/assets/screenshot/yourscreenshot.jpg" width="250px" height="350px"/></div>
+    <div class="post-thumb"><img src="/assets/screenshot/yourscreenshot.jpg" width="200px" height="300px"/></div>
     <div class="post-content">
         <h3 class="post-title">Login & Registration Screen</h3>
         <p>Once app is installed a blue icon with the title "Invi" will appear on the apps section of your phone. Open the app and you will be presented this the the screen on the left.</p>
@@ -29,7 +29,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
 </div>
 <br>
 <div class="post-container">                
-    <div class="post-thumb"><img src="../images/screen_reg.jpg" width="250px" height="350px"/></div>
+    <div class="post-thumb"><img src="../images/screen_reg.jpg" width="200px" height="300px"/></div>
     <div class="post-content">
         <h3 class="post-title">Registration Screen</h3>
         <p>Please enter your first name, last name, email and enter a password then click the register button</p>
@@ -37,7 +37,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
 </div>
 <br>
 <div class="post-container">                
-    <div class="post-thumb"><img src="../images/screen_ver1.jpg" width="250px" height="350px"/></div>
+    <div class="post-thumb"><img src="../images/screen_ver1.jpg" width="200px" height="300px"/></div>
     <div class="post-content">
         <h3 class="post-title">Verify Screen</h3>
         <p>In order to use Invi your email and phone must be verfied. If you click on (Verify Email) this will send an email with a link to verify to your email address. </p>
@@ -45,7 +45,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
 </div>
 <br>
 <div class="post-container">                
-    <div class="post-thumb"><img src="../images/screen_ver2.jpg" width="250px" height="350px"/></div>
+    <div class="post-thumb"><img src="../images/screen_ver2.jpg" width="200px" height="300px"/></div>
     <div class="post-content">
         <h3 class="post-title">Verify Number Screen</h3>
         <p>When you click the verify phone button you will be greeted by this screen. To verify your phone please select country code and enter your phone number then click send code which will send an sms code to your device. Once phone and email is verified your login should be automatic.<br><b>*** Please be aware this api from google is buggy and sometimes does not send a code so please contact support at Invi to fix ***</b></p>
@@ -56,7 +56,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
 ## User Login
 
 <div class="post-container">                
-    <div class="post-thumb"><img src="../images/screen_login2.jpg" width="250px" height="350px"/></div>
+    <div class="post-thumb"><img src="../images/screen_login2.jpg" width="200px" height="300px"/></div>
     <div class="post-content">
         <h3 class="post-title">Login Screen</h3>
         <p>To login to app simply enter your email & password and you should be greeted with the home screen</p>
@@ -68,7 +68,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
 
 ### Scan Rental Items
 <div class="post-container">                
-    <div class="post-thumb"><img src="../images/screen_cart2.jpg" width="250px" height="350px"/></div>
+    <div class="post-thumb"><img src="../images/screen_cart2.jpg" width="200px" height="300px"/></div>
     <div class="post-content">
         <h3 class="post-title">Scanner Screen</h3>
         <p>Invi allows 2 types of item scans. Items that can be purchased and items that can be rented. To start scanning click on the blue button on the bottom right of screen then click the QR icon which will bring you to the scanning screen as seen in image on the left. Please use the test barcodes below to start scanning rental items, purchase items or tesco items. You can also try tesco products you have at home. <br><br><b>Tesco api doesn't allow verbose product detection so some items will not be picked up from the tesco api</b></p>
@@ -76,7 +76,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
 </div>
 
 <div class="post-container">                
-    <div class="post-thumb"><img src="../images/screen_rent1.jpg" width="250px" height="350px"/></div>
+    <div class="post-thumb"><img src="../images/screen_rent1.jpg" width="200px" height="300px"/></div>
     <div class="post-content">
         <h3 class="post-title">Rental Checkout Screen</h3>
         <p>If you scan a rentable item and that current item is not out on rent you will be greeted with the rent dialog. The rent to currently scanned item click the rent item.
@@ -85,7 +85,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
 </div>
 ## Rental & Purcahse
 <div class="post-container">                
-    <div class="post-thumb"><img src="../images/screen_rent2.jpg" width="250px" height="350px"/></div>
+    <div class="post-thumb"><img src="../images/screen_rent2.jpg" width="200px" height="300px"/></div>
     <div class="post-content">
         <h3 class="post-title">Rental Items List</h3>
         <p>To view current rented items and your current cost please click on the side menu and click rentals. You will be greeted with this screen where you can see the details and total cost of your rented items
@@ -94,7 +94,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
 </div>
 
 <div class="post-container">                
-    <div class="post-thumb"><img src="../images/screen_rent4.jpg" width="250px" height="350px"/></div>
+    <div class="post-thumb"><img src="../images/screen_rent4.jpg" width="200px" height="300px"/></div>
     <div class="post-content">
         <h3 class="post-title">Rental Checkin Screen</h3>
         <p>To check back in a rented item just scan the barcode and you will be present with the screen on the left. When the item is checked back in you will have a Receipt of the cost in the Receipts page.
@@ -104,7 +104,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
 
 ### Scan Purcahse Items
 <div class="post-container">                
-    <div class="post-thumb"><img src="../images/screen_cart2.jpg" width="250px" height="350px"/></div>
+    <div class="post-thumb"><img src="../images/screen_cart2.jpg" width="200px" height="300px"/></div>
     <div class="post-content">
         <h3 class="post-title">Scanner</h3>
         <p>To scan a purchase item please click the blue button on the bottom left screen the click the QR scan button.</p>
@@ -112,7 +112,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
 </div>
 
 <div class="post-container">                
-    <div class="post-thumb"><img src="../images/screen_p1.jpg" width="250px" height="350px"/></div>
+    <div class="post-thumb"><img src="../images/screen_p1.jpg" width="200px" height="300px"/></div>
     <div class="post-content">
         <h3 class="post-title">Purcahse Item</h3>
         <p>When you scan a purchase item either invi your tesco you will be greeted with this screen. Choose the quantity and click add to cart. The items will be added to your cart which you can click the cart icon or menu to open the cart list</p>
@@ -120,7 +120,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
 </div>
 
 <div class="post-container">                
-    <div class="post-thumb"><img src="../images/screen_plist.jpg" width="250px" height="350px"/></div>
+    <div class="post-thumb"><img src="../images/screen_plist.jpg" width="200px" height="300px"/></div>
     <div class="post-content">
         <h3 class="post-title">Cart List</h3>
         <p>To open your cart to see current items click on the left nav menu you click on the cart icon button.<br><br>You can also search through your cart items if you have a large list by clicking he search icon on the top right and entering a search term</p>
@@ -128,7 +128,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
 </div>
 
 <div class="post-container">                
-    <div class="post-thumb"><img src="../images/screen_return.jpg" width="250px" height="350px"/></div>
+    <div class="post-thumb"><img src="../images/screen_return.jpg" width="200px" height="300px"/></div>
     <div class="post-content">
         <h3 class="post-title">Cart Item Return</h3>
         <p>To return an item in your list please swipe left on the item as see in image</p></div>
@@ -143,13 +143,26 @@ Because this app is not signed by google play store you will have to allow 3rd p
     </div>
 </div>
 
+## Payments Screen
+
+### Add Credit Card
+
+<div class="post-container">                
+    <div class="post-thumb"><img src="../images/screen_payments3.jpg" width="200px" height="300px"/></div>
+    <div class="post-content">
+        <h3 class="post-title">Add Card</h3>
+        <p>To add a credit card simple table an image of the your credit card. Some card with raised lettering my not be detected, if this is the case please add the credit card manually. The add card screen also has a log of your credit card transactions<br><br> <b>*** Remember in order to pay for items by card you neeed to add one ***</b></p>
+       
+ </div>
+</div>
+
 ### Receipts
 
 <div class="post-container">                
     <div class="post-thumb"><img src="../images/screen_reciepts.jpg" width="150px" height="250px"/></div>
     <div class="post-thumb"><img src="../images/screen_recieptslist.jpg" width="150px" height="250px"/></div>
     <div class="post-content">
-        <h3 class="post-title">Cart Payment</h3>
+        <h3 class="post-title">Receipt Screen</h3>
         <p>Every rental or purchase item will create receipt after payment of that item. A detail of all items of the order can be viewed by clicking on a recipet item in the list. You can also filter items by typing a price or Rental etc</p>
     </div>
 </div>
