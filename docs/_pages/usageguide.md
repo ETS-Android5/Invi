@@ -171,6 +171,8 @@ Because this app is not signed by google play store you will have to allow 3rd p
 
 ## Misc Screens
 
+### Map
+
 <div class="post-container">                
     <div class="post-thumb"><img src="../images/screen_maps1.jpg" width="150px" height="250px"/></div>
     <div class="post-thumb"><img src="../images/screen_maps2.jpg" width="150px" height="250px"/></div>
@@ -180,6 +182,8 @@ Because this app is not signed by google play store you will have to allow 3rd p
     </div>
 </div>
 
+### Profile
+
 <div class="post-container">                
     <div class="post-thumb"><img src="../images/screen_acc.jpg" width="150px" height="250px"/></div>
     <div class="post-thumb"><img src="../images/screen_acc2.jpg" width="150px" height="250px"/></div>
@@ -187,6 +191,16 @@ Because this app is not signed by google play store you will have to allow 3rd p
     <div class="post-content">
         <h3 class="post-title">User Profile</h3>
         <p>You can access the user profile page by select the user icon in the title bar. The user profile allows you to set details about yourself, link to social media accounts, update user profile image and account deletion.</p>
+    </div>
+</div>
+
+### Currency
+
+<div class="post-container">                
+    <div class="post-thumb"><img src="../images/screen_cur.jpg" width="200px" height="300px"/></div>
+    <div class="post-content">
+        <h3 class="post-title">Currency Screen</h3>
+        <p>On this screen you can set you currency and prices will be reflected in your set currency, default is Euro.</p>
     </div>
 </div>
 
