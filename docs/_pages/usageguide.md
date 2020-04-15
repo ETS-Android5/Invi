@@ -83,7 +83,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
         <br><br></p>
  </div>
 </div>
-
+## Rental & Purcahse
 <div class="post-container">                
     <div class="post-thumb"><img src="../images/screen_rent2.jpg" width="250px" height="350px"/></div>
     <div class="post-content">
@@ -97,7 +97,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
     <div class="post-thumb"><img src="../images/screen_rent4.jpg" width="250px" height="350px"/></div>
     <div class="post-content">
         <h3 class="post-title">Rental Checkin Screen</h3>
-        <p>To check back in a rented item just scan the barcode and you will be present with the screen on the left. When the item is checked back in you will have a reciept of the cost in the reciepts page.
+        <p>To check back in a rented item just scan the barcode and you will be present with the screen on the left. When the item is checked back in you will have a Receipt of the cost in the Receipts page.
         <br><br></p>
  </div>
 </div>
@@ -139,7 +139,18 @@ Because this app is not signed by google play store you will have to allow 3rd p
     <div class="post-thumb"><img src="../images/screen_cardpay.jpg" width="150px" height="250px"/></div>
     <div class="post-content">
         <h3 class="post-title">Cart Payment</h3>
-        <p>To pay for items in your cart click on the dollar sign icon on the title bar at top of screen. You can pay for items with cash of card. <b>Please add a card or you will not be allowed to pay for items with card option</b>. A fake card number is ok for the test. <br><br>Once items are paid for they will appear in your reciepts list.</p>
+        <p>To pay for items in your cart click on the dollar sign icon on the title bar at top of screen. You can pay for items with cash of card. <b>Please add a card or you will not be allowed to pay for items with card option</b>. A fake card number is ok for the test. <br><br>Once items are paid for they will appear in your Receipts list.</p>
+    </div>
+</div>
+
+### Receipts
+
+<div class="post-container">                
+    <div class="post-thumb"><img src="../images/screen_reciepts.jpg" width="150px" height="250px"/></div>
+    <div class="post-thumb"><img src="../images/screen_recieptslist.jpg" width="150px" height="250px"/></div>
+    <div class="post-content">
+        <h3 class="post-title">Cart Payment</h3>
+        <p>Every rental or purchase item will create receipt after payment of that item. A detail of all items of the order can be viewed by clicking on a recipet item in the list. You can also filter items by typing a price or Rental etc</p>
     </div>
 </div>
 
