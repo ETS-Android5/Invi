@@ -6,16 +6,16 @@ include_in_header: true
 
 ---
 
-This guide will cover installation of Invi Application show a step by step guide on usings its features
+This guide will cover installation of Invi Application show a step by step guide on using its features
 
 
 ## Installation
 
-To install invi on your phone please type this url into your phone browser https://shorturl.at/elnzB to download it.
+To install invi on your phone please type this url into your phone browser <a href="https://shorturl.at/elnzB">https://shorturl.at/elnzB</a> to download it.
 
 Once the file is downloaded it will be in the downloads folder on your phone, the file will be named app-release.apk
 
-Because this app is not signed by google play store you will have to allow 3rd party app install in the settings on your phone or when you are prompted by the package installer during open of the apk file.
+Because this app is not signed by google play store you will have to allow 3rd party app installation from the settings on your phone or when you are prompted by the package installer during open of the apk file.
 
 ## User Registration
 
@@ -89,14 +89,14 @@ Because this app is not signed by google play store you will have to allow 3rd p
     <div class="post-content">
         <h3 class="post-title">Rental Items List</h3>
         <p>To view current rented items and your current cost please click on the side menu and click rentals. You will be greeted with this screen where you can see the details and total cost of your rented items
-        <br><br>You can also search through your rented items if you have a large list by clicking he search icon on the top right and entering a search term</p>
+        <br><br>You can also search through your rented items if you have a large list by clicking the search icon on the top right and entering a search term</p>
  </div>
 </div>
 
 <div class="post-container">                
     <div class="post-thumb"><img src="../images/screen_rent4.jpg" width="200px" height="300px"/></div>
     <div class="post-content">
-        <h3 class="post-title">Rental Checkin Screen</h3>
+        <h3 class="post-title">Rental Check in Screen</h3>
         <p>To check back in a rented item just scan the barcode and you will be present with the screen on the left. When the item is checked back in you will have a Receipt of the cost in the Receipts page.
         <br><br></p>
  </div>
@@ -115,7 +115,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
     <div class="post-thumb"><img src="../images/screen_p1.jpg" width="200px" height="300px"/></div>
     <div class="post-content">
         <h3 class="post-title">Purcahse Item</h3>
-        <p>When you scan a purchase item either invi your tesco you will be greeted with this screen. Choose the quantity and click add to cart. The items will be added to your cart which you can click the cart icon or menu to open the cart list</p>
+        <p>When you scan a purchase item either invi or tesco you will be greeted with this screen. Choose the quantity and click add to cart. The items will be added to your cart which you can click the cart icon or side nav menu to open the cart list</p>
  </div>
 </div>
 
@@ -123,7 +123,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
     <div class="post-thumb"><img src="../images/screen_plist.jpg" width="200px" height="300px"/></div>
     <div class="post-content">
         <h3 class="post-title">Cart List</h3>
-        <p>To open your cart to see current items click on the left nav menu you click on the cart icon button.<br><br>You can also search through your cart items if you have a large list by clicking he search icon on the top right and entering a search term</p>
+        <p>To open your cart to see current items click on the left nav menu or click on the cart icon button.<br><br>You can also search through your cart items if you have a large list by clicking the search icon on the top right and entering a search term</p>
  </div>
 </div>
 
@@ -139,7 +139,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
     <div class="post-thumb"><img src="../images/screen_cardpay.jpg" width="150px" height="250px"/></div>
     <div class="post-content">
         <h3 class="post-title">Cart Payment</h3>
-        <p>To pay for items in your cart click on the dollar sign icon on the title bar at top of screen. You can pay for items with cash of card. <b>Please add a card or you will not be allowed to pay for items with card option</b>. A fake card number is ok for the test. <br><br>Once items are paid for they will appear in your Receipts list.</p>
+        <p>To pay for items in your cart click on the dollar sign icon on the title bar at top of screen. You can pay for items with cash or card. <b>Please add a card or you will not be allowed to pay for items with card option</b>. A fake card number is ok for the test. <br><br>Once items are paid for they will appear in your Receipts list.</p>
     </div>
 </div>
 
@@ -151,7 +151,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
     <div class="post-thumb"><img src="../images/screen_payments3.jpg" width="200px" height="300px"/></div>
     <div class="post-content">
         <h3 class="post-title">Add Card</h3>
-        <p>To add a credit card simple table an image of the your credit card. Some card with raised lettering my not be detected, if this is the case please add the credit card manually. The add card screen also has a log of your credit card transactions<br><br> <b>*** Remember in order to pay for items by card you neeed to add one ***</b></p>
+        <p>To add a credit card simple take an image of the your credit card. Some cards with raised lettering my not be detected, if this is the case please add the credit card manually. The add card screen also has a log of your credit card transactions<br><br> <b>*** Remember in order to pay for items by card, you neeed to add one ***</b></p>
        
  </div>
 </div>
@@ -190,7 +190,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
     <div class="post-thumb"><img src="../images/screen_acc3.jpg" width="150px" height="250px"/></div>
     <div class="post-content">
         <h3 class="post-title">User Profile</h3>
-        <p>You can access the user profile page by select the user icon in the title bar. The user profile allows you to set details about yourself, link to social media accounts, update user profile image and account deletion.</p>
+        <p>You can access the user profile page by selecting the user icon in the title bar. The user profile allows you to set details about yourself, link to social media accounts, update user profile image and account deletion.</p>
     </div>
 </div>
 
@@ -200,7 +200,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
     <div class="post-thumb"><img src="../images/screen_cur.jpg" width="200px" height="300px"/></div>
     <div class="post-content">
         <h3 class="post-title">Currency Screen</h3>
-        <p>On this screen you can set you currency and prices will be reflected in your set currency, default is Euro.</p>
+        <p>On this screen you can set your currency and prices will be reflected in your set currency, default is Euro.</p>
     </div>
 </div>
 
