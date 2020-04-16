@@ -34,7 +34,6 @@ public class PassWordReEnter extends DialogFragment{
         private PassWordReEnter(String reason) {
             this.firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
             this.reason = reason;
-
         }
 
         @Nullable

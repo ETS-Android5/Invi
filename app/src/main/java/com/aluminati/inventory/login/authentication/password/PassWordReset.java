@@ -154,7 +154,7 @@ public class PassWordReset extends AppCompatActivity implements View.OnClickList
     private void passWordReset(Exception resetResult){
         if(resetResult instanceof FirebaseAuthRecentLoginRequiredException){
             new AlertDialog.Builder(this)
-                    .setTitle("Re login required")
+                    .setTitle("Re-login required")
                     .setMessage("Need to re-login to change password\n" +
                             "1. If you don't remember your password log out and send password reset email " +
                             "2. Re-log In using your password and then rest your password")
