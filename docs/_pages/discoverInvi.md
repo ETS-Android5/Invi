@@ -5,24 +5,25 @@ icon: fa fa-info-circle
 include_in_header: true
 ---
 
-Invi was initailly an idea for inventory management for one of the University Of Limerick Clubs,
+Invi was initially an idea for inventory management for one of the University Of Limerick Clubs,
 but we quickly realised it's potential and transformed it into self check out App. Currently
 with the help on Invi the user is able to check prices of several products in real-time. It uses
 the EAN number from the barcode and queries Tesco's Api for the result. The price returned can be
 than quickly converted at current currency exchange rates into several currencies. Invi also allows to
 self check out rent items by scanning their QR Code it than tracks the time on lease and applies the
 applicable daily rates. It has been proven very useful even for our selves. Being able to price check
-within the store is an enormous convenience.
+within the store using your own smartphone is an enormous convenience.
 
-This guide is to guide the potential user on how to use Invi and show it's attached benefits.
+<strong>This guide is to show Invis attached benefits. To learn how to use Invi please refer here <a href="https://www.invi.store/usageguide/" target="_self">Invis User Guide</a><strong>
 
 Currently Invi supports two methods or registration
 
-## 1. Using Social Media Accounts Including Facebook, Twitter and Instagram
-## 2. Using Email Address
+<ul>
+<li><strong>1. Using Social Media Accounts Including Facebook, Twitter and Instagram</strong></li>
+<li><strong>2. Using Email Address</strong></li>
+</ul>
 
-### The Login Screen
-<!-- Test MD Comment -->
+### Invis Login Screen
 <p align="center">
 <img src="../images/login.jpg" width="333">
 </p>
@@ -65,10 +66,11 @@ purchased. The user will also be asked to grant permission for Invi to have acce
 Invi uses localization to show the user nearby stores, at the moment it shows nearby Tesco stores
 as well as stores that are stored on the database.
 
+### Quick sidebar menu access
+
 Swiping right you will be presented with the App's navigation drawer which allows the user to navigate
 between different screens.
 
-### Quick sidebar menu access
 
 .
 <p align="center">
@@ -79,9 +81,19 @@ between different screens.
 
 .
 
+### Expandable Floating Action Button
+
 On the bottom right corner, their is a Floating Action Button which will expand on click. Once it expands
 it gives the user access to the Barcode / Qr code Scanner, the live cart which also shows the current number
 of items in the cart and the real time currency exchange.
+
+
+.
+<p align="center">
+<img src="../images/summary.jpg" width="333">
+</P>
+
+.
 
 Once the user click on the Qr Code icon, he/she will be then redirected to scanner screen. Here the user
 can scan either items to check their price, where once the product is successfully found by Invi the user
@@ -89,15 +101,11 @@ will be show with a dialog giving the products image, price and description. The
 option to increase the amount of this items he/she wish to add to their cart.
 
 
-
-
-
 ### Check Stores Based on Locality
 
-
-
-Invi checks the users location and maps nearby stores on Google Maps
-
+Invi checks the users location and maps nearby stores on Google Maps, once the permission window appears asking to
+grant access rights to your location and phone dialer, click on the Maps tab in the side navigation to view
+nearby stores mapped out on Google Maps
 
 .
 <p align="center">
@@ -107,9 +115,49 @@ Invi checks the users location and maps nearby stores on Google Maps
 
 .
 
+.
+<p align="center">
+<img src="../images/Screenshot_2020-04-16-23-40-46-419_com.aluminati.inventory.jpg" width="333">
+</p>
+
+
+.
+
+Once tha cluster of markers appear, click on any and the name of the store will appear in an info window above the marker.
+Once the marker appears click on it and an information window will pop up with the following details -
+<ul>
+<li>Stores images, taken from Google Places</li>
+<li>Opening and Closing times of the store</li>
+<li>
+Three buttons
+<ul>
+<li>Google Navigation</li>
+<li>Google Search</li>
+<li>Stores Phone Number</li>
+</ul>
+</li>
+</ul>
+
+.
+<p align="center">
+<img src="../images/Screenshot_2020-04-16-23-40-53-368_com.aluminati.inventory.jpg" width="333">
+</p>
+
+
+.
+
+.
+<p align="center">
+<img src="../images/Screenshot_2020-04-16-23-41-00-119_com.aluminati.inventory.jpg" width="333">
+</p>
+
+
+.
+
+
 ### Qr Code / EAN-13 Scanner
 
-Invi uses recognises both Qr Code and EAN-13 barcodes for product checkout or item rental.
+Invi recognises both Qr Code and EAN-13 barcodes for product checkout or item rental.
 
 .
 <p align="center">
@@ -122,20 +170,6 @@ Invi uses recognises both Qr Code and EAN-13 barcodes for product checkout or it
 .
 <p align="center">
 <img src="../images/rent_item.jpg" width="333">
-</p>
-
-
-.
-
-### Search for Products
-
-
-The user can search for all available products on Invi's database
-
-
-.
-<p align="center">
-<img src="../images/search.jpg" width="333">
 </p>
 
 
@@ -167,10 +201,8 @@ Once a transaction is complete, Invi automatically generates a receipt and store
 ### Check Latest Conversion Rates
 
 With Invi the user can check the latest conversion rates.
-
-### Cart Total Automatically Converted
-
 Each time a product is added to the cart Invi automatically converts the total to different currencies.
+
 
 .
 <p align="center">
@@ -199,7 +231,7 @@ Invi splits the products according to their category and presents the result on 
 
 ### Recent transaction
 
-Invi shows recent transaction.
+Invi shows recent transaction and total amount of recent purchases.
 
 
 .
@@ -210,11 +242,57 @@ Invi shows recent transaction.
 .
 ### User Profile
 
-Edit your details whenever you want.
+In users profile you can edit details such as user profile picture, change the users email, phone number and password.
 
 .
 <p align="center">
-<img src="../images/profile.jpg" width="333">
+<img src="../images/Screenshot_2020-04-17-00-10-03-390_com.aluminati.inventory.jpg" width="333">
 </P>
 
 .
+
+
+In the users profile he/she can also link or unlink their social media accounts.
+
+.
+<p align="center">
+<img src="../images/Screenshot_2020-04-17-00-09-59-700_com.aluminati.inventory.jpg" width="333">
+</P>
+
+.
+
+The user can also set preferences such as the apps language, currently Polish and English
+are available. The apps currency but also can change his/her password or delete his/her account.
+
+.
+<p align="center">
+<img src="../images/Screenshot_2020-04-17-00-09-56-005_com.aluminati.inventory.jpg" width="333">
+</P>
+
+.
+
+.
+<p align="center">
+<img src="../images/Screenshot_2020-04-17-00-09-50-008_com.aluminati.inventory.jpg" width="333">
+</P>
+
+.
+
+To delete their account the user needs to enter a reason and their password to confirm that
+he/she wants to delete their account
+
+.
+ <p align="center">
+ <img src="../images/Screenshot_2020-04-17-00-14-53-559_com.aluminati.inventory.jpg" width="333">
+ </P>
+
+ .
+
+ .
+ <p align="center">
+ <img src="../images/Screenshot_2020-04-17-00-14-57-998_com.aluminati.inventory.jpg" width="333">
+ </P>
+
+ .
+
+

@@ -174,11 +174,11 @@ Because this app is not signed by google play store you will have to allow 3rd p
 ### Map
 
 <div class="post-container">                
-    <div class="post-thumb"><img src="../images/screen_maps1.jpg" width="150px" height="250px"/></div>
-    <div class="post-thumb"><img src="../images/screen_maps2.jpg" width="150px" height="250px"/></div>
+    <div class="post-thumb"><img src="../images/screen_maps1.jpg" width="150px" height="100%"/></div>
+    <div class="post-thumb"><img src="../images/screen_maps2.jpg" width="150px" height="100%"/></div>
     <div class="post-content">
         <h3 class="post-title">Map Screen</h3>
-        <p>On the map screen you can view currently available stores. If you click on a map marker you can see the name of the store in a label, when you click on the label this will bring up infomation about the store like open times and phone number.</p>
+        <p style="margin-left: 5px;">On the map screen you can view currently available stores. If you click on a map marker you can see the name of the store in a label, when you click on the label this will bring up infomation about the store like open times and phone number.<br><br><strong>Note</strong><br> On the first use a permission window will appear asking for access to Location and Phone. Once granted click on the maps icon again to see all the stores mapped</p>
     </div>
 </div>
 
