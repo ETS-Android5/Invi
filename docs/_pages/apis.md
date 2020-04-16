@@ -5,7 +5,7 @@ icon: fa fa-file
 include_in_header: true
 ---
 
-<strong>Invi makes use of several Api and Frameworks which are listed below along with their owners and briefs</strong>
+<strong>Invi makes use of several Apis and Frameworks which are listed below along with their owners and briefs</strong>
 
 | Name | Owner | API | Library | Framework |
 |---|:---:|:---:|:---:|:---:|
@@ -93,7 +93,7 @@ The sub modules used from Firebase are
 
 <h3>Tesco Api</h3>
 <strong>Owner</strong>: Tesco
-<ul>
+<ul style="padding-bottom:25px;">
 <li>Tesco Store Search</li>
 <li>Tesco Grocery Search</li>
 <li>Tesco Product Search</li>

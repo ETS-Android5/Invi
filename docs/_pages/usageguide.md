@@ -11,7 +11,7 @@ This guide will cover installation of Invi Application show a step by step guide
 
 ## Installation
 
-To install invi on your phone please type this url into your phone browser <a href="https://shorturl.at/elnzB">https://shorturl.at/elnzB</a> to download it.
+To install Invi on your phone please type this url into your phone browser <a href="https://shorturl.at/elnzB">https://shorturl.at/elnzB</a> to download it.
 
 Once the file is downloaded it will be in the downloads folder on your phone, the file will be named app-release.apk
 
@@ -23,7 +23,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
     <div class="post-thumb"><img src="/assets/screenshot/yourscreenshot.jpg" width="200px" height="300px"/></div>
     <div class="post-content">
         <h3 class="post-title">Login & Registration Screen</h3>
-        <p>Once app is installed a blue icon with the title "Invi" will appear on the apps section of your phone. Open the app and you will be presented this the the screen on the left.</p>
+        <p>Once app is installed "Invis'" Logo will appear on the apps section of your phone. Open the app and you will be presented this the the screen on the left.</p>
     <p>If you want to register with Google, Twitter or Facebook please slide the icon to the right. To begin registering with an email click on the registration link on the bottom left</p>
     </div>
 </div>
