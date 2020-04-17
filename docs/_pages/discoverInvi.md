@@ -6,13 +6,13 @@ include_in_header: true
 ---
 
 Invi was initially an idea for inventory management for one of the University Of Limerick Clubs,
-but we quickly realised it's potential and transformed it into self check out App. Currently
-with the help on Invi the user is able to check prices of several products in real-time. It uses
-the EAN number from the barcode and queries Tesco's Api for the result. The price returned can be
-than quickly converted at current currency exchange rates into several currencies. Invi also allows to
+but we quickly realised it's potential and transformed it into self check out App. Currently,
+with the help on Invi, the user can check prices of several products in real-time. It uses
+the EAN number from the barcode and queries Tesco's API for the result. The price returned can be
+then quickly converted at current currency exchange rates into several currencies. Invi also allows to
 self check out rent items by scanning their QR Code it than tracks the time on lease and applies the
 applicable daily rates. It has been proven very useful even for our selves. Being able to price check
-within the store using your own smartphone is an enormous convenience.
+within the store using your smartphone is an enormous convenience.
 
 <strong>This guide is to show Invis attached benefits. To learn how to use Invi please refer here <a href="https://www.invi.store/usageguide/" target="_self">Invis User Guide</a><strong>
 
