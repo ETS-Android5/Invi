@@ -11,7 +11,7 @@ This guide will cover installation of Invi Application show a step by step guide
 
 ## Installation
 
-To install Invi on your phone please click <b>Download</b> and install the app on your device <a href="https://github.com/Bartekm1996/Invi/blob/master/app/release/app-release.apk">Download</a>
+To install Invi on your phone please click <b>Download</b> and install the app on your device <a href="https://github.com/Bartekm1996/Invi/raw/master/app/release/app-release.apk">Download</a>
 
 Once the file is downloaded it will be in the downloads folder on your phone, the file will be named app-release.apk
 
