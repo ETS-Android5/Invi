@@ -6,7 +6,7 @@ include_in_header: true
 
 ---
 
-This guide will cover installation of Invi Application show a step by step guide on using its features
+This guide will cover installation of Invi Application and show a step by step guide on using its features
 
 
 ## Installation
