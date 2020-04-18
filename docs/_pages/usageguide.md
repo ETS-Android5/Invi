@@ -17,6 +17,13 @@ Once the file is downloaded it will be in the downloads folder on your phone, th
 
 Because this app is not signed by google play store you will have to allow 3rd party app installation from the settings on your phone or when you are prompted by the package installer during open of the apk file.
 
+### Test Account
+
+user =      paulkinselladev_(AT)_gmail.com 
+password =  @#Abc1234
+
+please replace _(AT)_ with @ as this is to avoid bots from scraping email
+
 ## User Registration
 
 <div class="post-container">                
