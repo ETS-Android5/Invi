@@ -19,10 +19,10 @@ Because this app is not signed by google play store you will have to allow 3rd p
 
 ### Test Account
 
-user =      paulkinselladev_(AT)_gmail.com 
+user =      paulkinselladev[(AT)]gmail.com 
 password =  @#Abc1234
 
-please replace _(AT)_ with @ as this is to avoid bots from scraping email
+please replace [(AT)] with @ as this is to avoid bots from scraping email
 
 ## User Registration
 
