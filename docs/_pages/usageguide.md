@@ -239,15 +239,7 @@ please replace [(AT)] with @ as this is to avoid bots from scraping email
     <td><img src="../images/mask2.gif"/>Mask 2</td>
     <td><img src="../images/mask3.gif"/>Mask 3</td>
   </tr>
-    <tr>
-    <th colspan="3">Invi Purchase Items</th>
-  </tr>
   <tr>
-    <td><img src="../images/divingsuit.gif"/>Invi Diving Suit</td>
-    <td><img src="../images/headp.gif"/>Invi Mask</td>
-    <td></td>
-  </tr>
-    <tr>
     <th colspan="3">Tesco Items</th>
   </tr>
   <tr>
