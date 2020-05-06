@@ -37,7 +37,7 @@ used by Invi.
 If the user decided to sign up with his social media account, he will be redirected to a permission screen
 by the chosen social media to grant Invi permission to use his details -
 
-    Email,
+    Email
     Name,
     Profile Photo
 
