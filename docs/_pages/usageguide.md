@@ -6,16 +6,23 @@ include_in_header: true
 
 ---
 
-This guide will cover installation of Invi Application show a step by step guide on using its features
+This guide will cover installation of Invi Application and show a step by step guide on using its features
 
 
 ## Installation
 
-To install Invi on your phone please type this url into your phone browser <a href="https://shorturl.at/elnzB">https://shorturl.at/elnzB</a> to download it.
+To install Invi on your phone please click <a href="https://github.com/pk-development/apps/raw/master/app-release.apk"><b>Download</b></a>  and install the app on your device 
 
 Once the file is downloaded it will be in the downloads folder on your phone, the file will be named app-release.apk
 
 Because this app is not signed by google play store you will have to allow 3rd party app installation from the settings on your phone or when you are prompted by the package installer during open of the apk file.
+
+### Test Account
+
+user =      paulkinselladev[(AT)]gmail.com 
+password =  @#Abc1234
+
+please replace [(AT)] with @ as this is to avoid bots from scraping email
 
 ## User Registration
 
@@ -232,15 +239,7 @@ Because this app is not signed by google play store you will have to allow 3rd p
     <td><img src="../images/mask2.gif"/>Mask 2</td>
     <td><img src="../images/mask3.gif"/>Mask 3</td>
   </tr>
-    <tr>
-    <th colspan="3">Invi Purchase Items</th>
-  </tr>
   <tr>
-    <td><img src="../images/divingsuit.gif"/>Invi Diving Suit</td>
-    <td><img src="../images/headp.gif"/>Invi Mask</td>
-    <td></td>
-  </tr>
-    <tr>
     <th colspan="3">Tesco Items</th>
   </tr>
   <tr>
