@@ -28,3 +28,7 @@ project that has the potential of increasing the convenience of everyday shoppin
 but also shrinking waiting times and minimizing human interaction which
 could be revolutionary, especially during times we are currently experiencing.
 
+If we were to do this App again, we would use Twillio 2FA Api for verfying phone numbers as Firebase can be
+problematic with certain networks.
+
+
