@@ -231,7 +231,7 @@ Invi splits the products according to their category and presents the result on 
 
 ### Recent transaction
 
-Invi shows recent transaction and total amount of recent purchases.
+Invi shows recent transaction and total amount of recent purchases. The summary of purchases will show the total amount of purchase to date but the purchase items in listview will only be shown within the last 10 days
 
 
 .
