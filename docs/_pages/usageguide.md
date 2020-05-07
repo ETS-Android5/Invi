@@ -55,7 +55,7 @@ please replace [(AT)] with @ as this is to avoid bots from scraping email
     <div class="post-thumb"><img src="../images/screen_ver2.jpg" width="200px" height="300px"/></div>
     <div class="post-content">
         <h3 class="post-title">Verify Number Screen</h3>
-        <p>When you click the verify phone button you will be greeted by this screen. To verify your phone please select country code and enter your phone number then click send code which will send an sms code to your device. Once phone and email is verified your login should be automatic.<br><b>*** Please be aware this api from google is buggy and sometimes does not send a code so please contact support at Invi to fix ***</b></p>
+        <p>When you click the verify phone button you will be greeted by this screen. To verify your phone please select country code and enter your phone number then click send code which will send an sms code to your device. Once phone and email is verified your login should be automatic.<br><b>*** Please be aware this api from google is buggy and sometimes does not send a code. To bypass this manually contact Invi admin or if your an admin and have access to Firebase, go to Firebase Databse -> user collections -> your email document and set the filed - is_phone_verified = "true" ***</b></p>
        
  </div>
 </div>
